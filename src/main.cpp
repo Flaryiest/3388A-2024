@@ -104,19 +104,14 @@ void opcontrol() {
 		else if (clampReverseButton) {
 			clamp.set_value(LOW);
 		}
+        int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
+        chassis.arcade(leftY, leftX);
+        pros::delay(25);
 		
 
 
 
-        chassis.tank(leftY, rightY);
 
-        pros::delay(20);
 		
     }
-	// while (true) {
-    //     int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    //     int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-    //     chassis.arcade(leftY, leftX);
-    //     pros::delay(25);
-    // }
 }
