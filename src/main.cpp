@@ -4,7 +4,7 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-15,-6, -8}, pros::MotorGearset::red);
+pros::MotorGroup left_motors({-15,-6, -7}, pros::MotorGearset::red);
 pros::MotorGroup right_motors({3, 5, 4}, pros::MotorGearset::red);
 pros::Motor intake(-18, pros::MotorGearset::red);
 pros::adi::DigitalOut clamp('F');
@@ -82,7 +82,7 @@ void autonomous() {
 void opcontrol() {
     while (true) {
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 		bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 		bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
 		bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
@@ -105,7 +105,7 @@ void opcontrol() {
 			clamp.set_value(LOW);
 		}
         int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-        chassis.arcade(leftY, leftX);
+        chassis.arcade(leftY, rightX);
         pros::delay(25);
 		
 
