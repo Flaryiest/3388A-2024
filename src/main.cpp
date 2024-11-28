@@ -9,6 +9,7 @@ pros::MotorGroup right_motors({3, 5, 4}, pros::MotorGearset::red);
 pros::Motor intake(-18, pros::MotorGearset::red);
 pros::adi::DigitalOut clamp('F');
 pros::adi::DigitalOut wing('E');
+pros::adi::DigitalIn wingPower('E');
 
 lemlib::Drivetrain drivetrain(&left_motors,
                               &right_motors,
@@ -39,15 +40,15 @@ lemlib::ControllerSettings lateral_controller(10,
 );
 
 
-lemlib::ControllerSettings angular_controller(2,
-                                              0,
-                                              10,
-                                              3,
-                                              1,
-                                              100,
-                                              3,
-                                              500,
-                                              0
+lemlib::ControllerSettings angular_controller(10, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              3, // derivative gain (kD)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              20 // maximum acceleration (slew)
 );
 
 lemlib::Chassis chassis(drivetrain,
@@ -108,7 +109,7 @@ void opcontrol() {
 		}
 
         if (wingButton) {
-            if (wing.get_value() > 0) {
+            if (wingPower.get_value() > 0) {
                 wing.set_value(HIGH);
             }
             else {
