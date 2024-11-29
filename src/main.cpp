@@ -40,13 +40,13 @@ lemlib::ControllerSettings lateral_controller(10,
 );
 
 lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
-                                              0, // integral gain (kI)
+                                              0.002, // integral gain (kI)
                                               10, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in degrees
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in degrees
-                                              500, // large error range timeout, in milliseconds
+                                              0, // anti windup
+                                              0, // small error range, in degrees
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in degrees
+                                              0, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
 
@@ -69,6 +69,7 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	chassis.calibrate();
+    autonomous();
 }
 
 void disabled() {}
@@ -77,7 +78,15 @@ void competition_initialize() {}
 
 void autonomous() {
     chassis.setPose(0, 0, 0);
-    chassis.turnToHeading(90, 100000);
+    clamp.set_value(HIGH);
+    chassis.moveToPoint(0, -19, 2000, {.forwards = false});
+    pros::delay(900); 
+    clamp.set_value(LOW);
+    pros::delay(500);
+    intake.move(127);
+    pros::delay(1400);
+    clamp.set_value(HIGH);
+
 }
 
 void opcontrol() {
@@ -117,7 +126,7 @@ void opcontrol() {
 
         }
         int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-        chassis.arcade(leftY, rightX);
+        // chassis.arcade(leftY, rightX);
 
         pros::delay(25);
 		
