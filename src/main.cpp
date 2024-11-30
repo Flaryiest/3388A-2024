@@ -109,7 +109,6 @@ void redSideRight() {
     pros::delay(500);
     intake.move(127);
     pros::delay(1400);
-    clamp.set_value(HIGH);
 }
 
 void blueSideLeft() {
