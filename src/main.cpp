@@ -102,9 +102,9 @@ void redSideLeft() {
 void redSideRight() {
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
-    chassis.moveToPoint(0, -20.0, 2000, {.forwards = false, .maxSpeed = 80});
-    chassis.moveToPoint(0, -25.5, 2000, {.forwards = false, .maxSpeed = 20});
-    pros::delay(1000); 
+    chassis.moveToPoint(0, -14.0, 2000, {.forwards = false, .maxSpeed = 60});
+    chassis.moveToPoint(0, -33.0, 2000, {.forwards = false, .maxSpeed = 35});
+    pros::delay(3000); 
     clamp.set_value(LOW);
     pros::delay(500);
     intake.move(127);
