@@ -2,6 +2,7 @@
 #include "lemlib/api.hpp"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/vision.h"
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -10,6 +11,9 @@ pros::MotorGroup right_motors({3, 5, 4}, pros::MotorGearset::red);
 pros::Motor intake(-18, pros::MotorGearset::green);
 pros::adi::DigitalOut clamp('F');
 pros::adi::DigitalOut wing('D', false);
+pros::Vision wallstake_sensor (17);
+pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1, 255, 307, 281, -355, -243, -299, 3.0, 0);
+pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
 lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
                                      10, // minimum output where drivetrain will move out of 127
                                      1.019 // expo curve gain
@@ -137,7 +141,18 @@ void blueSideRight() {
 
 
 
+void detectRingColor() {
+    wallstake_sensor.set_signature(1, &red_ring_sig);
+    wallstake_sensor.set_signature(2, &blue_ring_sig);
+    auto red_objects = wallstake_sensor.get_by_sig(0, 1);
+    auto blue_objects = wallstake_sensor.get_by_sig(0, 2);
+    while (true) {
+        pros::screen::erase();
+        pros::screen::print(::TEXT_SMALL, 3, "red_objects");
 
+        pros::delay(1000);
+  }
+}
 
 
 void autonomous() {
@@ -148,49 +163,50 @@ void autonomous() {
 
 void opcontrol() {
     bool wingState = false;
-    while (true) {
-        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-		bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-		bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
-		bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-		bool clampReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+    detectRingColor();
+//     while (true) {
+//         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+//         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+// 		bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+// 		bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+// 		bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+// 		bool clampReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+//         bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         
 
-		if (intakeButton) {
-			intake.move(127);
-		}
-		else if (intakeReverseButton) {
-			intake.move(-127);
-		}
-		else {
-			intake.move(0);
-		}
+// 		if (intakeButton) {
+// 			intake.move(127);
+// 		}
+// 		else if (intakeReverseButton) {
+// 			intake.move(-127);
+// 		}
+// 		else {
+// 			intake.move(0);
+// 		}
 
-		if (clampButton) {
-			clamp.set_value(HIGH);
-		}
-		else if (clampReverseButton) {
-			clamp.set_value(LOW);
-		}
+// 		if (clampButton) {
+// 			clamp.set_value(HIGH);
+// 		}
+// 		else if (clampReverseButton) {
+// 			clamp.set_value(LOW);
+// 		}
 
-        if (wingButton) {
-            wingState = !wingState;
-            wing.set_value(wingState ? HIGH : LOW);
-            pros::delay(200);
-}
+//         if (wingButton) {
+//             wingState = !wingState;
+//             wing.set_value(wingState ? HIGH : LOW);
+//             pros::delay(200);
+// }
 
 
-        int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-        chassis.arcade(leftY, rightX);
+//         int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
+//         chassis.arcade(leftY, rightX);
 
-        pros::delay(25);
+//         pros::delay(25);
 		
 
 
 
 
 		
-    }
+//     }
 }
