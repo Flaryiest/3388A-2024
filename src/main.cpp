@@ -159,8 +159,6 @@ void autonomous() {
     redSideRight();
 }
 
-
-
 void opcontrol() {
     bool wingState = false;
     int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -170,19 +168,6 @@ void opcontrol() {
     bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
     bool clampReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
     bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
-    
-    void arcadeDriveWithReversing(int leftY, int rightX) {
-    if (leftY == 0 && rightX == 0) {
-        double leftSpeed = chassis.getSpeeds().left;
-        double rightSpeed = chassis.getSpeeds().right;
-
-        double reverseSpeed = -0.5 * leftSpeed;
-
-        chassis.setSpeeds(reverseSpeed, reverseSpeed);
-    } else {
-        chassis.arcade(leftY, rightX);
-    }
-    }
     
     detectRingColor();
 
