@@ -163,50 +163,63 @@ void autonomous() {
 
 void opcontrol() {
     bool wingState = false;
+    int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+    int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+    bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+    bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+    bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+    bool clampReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+    bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+    
+    void arcadeDriveWithReversing(int leftY, int rightX) {
+    if (leftY == 0 && rightX == 0) {
+        double leftSpeed = chassis.getSpeeds().left;
+        double rightSpeed = chassis.getSpeeds().right;
+
+        double reverseSpeed = -0.5 * leftSpeed;
+
+        chassis.setSpeeds(reverseSpeed, reverseSpeed);
+    } else {
+        chassis.arcade(leftY, rightX);
+    }
+    }
+    
     detectRingColor();
-//     while (true) {
-//         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-//         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-// 		bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-// 		bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
-// 		bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-// 		bool clampReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-//         bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
-        
 
-// 		if (intakeButton) {
-// 			intake.move(127);
-// 		}
-// 		else if (intakeReverseButton) {
-// 			intake.move(-127);
-// 		}
-// 		else {
-// 			intake.move(0);
-// 		}
+    while (true) {
+		if (intakeButton) {
+			intake.move(127);
+		}
+		else if (intakeReverseButton) {
+			intake.move(-127);
+		}
+		else {
+			intake.move(0);
+		}
 
-// 		if (clampButton) {
-// 			clamp.set_value(HIGH);
-// 		}
-// 		else if (clampReverseButton) {
-// 			clamp.set_value(LOW);
-// 		}
+		if (clampButton) {
+			clamp.set_value(HIGH);
+		}
+		else if (clampReverseButton) {
+			clamp.set_value(LOW);
+		}
 
-//         if (wingButton) {
-//             wingState = !wingState;
-//             wing.set_value(wingState ? HIGH : LOW);
-//             pros::delay(200);
-// }
+        if (wingButton) {
+            wingState = !wingState;
+            wing.set_value(wingState ? HIGH : LOW);
+            pros::delay(200);
+}
 
 
-//         int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
-//         chassis.arcade(leftY, rightX);
+        int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
+        chassis.arcade(leftY, rightX);
 
-//         pros::delay(25);
-		
+        pros::delay(25);
+    
 
 
 
 
-		
-//     }
+    
+    }
 }
