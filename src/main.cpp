@@ -6,9 +6,9 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-15,-6, -7}, pros::MotorGearset::red);
-pros::MotorGroup right_motors({3, 5, 4}, pros::MotorGearset::red);
-pros::Motor intake(-18, pros::MotorGearset::green);
+pros::MotorGroup left_motors({-7,-20, 16}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({13, 15, 18}, pros::MotorGearset::blue);
+pros::Motor intake(-4, pros::MotorGearset::green);
 pros::Motor ladyBrown(8, pros::MotorGearset::green);
 pros::adi::DigitalOut clamp('F');
 pros::adi::DigitalOut wing('D', false);
@@ -17,7 +17,7 @@ pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1
 pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
 lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
                                      10, // minimum output where drivetrain will move out of 127
-                                     1.019 // expo curve gain
+                                     1.019 // expo curve gain2
 );
 
 // input curve for steer input during driver control
@@ -148,13 +148,13 @@ void detectRingColor() {
     auto blue_objects = wallstake_sensor.get_by_sig(0, 2);
     while (true) {
         pros::screen::erase();
-        pros::screen::print(::TEXT_SMALL, 3, "red_objects");=
+        pros::screen::print(::TEXT_SMALL, 3, "red_objects");
         pros::delay(1000);
    }
 }
 
 
-void autonomous() {
+void autonomoudas() {
     leftAutonomous();
 }
 
@@ -178,7 +178,6 @@ void opcontrol() {
 
     
 
-    detectRingColor();
 
     while (true) {
 		if (intakeButton) {
@@ -213,11 +212,5 @@ void opcontrol() {
         int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
         chassis.arcade(leftY, rightX);
         pros::delay(25);
-    
-
-
-
-
-    
     }
 }
