@@ -98,11 +98,6 @@ void leftAutonomous() {
     clamp.set_value(HIGH);
     chassis.turnToHeading(120, 1000);
     chassis.moveToPoint(10, -3, 2000, {.forwards = false, .maxSpeed = 100});
-    ladyBrown.move(127);
-    pros::delay(500);
-    ladyBrown.move(-127);
-    pros::delay(400);
-    ladyBrown.move(10);
     chassis.moveToPoint(0, 25, 2000, {.forwards = false, .maxSpeed = 80});
     clamp.set_value(LOW);
     chassis.moveToPoint(-5, 40, 2000, {.forwards = true, .maxSpeed = 100});
@@ -152,11 +147,6 @@ void skillsAutonomous() {
     int lineTwoY = -40;
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
-    ladyBrown.move(127);
-    pros::delay(200);
-    ladyBrown.move(-127);
-    pros::delay(200);
-    ladyBrown.move(10);
     chassis.moveToPoint(0, lineOneY, 2000, {.forwards = false, .maxSpeed = 127});
     chassis.turnToHeading(270, 1000);
     chassis.moveToPoint(25, lineOneY, 2000, {.forwards = false, .maxSpeed = 100});
