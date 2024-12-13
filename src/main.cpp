@@ -86,6 +86,7 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	chassis.calibrate();
+    pros::lcd::print(0, "Testing");
 }
 
 void disabled() {}
