@@ -173,45 +173,52 @@ void opcontrol() {
 
     bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
     bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
-    
 
     bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
     bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 
-    
-
+    wallstake_sensor.set_signature(1, &red_ring_sig);
+    wallstake_sensor.set_signature(2, &blue_ring_sig);
 
     while (true) {
-		if (intakeButton) {
-			intake.move(127);
-		}
-		else if (intakeReverseButton) {
-			intake.move(-127);
-		}
-		else {
-			intake.move(0);
-		}
+        if (intakeButton) {
+            intake.move(127);
+        } else if (intakeReverseButton) {
+            intake.move(-127);
+        } else {
+            intake.move(0);
+        }
 
         if (clampButton) {
             clampState = !clampState;
             clamp.set_value(clampState ? HIGH : LOW);
             pros::delay(200);
-}
+        }
 
         if (wingButton) {
             wingState = !wingState;
             wing.set_value(wingState ? HIGH : LOW);
             pros::delay(200);
-}
-        if (ladyBrownButton) {
-            ladyBrownState = !ladyBrownState;
-            wing.set_value(wingState ? 0 : 127);
-            pros::delay(200);
-}
-        if (ladyBrownLoadButton) {
         }
 
-        int leftX = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X);
+        if (ladyBrownButton) {
+            ladyBrownState = !ladyBrownState;
+            ladyBrown.set_value(ladyBrownState ? 0 : 127);
+            pros::delay(200);
+        }
+
+        if (ladyBrownLoadButton) {
+            auto red_objects = wallstake_sensor.get_by_sig(0, 1);
+            auto blue_objects = wallstake_sensor.get_by_sig(0, 2);
+
+            if ((red_objects.size < 0.5 || blue_objects.size < 0.5)) {
+                intake.move(127);
+                pros::delay(50);
+            } else {
+                intake.move(0);
+            }
+        }
+
         chassis.arcade(leftY, rightX);
         pros::delay(25);
     }
