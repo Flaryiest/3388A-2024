@@ -86,6 +86,7 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	chassis.calibrate();
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
     pros::lcd::print(0, "Testing");
 }
 
