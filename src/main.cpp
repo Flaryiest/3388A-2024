@@ -154,7 +154,7 @@ void detectRingColor() {
 }
 
 
-void autonomoudas() {
+void autonomous() {
     leftAutonomous();
 }
 
