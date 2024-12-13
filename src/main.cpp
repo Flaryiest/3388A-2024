@@ -170,6 +170,7 @@ void opcontrol() {
 
     bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
     bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
+    bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
 
     wallstake_sensor.set_signature(1, &red_ring_sig);
     wallstake_sensor.set_signature(2, &blue_ring_sig);
@@ -197,21 +198,34 @@ void opcontrol() {
 
         if (ladyBrownButton) {
             ladyBrownState = !ladyBrownState;
-            ladyBrown.set_value(ladyBrownState ? -40 : 127);
-            pros::delay(200);
+            ladyBrown.move(ladyBrownState ? -127 : 127);
+            pros::delay(100);
+        }
+        if (ladyBrownHoverButton) {
+            ladyBrown.move(15);
+            pros::delay(100);
         }
 
         if (ladyBrownLoadButton) {
-            auto red_objects = wallstake_sensor.get_by_sig(0, 1);
-            auto blue_objects = wallstake_sensor.get_by_sig(0, 2);
-
-            if ((red_objects.size < 1 || blue_objects.size < 1)) {
-                intake.move(127);
-                pros::delay(50);
-            } else {
-                intake.move(0);
-            }
             pros::delay(50);
+            bool loading = true;
+            while (loading) {
+                auto red_object = wallstake_sensor.get_by_sig(0, 1);
+                auto blue_object = wallstake_sensor.get_by_sig(0, 2);
+                if ((red_object.width < 1 || blue_object.width < 1)) {
+                    intake.move(127);
+                    }
+                else if (ladyBrownLoadButton) {
+                    loading = false;
+                } 
+                else {
+                    intake.move(0);
+                    loading = false;
+                }
+
+            pros::delay(50);
+            }
+            
         }
 
         chassis.arcade(leftY, rightX);
