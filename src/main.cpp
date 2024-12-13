@@ -15,15 +15,14 @@ pros::adi::DigitalOut wing('D', false);
 pros::Vision wallstake_sensor (17);
 pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1, 255, 307, 281, -355, -243, -299, 3.0, 0);
 pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
-lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
-                                     10, // minimum output where drivetrain will move out of 127
-                                     1.019 // expo curve gain2
+lemlib::ExpoDriveCurve throttle_curve(3,
+                                     10,
+                                     1.019 
 );
 
-// input curve for steer input during driver control
-lemlib::ExpoDriveCurve steer_curve(3, // joystick deadband out of 127
-                                  10, // minimum output where drivetrain will move out of 127
-                                  1.009 // expo curve gain
+lemlib::ExpoDriveCurve steer_curve(3,
+                                  10,
+                                  1.009
 );
 
 lemlib::Drivetrain drivetrain(&left_motors,
@@ -138,21 +137,16 @@ void rightAutonomous() {
     chassis.turnToHeading(320, 1000);
     pros::delay(500);
     clamp.set_value(HIGH);
+    chassis.moveToPoint(20, 44, 2000, {.forwards = false, .maxSpeed = 100});
+    clamp.set_value(LOW);
+    chassis.moveToPoint(0, 23, 2000, {.maxSpeed = 127});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(30, 23, 2000, {.forwards = true, .maxSpeed = 127});
+    chassis.turnToHeading(180, 1000);
+    chassis.moveToPoint(-20, 23, 1000);
+
     /** go for right red ring under blue right after. Then go score that ring on the far mogo */
-}
 
-
-
-void detectRingColor() {
-    wallstake_sensor.set_signature(1, &red_ring_sig);
-    wallstake_sensor.set_signature(2, &blue_ring_sig);
-    auto red_objects = wallstake_sensor.get_by_sig(0, 1);
-    auto blue_objects = wallstake_sensor.get_by_sig(0, 2);
-    while (true) {
-        pros::screen::erase();
-        pros::screen::print(::TEXT_SMALL, 3, "red_objects");
-        pros::delay(1000);
-   }
 }
 
 
@@ -203,7 +197,7 @@ void opcontrol() {
 
         if (ladyBrownButton) {
             ladyBrownState = !ladyBrownState;
-            ladyBrown.set_value(ladyBrownState ? 0 : 127);
+            ladyBrown.set_value(ladyBrownState ? -40 : 127);
             pros::delay(200);
         }
 
@@ -211,7 +205,7 @@ void opcontrol() {
             auto red_objects = wallstake_sensor.get_by_sig(0, 1);
             auto blue_objects = wallstake_sensor.get_by_sig(0, 2);
 
-            if ((red_objects.size < 0.5 || blue_objects.size < 0.5)) {
+            if ((red_objects.size < 1 || blue_objects.size < 1)) {
                 intake.move(127);
                 pros::delay(50);
             } else {
