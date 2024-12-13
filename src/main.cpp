@@ -217,6 +217,7 @@ void opcontrol() {
             } else {
                 intake.move(0);
             }
+            pros::delay(50);
         }
 
         chassis.arcade(leftY, rightX);
