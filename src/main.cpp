@@ -102,7 +102,7 @@ void leftAutonomous() {
     pros::delay(500);
     ladyBrown.move(-127);
     pros::delay(400);
-    ladyBrown.move(0);
+    ladyBrown.move(10);
     chassis.moveToPoint(0, 25, 2000, {.forwards = false, .maxSpeed = 80});
     clamp.set_value(LOW);
     chassis.moveToPoint(-5, 40, 2000, {.forwards = true, .maxSpeed = 100});
@@ -123,14 +123,14 @@ void leftAutonomous() {
     chassis.moveToPoint(50, 20, 2000, {.maxSpeed = 20});
     chassis.moveToPoint(30, 20, 2000, {.forwards = false, .maxSpeed = 127});
     chassis.moveToPoint(30, 45, 2000, {.forwards = true, .maxSpeed = 127});
-
+    intake.move(0);
 
 }
 
 void rightAutonomous() {
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
-    chassis.turnToHeading(180, 1000);
+    chassis.turnToHeading(179, 1000);
     chassis.moveToPoint(0, 23, 2000, {.forwards = false, .maxSpeed = 127});
     clamp.set_value(LOW);
     intake.move(127);
@@ -144,10 +144,42 @@ void rightAutonomous() {
     chassis.moveToPoint(30, 23, 2000, {.forwards = true, .maxSpeed = 127});
     chassis.turnToHeading(180, 1000);
     chassis.moveToPoint(-20, 23, 1000);
-
-    /** go for right red ring under blue right after. Then go score that ring on the far mogo */
-
+    intake.move(0);
 }
+
+void skillsAutonomous() {
+    chassis.setPose(0, 0, 0);
+    clamp.set_value(HIGH);
+    ladyBrown.move(127);
+    pros::delay(200);
+    ladyBrown.move(-127);
+    pros::delay(200);
+    ladyBrown.move(10);
+    chassis.moveToPoint(0,-15, 2000, {.forwards = false, .maxSpeed = 127});
+    chassis.turnToHeading(270, 1000);
+    chassis.moveToPoint(25, -15, 2000, {.forwards = false, .maxSpeed = 100});
+    clamp.set_value(LOW);
+    pros::delay(100);
+    chassis.turnToHeading(180, 1000);
+    intake.move(127);
+    chassis.moveToPoint(25, -40, 1000, {.forwards = true, .maxSpeed = 127});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(40, -40, 1000);
+    chassis.turnToHeading(0, 1000);
+    chassis.moveToPoint(40, 5, 1000);
+    chassis.moveToPoint(40, -10, 1000);
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(50, -10, 1000, {.forwards = true});
+    chassis.turnToHeading(180, 1000);
+    chassis.moveToPoint(50, -20, 1000);
+    clamp.set_value(HIGH);
+    
+
+
+     
+}
+
+
 
 
 void autonomous() {
