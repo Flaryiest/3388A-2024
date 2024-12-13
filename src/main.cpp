@@ -53,15 +53,15 @@ lemlib::ControllerSettings lateral_controller(10,
                                               20
 );
 
-lemlib::ControllerSettings angular_controller(2, // proportional gain (kP)
-                                              0.0015, // integral gain (kI)
-                                              10, // derivative gain (kD)
-                                              3, // anti windup
-                                              1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
-                                              0 // maximum acceleration (slew)
+lemlib::ControllerSettings angular_controller(2,
+                                              0.0015,
+                                              10,
+                                              3,
+                                              1,
+                                              100,
+                                              3,
+                                              500,
+                                              0
 );
 
 lemlib::Chassis chassis(drivetrain,
@@ -148,6 +148,8 @@ void rightAutonomous() {
 }
 
 void skillsAutonomous() {
+    int lineOneY = -15;
+    int lineTwoY = -40;
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
     ladyBrown.move(127);
@@ -155,28 +157,27 @@ void skillsAutonomous() {
     ladyBrown.move(-127);
     pros::delay(200);
     ladyBrown.move(10);
-    chassis.moveToPoint(0,-15, 2000, {.forwards = false, .maxSpeed = 127});
+    chassis.moveToPoint(0, lineOneY, 2000, {.forwards = false, .maxSpeed = 127});
     chassis.turnToHeading(270, 1000);
-    chassis.moveToPoint(25, -15, 2000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(25, lineOneY, 2000, {.forwards = false, .maxSpeed = 100});
     clamp.set_value(LOW);
     pros::delay(100);
     chassis.turnToHeading(180, 1000);
     intake.move(127);
-    chassis.moveToPoint(25, -40, 1000, {.forwards = true, .maxSpeed = 127});
+    chassis.moveToPoint(25, lineTwoY, 1000, {.forwards = true, .maxSpeed = 127});
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(40, -40, 1000);
+    chassis.moveToPoint(40, lineTwoY, 1000);
     chassis.turnToHeading(0, 1000);
     chassis.moveToPoint(40, 5, 1000);
-    chassis.moveToPoint(40, -10, 1000);
+    chassis.moveToPoint(40, lineOneY, 1000);
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(50, -10, 1000, {.forwards = true});
+    chassis.moveToPoint(50, lineOneY, 1000, {.forwards = true});
     chassis.turnToHeading(180, 1000);
     chassis.moveToPoint(50, -20, 1000);
     clamp.set_value(HIGH);
+    chassis.moveToPoint(0, 0, 1000, {.forwards = true, .maxSpeed = 127});
     
-
-
-     
+  
 }
 
 
@@ -200,9 +201,10 @@ void opcontrol() {
     bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
     bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 
-    bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-    bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-    bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+    bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+    bool ladyBrownReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
+    bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+    bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
 
     wallstake_sensor.set_signature(1, &red_ring_sig);
     wallstake_sensor.set_signature(2, &blue_ring_sig);
@@ -230,8 +232,11 @@ void opcontrol() {
 
         if (ladyBrownButton) {
             ladyBrownState = !ladyBrownState;
-            ladyBrown.move(ladyBrownState ? -127 : 127);
-            pros::delay(100);
+            ladyBrown.move(127);
+
+        }
+        if (ladyBrownReverseButton) {
+            ladyBrown.move(-127)
         }
         if (ladyBrownHoverButton) {
             ladyBrown.move(15);
@@ -254,8 +259,7 @@ void opcontrol() {
                     intake.move(0);
                     loading = false;
                 }
-
-            pros::delay(50);
+            pros::delay(25);
             }
             
         }
