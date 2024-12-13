@@ -192,24 +192,24 @@ void opcontrol() {
     bool clampState = false;
     bool ladyBrownState = false;
 
-    int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-
-    bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-    bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
-
-    bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-    bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
-
-    bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
-    bool ladyBrownReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-    bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-    bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
-
-    wallstake_sensor.set_signature(1, &red_ring_sig);
-    wallstake_sensor.set_signature(2, &blue_ring_sig);
 
     while (true) {
+        bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+        bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+
+        bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+
+        bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+        bool ladyBrownReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
+        bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+        bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+
+        wallstake_sensor.set_signature(1, &red_ring_sig);
+        wallstake_sensor.set_signature(2, &blue_ring_sig);
+        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
         if (intakeButton) {
             intake.move(127);
         } else if (intakeReverseButton) {
@@ -236,35 +236,36 @@ void opcontrol() {
 
         }
         if (ladyBrownReverseButton) {
-            ladyBrown.move(-127)
+            ladyBrown.move(-127);
         }
+
         if (ladyBrownHoverButton) {
             ladyBrown.move(15);
             pros::delay(100);
         }
 
-        if (ladyBrownLoadButton) {
-            pros::delay(50);
-            bool loading = true;
-            while (loading) {
-                auto red_object = wallstake_sensor.get_by_sig(0, 1);
-                auto blue_object = wallstake_sensor.get_by_sig(0, 2);
-                if ((red_object.width < 1 || blue_object.width < 1)) {
-                    intake.move(127);
-                    }
-                else if (ladyBrownLoadButton) {
-                    loading = false;
-                } 
-                else {
-                    intake.move(0);
-                    loading = false;
-                }
-            pros::delay(25);
-            }
-            
-        }
+        // if (ladyBrownLoadButton) {
+        //     pros::delay(50);
+        //     bool loading = true;
+        //     while (loading) {
+        //         auto red_object = wallstake_sensor.get_by_sig(0, 1);
+        //         auto blue_object = wallstake_sensor.get_by_sig(0, 2);
+        //         if ((red_object.width < 1 || blue_object.width < 1)) {
+        //             intake.move(127);
+        //             }
+        //         else if (ladyBrownLoadButton) {
+        //             loading = false;
+        //         } 
+        //         else {
+        //             intake.move(0);
+        //             loading = false;
+        //         }
+        //     pros::delay(25);
+        //     }    
+        // }
 
         chassis.arcade(leftY, rightX);
+        pros::lcd::print(1, "SWAG");
         pros::delay(25);
     }
 }
