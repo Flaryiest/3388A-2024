@@ -230,40 +230,6 @@ void opcontrol() {
             pros::delay(200);
         }
 
-        if (ladyBrownButton) {
-            ladyBrownState = !ladyBrownState;
-            ladyBrown.move(127);
-
-        }
-        if (ladyBrownReverseButton) {
-            ladyBrown.move(-127);
-        }
-
-        if (ladyBrownHoverButton) {
-            ladyBrown.move(15);
-            pros::delay(100);
-        }
-
-        // if (ladyBrownLoadButton) {
-        //     pros::delay(50);
-        //     bool loading = true;
-        //     while (loading) {
-        //         auto red_object = wallstake_sensor.get_by_sig(0, 1);
-        //         auto blue_object = wallstake_sensor.get_by_sig(0, 2);
-        //         if ((red_object.width < 1 || blue_object.width < 1)) {
-        //             intake.move(127);
-        //             }
-        //         else if (ladyBrownLoadButton) {
-        //             loading = false;
-        //         } 
-        //         else {
-        //             intake.move(0);
-        //             loading = false;
-        //         }
-        //     pros::delay(25);
-        //     }    
-        // }
-
         chassis.arcade(leftY, rightX);
         pros::lcd::print(1, "SWAG");
         pros::delay(25);
