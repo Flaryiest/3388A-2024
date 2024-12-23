@@ -32,7 +32,7 @@ lemlib::Drivetrain drivetrain(&left_motors,
                               2
 );
 
-pros::Imu imu(3);
+pros::Imu imu(5);
 
 lemlib::OdomSensors sensors(nullptr,
                             nullptr,
@@ -95,16 +95,16 @@ void competition_initialize() {}
 void rightAutonomous() {
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
-    chassis.moveToPoint(0, -18.0, 2000, {.forwards = false, .maxSpeed = 50});
-    chassis.moveToPoint(0, -26.0, 2000, {.forwards = false, .maxSpeed = 15});
-    pros::delay(1000); 
+    chassis.moveToPoint(0, -18.0, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.moveToPoint(0, -25.0, 2000, {.forwards = false, .maxSpeed = 20});
+    pros::delay(300); 
     clamp.set_value(LOW);
     pros::delay(500);
     intake.move(127);
     pros::delay(1200);
-    chassis.moveToPoint(0, -33, 2000, {.forwards = false, .maxSpeed = 90});
+    chassis.moveToPoint(0, -29, 2000, {.forwards = false, .maxSpeed = 90});
     chassis.turnToHeading(270, 1000);
-    chassis.moveToPoint(-40, -33, 2000, {.forwards = true, .maxSpeed = 40});
+    chassis.moveToPoint(-40, -29, 2000, {.forwards = true, .maxSpeed = 40});
     pros::delay(3000);
     intake.move(0);
 }
@@ -163,28 +163,33 @@ void skillsAutonomous() {
     int lineTwoY = -40;
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
-    chassis.moveToPoint(0, lineOneY, 2000, {.forwards = false, .maxSpeed = 127});
+    chassis.moveToPoint(0, -10, 2000, {.forwards = false, .maxSpeed = 127});
     clamp.set_value(LOW);
-    pros::delay(200);
-    chassis.turnToHeading(270, 1000);
-    chassis.moveToPoint(50, lineOneY, 2000, {.forwards = true, .maxSpeed = 100});
-    pros::delay(100);
-    chassis.turnToHeading(180, 1000);
     intake.move(127);
-    chassis.moveToPoint(25, lineTwoY, 1000, {.forwards = true, .maxSpeed = 127});
-    chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(40, lineTwoY, 1000);
-    chassis.turnToHeading(0, 1000);
-    chassis.moveToPoint(40, 5, 1000);
-    chassis.moveToPoint(40, lineOneY, 1000);
-    chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(50, lineOneY, 1000, {.forwards = true});
-    chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(50, -20, 1000);
+    // pros::delay(200);
+    // chassis.turnToHeading(270, 1000);
+    // chassis.moveToPoint(50, lineOneY, 2000, {.forwards = true, .maxSpeed = 100});
+    // pros::delay(100);
+    // chassis.turnToHeading(180, 1000);
+    // intake.move(127);
+    // chassis.moveToPoint(25, lineTwoY, 1000, {.forwards = true, .maxSpeed = 127});
+    // chassis.turnToHeading(90, 1000);
+    // chassis.moveToPoint(40, lineTwoY, 1000);
+    // chassis.turnToHeading(0, 1000);
+    // chassis.moveToPoint(40, 5, 1000);
+    // chassis.moveToPoint(40, lineOneY, 1000);
+    // chassis.turnToHeading(90, 1000);
+    // chassis.moveToPoint(50, lineOneY, 1000, {.forwards = true});
+    // chassis.turnToHeading(180, 1000);
+    // chassis.moveToPoint(50, -20, 1000);
+    // clamp.set_value(HIGH);
+    // chassis.moveToPoint(0, 0, 1000, {.forwards = true, .maxSpeed = 127}); 
+}
+
+void kSoloCarryAuton() {
+    chassis.setPose(0, 0 , 0);
     clamp.set_value(HIGH);
-    chassis.moveToPoint(0, 0, 1000, {.forwards = true, .maxSpeed = 127});
-    
-  
+    chassis.moveToPoint(0, -15, 2000, {.forwards = false});
 }
 
 
