@@ -1,5 +1,5 @@
 #include "main.h"
-#include "lemlib/api.hpp"
+#include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/vision.h"
@@ -8,13 +8,13 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_motors({-6, -20, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({12, 16, 19}, pros::MotorGearset::blue);
-pros::Motor intake(-4, pros::MotorGearset::green);
+pros::Motor intake(-4, pros::MotorGearset::blue);
 pros::adi::DigitalOut clamp('A', false);
 pros::adi::DigitalOut wing('B', false);
 pros::Vision wallstake_sensor (17);
 pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1, 255, 307, 281, -355, -243, -299, 3.0, 0);
 pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
-lemlib::ExpoDriveCurve throttle_curve(3,
+lemlib::ExpoDriveCurve throttle_curve(20,
                                      10,
                                      1.019 
 );
