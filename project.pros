@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "3388A-HighStakes",
+    "project_name": "I love robotics!!!",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -299,7 +299,8 @@
     },
     "upload_options": {
       "icon": "pizza",
-      "description": "Swag"
+      "description": "Hi",
+      "slot": 3
     },
     "use_early_access": false
   }

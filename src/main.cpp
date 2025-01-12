@@ -2,6 +2,7 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/rotation.hpp"
 #include "pros/vision.h"
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -9,11 +10,13 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup left_motors({-6, -20, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({12, 16, 19}, pros::MotorGearset::blue);
 pros::Motor intake(-4, pros::MotorGearset::blue);
+pros::Motor ladyBrown(14, pros::MotorGearset::red);
 pros::adi::DigitalOut clamp('A', false);
 pros::adi::DigitalOut wing('B', false);
 pros::Vision wallstake_sensor (17);
 pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1, 255, 307, 281, -355, -243, -299, 3.0, 0);
 pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
+pros::Rotation ladyBrownRotation(9);
 lemlib::ExpoDriveCurve throttle_curve(20,
                                      10,
                                      1.019 
@@ -86,6 +89,7 @@ void initialize() {
 	chassis.calibrate();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
     pros::lcd::print(0, "Testing");
+
 }
 
 void disabled() {}
@@ -95,18 +99,17 @@ void competition_initialize() {}
 void rightAutonomous() {
     chassis.setPose(0, 0, 0);
     clamp.set_value(HIGH);
-    chassis.moveToPoint(0, -18.0, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
-    chassis.moveToPoint(0, -25.0, 2000, {.forwards = false, .maxSpeed = 20});
-    pros::delay(300); 
+    chassis.moveToPoint(0, -26.0, 2000, {.forwards = false, .maxSpeed = 30, .minSpeed = 10, .earlyExitRange = 0.01});
+    pros::delay(4000); 
     clamp.set_value(LOW);
     pros::delay(500);
     intake.move(127);
     pros::delay(1200);
-    chassis.moveToPoint(0, -29, 2000, {.forwards = false, .maxSpeed = 90});
+/*     chassis.moveToPoint(0, -29, 2000, {.forwards = false, .maxSpeed = 90});
     chassis.turnToHeading(270, 1000);
     chassis.moveToPoint(-40, -29, 2000, {.forwards = true, .maxSpeed = 40});
     pros::delay(3000);
-    intake.move(0);
+    intake.move(0); */
 }
    
     // clamp.set_value(LOW);
@@ -203,7 +206,8 @@ void opcontrol() {
     bool wingState = false;
     bool clampState = false;
     bool ladyBrownState = false;
-
+    bool ladyBrownLoad= false;
+    bool ladyBrownHover = false;
 
     while (true) {
         bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
@@ -214,8 +218,8 @@ void opcontrol() {
 
         bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
         bool ladyBrownReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-        bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-        bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+        bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+        bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
 
         wallstake_sensor.set_signature(1, &red_ring_sig);
         wallstake_sensor.set_signature(2, &blue_ring_sig);
@@ -242,8 +246,51 @@ void opcontrol() {
             pros::delay(200);
         }
 
+        if (ladyBrownLoadButton) {
+            ladyBrownLoad = !ladyBrownLoad;
+        }
+        if (ladyBrownHoverButton) {
+            ladyBrownHover = !ladyBrownHover;
+        }
+        
+        if (ladyBrownHover && !(ladyBrownButton) && !(ladyBrownReverseButton)) {
+            if (2000 < ladyBrownRotation.get_angle() && ladyBrownRotation.get_angle() < 2500) {
+                ladyBrown.move(10);
+            }
+            else if (ladyBrownRotation.get_angle() > 2500) {
+                ladyBrown.move(-50);
+            }
+            else {
+                ladyBrown.move(50);
+            }
+        }
+
+        else if (ladyBrownLoad && !(ladyBrownButton) && !(ladyBrownReverseButton)) {
+            if (1000 < ladyBrownRotation.get_angle() && ladyBrownRotation.get_angle() < 1800) {
+                ladyBrown.move(10);
+            }
+            else if (ladyBrownRotation.get_angle() > 1800) {
+                ladyBrown.move(-50);
+            }
+            else {
+                ladyBrown.move(50);
+            }
+        }
+
+        if (!(ladyBrownButton || ladyBrownReverseButton || ladyBrownLoad || ladyBrownHover)) {
+            ladyBrown.move(0);
+        }
+
+        if (ladyBrownButton) {
+            ladyBrown.move(127);
+        }
+
+        if (ladyBrownReverseButton) {
+            ladyBrown.move(-127);
+        }
+
         chassis.arcade(leftY, rightX);
-        pros::lcd::print(1, "SWAG");
+        pros::lcd::print(1, "SWAGALICIOUS");
         pros::delay(25);
     }
 }
