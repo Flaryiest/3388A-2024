@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "I love robotics!!!",
+    "project_name": "UwU",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -298,9 +298,9 @@
       }
     },
     "upload_options": {
-      "icon": "pizza",
-      "description": "Hi",
-      "slot": 3
+      "icon": "power",
+      "description": "OHNOOO I didn't mean to excwude you fwom the lil' puppo pawty we're hawing ;_; someone voted fow dis!!!1 You can still AWOOOOO ",
+      "slot": 1
     },
     "use_early_access": false
   }

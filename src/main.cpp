@@ -3,6 +3,7 @@
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/rotation.hpp"
+#include "pros/rtos.hpp"
 #include "pros/vision.h"
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
@@ -84,11 +85,13 @@ void on_center_button() {
 	}
 }
 
-void initialize() {
-	pros::lcd::initialize();
+void initialize() { 
+    pros::delay(200);
+	if (pros::lcd::initialize()) {
 	chassis.calibrate();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
-    pros::lcd::print(0, "Testing");
+    pros::lcd::set_text(1, "Waiting for checking and initialize!");
+    }
 
 }
 
@@ -202,6 +205,8 @@ void autonomous() {
     rightAutonomous();
 }
 
+
+
 void opcontrol() {
     bool wingState = false;
     bool clampState = false;
@@ -226,6 +231,9 @@ void opcontrol() {
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
+        pros::vision_object_s_t rtn = wallstake_sensor.get_by_size(0);
+        std::cout << "sig: " << rtn.signature;
+        
         if (intakeButton) {
             intake.move(127);
         } else if (intakeReverseButton) {
@@ -290,7 +298,7 @@ void opcontrol() {
         }
 
         chassis.arcade(leftY, rightX);
-        pros::lcd::print(1, "SWAGALICIOUS");
+        pros::lcd::print(6, "SWAGALICIOUS");
         pros::delay(25);
     }
 }
