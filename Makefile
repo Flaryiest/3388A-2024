@@ -17,7 +17,7 @@ EXTRA_CFLAGS=
 EXTRA_CXXFLAGS=
 
 # Set to 1 to enable hot/cold linking
-USE_PACKAGE:=0
+USE_PACKAGE:=1
 
 # Add libraries you do not wish to include in the cold image here
 EXCLUDE_COLD_LIBRARIES:= 
@@ -25,7 +25,7 @@ EXCLUDE_COLD_LIBRARIES:=
 # Add libraries you do not wish to include in the hot image here
 EXCLUDE_HOT_LIBRARIES:= 
 # Set this to 1 to add additional rules to compile your project as a PROS library template
-IS_LIBRARY:=1
+IS_LIBRARY:=0
 # TODO: CHANGE THIS! 
 # Be sure that your header files are in the include directory inside of a folder with the
 # same name as what you set LIBNAME to below.
