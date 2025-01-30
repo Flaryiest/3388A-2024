@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "UwU",
+    "project_name": "Fuwwy",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -298,8 +298,8 @@
       }
     },
     "upload_options": {
-      "icon": "power",
-      "description": "OHNOOO I didn't mean to excwude you fwom the lil' puppo pawty we're hawing ;_; someone voted fow dis!!!1 You can still AWOOOOO ",
+      "icon": "planet",
+      "description": "AWOOOOOO",
       "slot": 1
     },
     "use_early_access": false

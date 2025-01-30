@@ -8,16 +8,16 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-6, -20, -17}, pros::MotorGearset::blue);
-pros::MotorGroup right_motors({12, 16, 19}, pros::MotorGearset::blue);
-pros::Motor intake(-4, pros::MotorGearset::blue);
-pros::Motor ladyBrown(14, pros::MotorGearset::red);
+pros::MotorGroup left_motors({-6, -7, -8}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
+pros::Motor intake(4, pros::MotorGearset::blue);
+pros::Motor ladyBrown(1, pros::MotorGearset::red);
 pros::adi::DigitalOut clamp('A', false);
 pros::adi::DigitalOut wing('B', false);
-pros::Vision wallstake_sensor (17);
+pros::Vision wallstake_sensor (2);
 pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1, 255, 307, 281, -355, -243, -299, 3.0, 0);
 pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
-pros::Rotation ladyBrownRotation(9);
+pros::Rotation ladyBrownRotation(3);
 lemlib::ExpoDriveCurve throttle_curve(20,
                                      10,
                                      1.019 
@@ -36,7 +36,7 @@ lemlib::Drivetrain drivetrain(&left_motors,
                               2
 );
 
-pros::Imu imu(5);
+pros::Imu imu(2);
 
 lemlib::OdomSensors sensors(nullptr,
                             nullptr,
