@@ -87,10 +87,12 @@ void on_center_button() {
 
 void initialize() { 
     pros::delay(200);
-    pros::lcd::initialize();
+	if (pros::lcd::initialize()) {
 	chassis.calibrate();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
     pros::lcd::set_text(1, "Waiting for checking and initialize!");
+    }
+
 }
 
 void disabled() {}
