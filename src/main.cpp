@@ -8,7 +8,7 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-6, -7, -8}, pros::MotorGearset::blue);
+pros::MotorGroup left_motors({-6, -7, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
 pros::Motor intake(4, pros::MotorGearset::blue);
 pros::Motor ladyBrown(1, pros::MotorGearset::red);
