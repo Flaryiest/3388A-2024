@@ -209,10 +209,7 @@ void autonomous() {
 void opcontrol() {
     bool wingState = false;
     bool clampState = false;
-    bool ladyBrownState = false;
-    bool ladyBrownLoad= false;
-    bool ladyBrownHover = false;
-
+    int ladyBrownStage = 1;
     while (true) {
         bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -220,10 +217,7 @@ void opcontrol() {
         bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
         bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 
-        bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
-        bool ladyBrownReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-        bool ladyBrownLoadButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
-        bool ladyBrownHoverButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+        bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
 
         wallstake_sensor.set_signature(1, &red_ring_sig);
         wallstake_sensor.set_signature(2, &blue_ring_sig);
@@ -253,51 +247,54 @@ void opcontrol() {
             pros::delay(200);
         }
 
-        if (ladyBrownLoadButton) {
-            ladyBrownLoad = !ladyBrownLoad;
-        }
-        if (ladyBrownHoverButton) {
-            ladyBrownHover = !ladyBrownHover;
+        if (ladyBrownButton) {
+            if (ladyBrownStage < 3) {
+                ladyBrownStage++;
+            }
+            else {
+                ladyBrownStage = 1;
+            }
         }
         
-        if (ladyBrownHover && !(ladyBrownButton) && !(ladyBrownReverseButton)) {
-            if (2000 < ladyBrownRotation.get_angle() && ladyBrownRotation.get_angle() < 2500) {
-                ladyBrown.move(10);
-            }
-            else if (ladyBrownRotation.get_angle() > 2500) {
-                ladyBrown.move(-50);
-            }
-            else {
-                ladyBrown.move(50);
-            }
-        }
-
-        else if (ladyBrownLoad && !(ladyBrownButton) && !(ladyBrownReverseButton)) {
-            if (1000 < ladyBrownRotation.get_angle() && ladyBrownRotation.get_angle() < 1800) {
-                ladyBrown.move(10);
-            }
-            else if (ladyBrownRotation.get_angle() > 1800) {
-                ladyBrown.move(-50);
-            }
-            else {
-                ladyBrown.move(50);
+        if (ladyBrownStage == 1) {
+            if (ladyBrownRotation.get_angle() < 1800 && ladyBrownRotation.get_angle() > 1400) {
+                ladyBrown.brake();
+            } else {
+                if (ladyBrownRotation.get_angle() < 1400) {
+                    ladyBrown.move(127);
+                } 
+                else {
+                    ladyBrown.move(-127);
+                }
             }
         }
-
-        if (!(ladyBrownButton || ladyBrownReverseButton || ladyBrownLoad || ladyBrownHover)) {
-            ladyBrown.move(0);
+        if (ladyBrownStage == 2) {
+            if (ladyBrownRotation.get_angle() < 4000 && ladyBrownRotation.get_angle() > 3000) {
+                ladyBrown.brake();
+            } else {
+                if (ladyBrownRotation.get_angle() < 3000) {
+                    ladyBrown.move(127);
+                } 
+                else {
+                    ladyBrown.move(-127);
+                }
+            }
         }
-
-        if (ladyBrownButton) {
-            ladyBrown.move(127);
-        }
-
-        if (ladyBrownReverseButton) {
-            ladyBrown.move(-127);
+        if (ladyBrownStage == 3) {
+            if (ladyBrownRotation.get_angle() < 18000 && ladyBrownRotation.get_angle() > 17000) {
+                ladyBrown.brake();
+            } else {
+                if (ladyBrownRotation.get_angle() < 17000) {
+                    ladyBrown.move(127);
+                } 
+                else {
+                    ladyBrown.move(-127);
+                }
+            }
         }
 
         chassis.arcade(leftY, rightX);
         pros::lcd::print(6, "SWAGALICIOUS");
-        pros::delay(25);
+        pros::delay(10);
     }
 }
