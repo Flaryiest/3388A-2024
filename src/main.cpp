@@ -98,69 +98,20 @@ void disabled() {}
 
 void competition_initialize() {}
 
-void rightAutonomous() {
-    chassis.setPose(0, 0, 0);
-    clamp.set_value(HIGH);
-    chassis.moveToPoint(0, -26.0, 2000, {.forwards = false, .maxSpeed = 30, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(4000); 
-    clamp.set_value(LOW);
-    pros::delay(500);
-    intake.move(127);
-    pros::delay(1200);
-/*     chassis.moveToPoint(0, -29, 2000, {.forwards = false, .maxSpeed = 90});
-    chassis.turnToHeading(270, 1000);
-    chassis.moveToPoint(-40, -29, 2000, {.forwards = true, .maxSpeed = 40});
-    pros::delay(3000);
-    intake.move(0); */
-}
-   
-    // clamp.set_value(LOW);
-    // chassis.moveToPoint(0, -23, 2000, {.forwards = false, .maxSpeed = 80});
-    // clamp.set_value(LOW);
-    // pros::delay(500);
-    // chassis.moveToPoint(5, -40, 2000, {.forwards = true, .maxSpeed = 100});
-    // intake.move(127);
-    // pros::delay(1000);
-    // clamp.set_value(HIGH);
-    // pros::delay(5000);
-    // clamp.set_value(LOW);
-    
-    //chassis.moveToPoint(30, -40, 2000, {.forwards = true, .maxSpeed = 100});
-    // chassis.moveToPoint(-5, 42, 2000, {.forwards = false, .maxSpeed = 80 });
-    // chassis.moveToPoint(-17, 30, 2000, {.maxSpeed = 80});
-    // chassis.moveToPoint(0, 5, 2000, {.maxSpeed = 127});
-    // chassis.turnToHeading(90, 1000);
-    // clamp.set_value(HIGH);
-    // chassis.moveToPoint(20, 5, 2000, {.maxSpeed = 20});
-    // intake.move(0);
-    // chassis.turnToHeading(320, 1000);
-    // chassis.moveToPoint(30, 20, 2000);
-    // clamp.set_value(LOW);
-    // intake.move(127);
-    // chassis.turnToHeading(90, 1000);
-    // chassis.moveToPoint(50, 20, 2000, {.maxSpeed = 20});
-    // chassis.moveToPoint(30, 20, 2000, {.forwards = false, .maxSpeed = 127});
-    // chassis.moveToPoint(30, 45, 2000, {.forwards = true, .maxSpeed = 127});
-    // intake.move(0);
+void redSideRightAutonomous() {
 
-void leftAutonomous() {
-    chassis.setPose(0, 0, 0);
-    clamp.set_value(HIGH);
-    chassis.turnToHeading(179, 1000);
-    chassis.moveToPoint(0, 23, 2000, {.forwards = false, .maxSpeed = 127});
-    clamp.set_value(LOW);
-    intake.move(127);
-    chassis.turnToHeading(320, 1000);
-    pros::delay(500);
-    clamp.set_value(HIGH);
-    chassis.moveToPoint(20, 44, 2000, {.forwards = false, .maxSpeed = 100});
-    clamp.set_value(LOW);
-    chassis.moveToPoint(0, 23, 2000, {.maxSpeed = 127});
-    chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(30, 23, 2000, {.forwards = true, .maxSpeed = 127});
-    chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-20, 23, 1000);
-    intake.move(0);
+}
+
+void redSideLeftAutonomous() {
+
+}
+
+void blueSideRightAutonomous() {
+
+}
+
+void blueSideLeftAutonomous() {
+
 }
 
 void skillsAutonomous() {
@@ -171,37 +122,9 @@ void skillsAutonomous() {
     chassis.moveToPoint(0, -10, 2000, {.forwards = false, .maxSpeed = 127});
     clamp.set_value(LOW);
     intake.move(127);
-    // pros::delay(200);
-    // chassis.turnToHeading(270, 1000);
-    // chassis.moveToPoint(50, lineOneY, 2000, {.forwards = true, .maxSpeed = 100});
-    // pros::delay(100);
-    // chassis.turnToHeading(180, 1000);
-    // intake.move(127);
-    // chassis.moveToPoint(25, lineTwoY, 1000, {.forwards = true, .maxSpeed = 127});
-    // chassis.turnToHeading(90, 1000);
-    // chassis.moveToPoint(40, lineTwoY, 1000);
-    // chassis.turnToHeading(0, 1000);
-    // chassis.moveToPoint(40, 5, 1000);
-    // chassis.moveToPoint(40, lineOneY, 1000);
-    // chassis.turnToHeading(90, 1000);
-    // chassis.moveToPoint(50, lineOneY, 1000, {.forwards = true});
-    // chassis.turnToHeading(180, 1000);
-    // chassis.moveToPoint(50, -20, 1000);
-    // clamp.set_value(HIGH);
-    // chassis.moveToPoint(0, 0, 1000, {.forwards = true, .maxSpeed = 127}); 
 }
-
-void kSoloCarryAuton() {
-    chassis.setPose(0, 0 , 0);
-    clamp.set_value(HIGH);
-    chassis.moveToPoint(0, -15, 2000, {.forwards = false});
-}
-
-
-
 
 void autonomous() {
-    rightAutonomous();
 }
 
 
