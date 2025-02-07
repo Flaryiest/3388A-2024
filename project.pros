@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Fuwwy",
+    "project_name": "3388Hao",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -300,7 +300,7 @@
     "upload_options": {
       "icon": "planet",
       "description": "AWOOOOOO",
-      "slot": 1
+      "slot": 2
     },
     "use_early_access": false
   }

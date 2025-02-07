@@ -86,10 +86,13 @@ void on_center_button() {
 }
 
 void initialize() { 
-    pros::delay(200);
+    pros::delay(100);
     pros::lcd::initialize();
 	chassis.calibrate();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
+    ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    ladyBrownRotation.set_data_rate(5);
+    pros::c::motor_set_brake_mode(1, pros::E_MOTOR_BRAKE_HOLD);
     pros::lcd::set_text(1, "Waiting for checking and initialize!");
 
 }
@@ -161,13 +164,13 @@ void opcontrol() {
         if (clampButton) {
             clampState = !clampState;
             clamp.set_value(clampState ? HIGH : LOW);
-            pros::delay(200);
+            pros::delay(100);
         }
 
         if (wingButton) {
             wingState = !wingState;
             wing.set_value(wingState ? HIGH : LOW);
-            pros::delay(200);
+            pros::delay(100);
         }
 
         if (ladyBrownButton) {
@@ -177,47 +180,49 @@ void opcontrol() {
             else {
                 ladyBrownStage = 1;
             }
+            pros::delay(50);
         }
         
         if (ladyBrownStage == 1) {
-            if (ladyBrownRotation.get_angle() < 1800 && ladyBrownRotation.get_angle() > 1400) {
-                ladyBrown.brake();
-            } else {
-                if (ladyBrownRotation.get_angle() < 1400) {
-                    ladyBrown.move(127);
+            if (ladyBrownRotation.get_position() > 300 && ladyBrownRotation.get_position() < 1000) {
+                ladyBrown.move_velocity(0);
+            } 
+            else {
+                if (ladyBrownRotation.get_angle() < 250 || (ladyBrownRotation.get_angle()  > 35000)) {
+                    ladyBrown.move_velocity(-50);
                 } 
                 else {
-                    ladyBrown.move(-127);
+                    ladyBrown.move_velocity(50);
                 }
             }
         }
-        if (ladyBrownStage == 2) {
-            if (ladyBrownRotation.get_angle() < 4000 && ladyBrownRotation.get_angle() > 3000) {
-                ladyBrown.brake();
+        else if (ladyBrownStage == 2) {
+            if (ladyBrownRotation.get_angle() > 2500 && ladyBrownRotation.get_angle() < 3500) {
+                ladyBrown.move_velocity(0);
             } else {
-                if (ladyBrownRotation.get_angle() < 3000) {
-                    ladyBrown.move(127);
+                if (ladyBrownRotation.get_angle() < 1500) {
+                    ladyBrown.move(-100);
                 } 
                 else {
-                    ladyBrown.move(-127);
+                    ladyBrown.move(100);
                 }
             }
         }
-        if (ladyBrownStage == 3) {
-            if (ladyBrownRotation.get_angle() < 18000 && ladyBrownRotation.get_angle() > 17000) {
-                ladyBrown.brake();
+        else if (ladyBrownStage == 3) {
+            if (ladyBrownRotation.get_angle() > 15000 && ladyBrownRotation.get_angle() < 16500) {
+                ladyBrown.move_velocity(0);
             } else {
-                if (ladyBrownRotation.get_angle() < 17000) {
-                    ladyBrown.move(127);
+                if (ladyBrownRotation.get_angle() < 15000) {
+                    ladyBrown.move(-127);
                 } 
                 else {
-                    ladyBrown.move(-127);
+                    ladyBrown.move(127);
                 }
             }
         }
 
         chassis.arcade(leftY, rightX);
         pros::lcd::print(6, "SWAGALICIOUS");
-        pros::delay(10);
+        pros::delay(5);
     }
 }
