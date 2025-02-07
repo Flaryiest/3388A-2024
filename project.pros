@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "3388Adonia",
+    "project_name": "3388Adoniaa",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -300,7 +300,7 @@
     "upload_options": {
       "icon": "power",
       "description": "AWOOOOOO",
-      "slot": 1
+      "slot": 3
     },
     "use_early_access": false
   }
