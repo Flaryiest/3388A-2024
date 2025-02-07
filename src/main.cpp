@@ -182,11 +182,11 @@ void opcontrol() {
             else {
                 ladyBrownStage = 1;
             }
-            pros::delay(100);
+            pros::delay(50);
         }
         
         if (ladyBrownStage == 1) {
-            if (ladyBrownRotation.get_position() > 300 && ladyBrownRotation.get_position() < 1000) {
+            if (ladyBrownRotation.get_position() > 200 && ladyBrownRotation.get_position() < 1100) {
                 ladyBrown.move_velocity(0);
             } 
             else {
@@ -211,7 +211,7 @@ void opcontrol() {
             }
         }
         else if (ladyBrownStage == 3) {
-            if (ladyBrownRotation.get_angle() > 15000 && ladyBrownRotation.get_angle() < 16500) {
+            if (ladyBrownRotation.get_angle() > 15000 && ladyBrownRotation.get_angle() < 17000) {
                 ladyBrown.move_velocity(0);
             } else {
                 if (ladyBrownRotation.get_angle() < 15000) {
