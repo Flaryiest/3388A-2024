@@ -92,9 +92,6 @@ void initialize() {
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
     ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     ladyBrownRotation.set_data_rate(5);
-    ladyBrownRotation.reset_position();
-    ladyBrownRotation.set_reversed(true);
-    
     pros::c::motor_set_brake_mode(1, pros::E_MOTOR_BRAKE_HOLD);
     pros::lcd::set_text(1, "Waiting for checking and initialize!");
 
@@ -177,25 +174,22 @@ void opcontrol() {
         }
 
         if (ladyBrownButton) {
-            if (ladyBrownStage == 1) {
-                ladyBrownStage = 2;
+            if (ladyBrownStage < 3) {
+                ladyBrownStage++;
             }
-            else if (ladyBrownStage == 2) {
-                ladyBrownStage = 3;
-            }
-            else if (ladyBrownStage == 3) {
+            else {
                 ladyBrownStage = 1;
             }
-            pros::delay(100);
+            pros::delay(50);
         }
         
         if (ladyBrownStage == 1) {
-            if (ladyBrownRotation.get_position() > 300 && ladyBrownRotation.get_position() < 1500) {
+            if (ladyBrownRotation.get_position() > 300 && ladyBrownRotation.get_position() < 1000) {
                 ladyBrown.move_velocity(0);
             } 
             else {
-                if (ladyBrownRotation.get_angle() < 250 || ladyBrownRotation.get_angle()  > 35000) {
-                    ladyBrown.move_velocity(-127);
+                if (ladyBrownRotation.get_angle() < 250 || (ladyBrownRotation.get_angle()  > 35000)) {
+                    ladyBrown.move_velocity(-50);
                 } 
                 else {
                     ladyBrown.move_velocity(50);
@@ -203,14 +197,14 @@ void opcontrol() {
             }
         }
         else if (ladyBrownStage == 2) {
-            if (ladyBrownRotation.get_angle() > 2500 && ladyBrownRotation.get_angle() < 4000) {
+            if (ladyBrownRotation.get_angle() > 2500 && ladyBrownRotation.get_angle() < 3500) {
                 ladyBrown.move_velocity(0);
             } else {
-                if (ladyBrownRotation.get_angle() < 2500) {
-                    ladyBrown.move(-50);
+                if (ladyBrownRotation.get_angle() < 1500) {
+                    ladyBrown.move(-100);
                 } 
                 else {
-                    ladyBrown.move(50);
+                    ladyBrown.move(100);
                 }
             }
         }
@@ -219,10 +213,10 @@ void opcontrol() {
                 ladyBrown.move_velocity(0);
             } else {
                 if (ladyBrownRotation.get_angle() < 15000) {
-                    ladyBrown.move(-100);
+                    ladyBrown.move(-127);
                 } 
                 else {
-                    ladyBrown.move(100);
+                    ladyBrown.move(127);
                 }
             }
         }
