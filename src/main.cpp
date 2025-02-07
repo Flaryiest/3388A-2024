@@ -92,6 +92,8 @@ void initialize() {
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
     ladyBrown.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     ladyBrownRotation.set_data_rate(5);
+    ladyBrownRotation.set_reversed(true);
+    ladyBrownRotation.set_position(0);
     pros::c::motor_set_brake_mode(1, pros::E_MOTOR_BRAKE_HOLD);
     pros::lcd::set_text(1, "Waiting for checking and initialize!");
 
@@ -201,10 +203,10 @@ void opcontrol() {
                 ladyBrown.move_velocity(0);
             } else {
                 if (ladyBrownRotation.get_angle() < 1500) {
-                    ladyBrown.move(-100);
+                    ladyBrown.move(-50);
                 } 
                 else {
-                    ladyBrown.move(100);
+                    ladyBrown.move(50);
                 }
             }
         }
@@ -213,10 +215,10 @@ void opcontrol() {
                 ladyBrown.move_velocity(0);
             } else {
                 if (ladyBrownRotation.get_angle() < 15000) {
-                    ladyBrown.move(-127);
+                    ladyBrown.move(-70);
                 } 
                 else {
-                    ladyBrown.move(127);
+                    ladyBrown.move(70);
                 }
             }
         }
