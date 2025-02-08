@@ -119,7 +119,7 @@ void redSideRightAutonomous() {
     chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
     chassis.turnToHeading(90, 1000);
     chassis.moveToPoint(50, -29, 2000, {.forwards = true, .maxSpeed = 80});
-    pros::delay(3000);
+    pros::delay(2000);
     intake.move(0);
 }
 
@@ -138,7 +138,7 @@ void redSideLeftAutonomous() {
     chassis.moveToPoint(-8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
     chassis.turnToHeading(-90, 1000);
     chassis.moveToPoint(-50, -29, 2000, {.forwards = true, .maxSpeed = 80});
-    pros::delay(3000);
+    pros::delay(2000);
     intake.move(0);
 }
 
@@ -147,7 +147,21 @@ void blueSideRightAutonomous() {
 }
 
 void blueSideLeftAutonomous() {
-
+    chassis.setPose(0, 0, 0);
+    ladyBrown.move_relative(-400, -127);
+    clamp.set_value(LOW);
+    chassis.turnToHeading(-15, 1000);
+    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    pros::delay(2000); 
+    clamp.set_value(HIGH);
+    pros::delay(500);
+    intake.move(127);
+    pros::delay(1200);
+    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(50, -29, 2000, {.forwards = true, .maxSpeed = 80});
+    pros::delay(2000);
+    intake.move(0);
 }
 
 void skillsAutonomous() {
