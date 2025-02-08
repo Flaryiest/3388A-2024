@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "GOOD COPY",
+    "project_name": "Red Positive",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -298,9 +298,9 @@
       }
     },
     "upload_options": {
-      "icon": "power",
+      "icon": "planet",
       "description": "AWOOOOOO",
-      "slot": 1
+      "slot": 2
     },
     "use_early_access": false
   }

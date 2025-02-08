@@ -36,7 +36,7 @@ lemlib::Drivetrain drivetrain(&left_motors,
                               2
 );
 
-pros::Imu imu(2);
+pros::Imu imu(5);
 
 lemlib::OdomSensors sensors(nullptr,
                             nullptr,
@@ -104,29 +104,42 @@ void disabled() {}
 void competition_initialize() {}
 
 void redSideRightAutonomous() {
-    ladyBrown.move_relative(40, 127);
-    chassis.setPose(0, 0, 0);
     
+    chassis.setPose(0, 0, 0);
+    ladyBrown.move_relative(-400, -127);
     clamp.set_value(LOW);
-    ladyBrown.move_velocity(0);
-    chassis.turnToHeading(15, 1000);
-    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
+
+    chassis.turnToHeading(-15, 1000);
+    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
     pros::delay(2000); 
     clamp.set_value(HIGH);
     pros::delay(500);
     intake.move(127);
     pros::delay(1200);
-    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
-    chassis.turnToHeading(270, 1000);
-    chassis.moveToPoint(40, -29, 2000, {.forwards = true, .maxSpeed = 40});
+    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(50, -29, 2000, {.forwards = true, .maxSpeed = 80});
     pros::delay(3000);
     intake.move(0);
 }
 
 void redSideLeftAutonomous() {
     chassis.setPose(0, 0, 0);
+    ladyBrown.move_relative(-400, -127);
     clamp.set_value(LOW);
-    chassis.moveToPoint(0, -5, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
+
+    chassis.turnToHeading(15, 1000);
+    chassis.moveToPoint(-8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    pros::delay(2000); 
+    clamp.set_value(HIGH);
+    pros::delay(500);
+    intake.move(127);
+    pros::delay(1200);
+    chassis.moveToPoint(-8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.turnToHeading(-90, 1000);
+    chassis.moveToPoint(-50, -29, 2000, {.forwards = true, .maxSpeed = 80});
+    pros::delay(3000);
+    intake.move(0);
 }
 
 void blueSideRightAutonomous() {
@@ -222,7 +235,7 @@ void opcontrol() {
                 ladyBrown.move_velocity(0);
             } else {
                 if (ladyBrownRotation.get_angle() < 3000) {
-                    ladyBrown.move(-50);
+                    ladyBrown.move(-80);
                 } 
                 else {
                     ladyBrown.move(50);
@@ -230,14 +243,14 @@ void opcontrol() {
             }
         }
         else if (ladyBrownStage == 3) {
-            if (ladyBrownRotation.get_angle() > 14000 && ladyBrownRotation.get_angle() < 16000) {
+            if (ladyBrownRotation.get_angle() > 12000 && ladyBrownRotation.get_angle() < 14000) {
                 ladyBrown.move_velocity(0);
             } else {
-                if (ladyBrownRotation.get_angle() < 14000) {
-                    ladyBrown.move(-70);
+                if (ladyBrownRotation.get_angle() < 12000) {
+                    ladyBrown.move(-127);
                 } 
                 else {
-                    ladyBrown.move(70);
+                    ladyBrown.move(50);
                 }
             }
         }
