@@ -175,7 +175,7 @@ void skillsAutonomous() {
 }
 
 void autonomous() {
-    redSideLeftAutonomous();
+    blueSideLeftAutonomous();
 }
 
 
