@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Blue Left testing",
+    "project_name": "Red side right",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -298,9 +298,9 @@
       }
     },
     "upload_options": {
-      "icon": "planet",
+      "icon": "clawbot",
       "description": "AWOOOOOO",
-      "slot": 4
+      "slot": 1
     },
     "use_early_access": false
   }

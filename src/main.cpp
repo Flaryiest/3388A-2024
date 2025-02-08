@@ -8,7 +8,7 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-6, -7, -17}, pros::MotorGearset::blue);
+pros::MotorGroup left_motors({-8, -7, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
 pros::Motor intake(4, pros::MotorGearset::blue);
 pros::Motor ladyBrown(1, pros::MotorGearset::red);
@@ -18,7 +18,7 @@ pros::Vision wallstake_sensor (2);
 pros::vision_signature_s_t red_ring_sig = pros::Vision::signature_from_utility(1, 255, 307, 281, -355, -243, -299, 3.0, 0);
 pros::vision_signature_s_t blue_ring_sig = pros::Vision::signature_from_utility(2, -3693, -2747, -3220, 1721, 3247, 2484, 3.0, 0);
 pros::Rotation ladyBrownRotation(3);
-lemlib::ExpoDriveCurve throttle_curve(20,
+lemlib::ExpoDriveCurve throttle_curve(5,
                                      10,
                                      1.019 
 );
@@ -103,41 +103,38 @@ void disabled() {}
 
 void competition_initialize() {}
 
-void redSideRightAutonomous() {
-    
-    chassis.setPose(0, 0, 0);
-    ladyBrown.move_relative(-400, -127);
-    clamp.set_value(LOW);
-
-    chassis.turnToHeading(-15, 1000);
-    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(2000); 
-    clamp.set_value(HIGH);
-    pros::delay(500);
-    intake.move(127);
-    pros::delay(1200);
-    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
-    chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(50, -29, 2000, {.forwards = true, .maxSpeed = 80});
-    pros::delay(2000);
-    intake.move(0);
-}
-
 void redSideLeftAutonomous() {
     chassis.setPose(0, 0, 0);
     ladyBrown.move_relative(-400, -127);
     clamp.set_value(LOW);
+    chassis.turnToHeading(-15, 1000);
+    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    pros::delay(2000); 
+    clamp.set_value(HIGH);
+    pros::delay(1000);
+    intake.move(127);
+    pros::delay(1200);
+    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(40, -29, 2000, {.forwards = true, .maxSpeed = 80});
+    pros::delay(2000);
+    intake.move(0);
+}
 
+void redSideRightAutonomous() {
+    chassis.setPose(0, 0, 0);
+    ladyBrown.move_relative(-400, -127);
+    clamp.set_value(LOW);
     chassis.turnToHeading(15, 1000);
     chassis.moveToPoint(-8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
     pros::delay(2000); 
     clamp.set_value(HIGH);
-    pros::delay(500);
+    pros::delay(1000);
     intake.move(127);
     pros::delay(1200);
     chassis.moveToPoint(-8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
     chassis.turnToHeading(-90, 1000);
-    chassis.moveToPoint(-50, -29, 2000, {.forwards = true, .maxSpeed = 80});
+    chassis.moveToPoint(-40, -29, 2000, {.forwards = true, .maxSpeed = 80});
     pros::delay(2000);
     intake.move(0);
 }
@@ -159,7 +156,7 @@ void blueSideLeftAutonomous() {
     pros::delay(1200);
     chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(50, -29, 2000, {.forwards = true, .maxSpeed = 80});
+    chassis.moveToPoint(40, -29, 2000, {.forwards = true, .maxSpeed = 80});
     pros::delay(2000);
     intake.move(0);
 }
@@ -175,7 +172,7 @@ void skillsAutonomous() {
 }
 
 void autonomous() {
-    blueSideLeftAutonomous();
+    redSideRightAutonomous();
 }
 
 
