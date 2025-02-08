@@ -104,11 +104,29 @@ void disabled() {}
 void competition_initialize() {}
 
 void redSideRightAutonomous() {
-
+    ladyBrown.move_relative(40, 127);
+    chassis.setPose(0, 0, 0);
+    
+    clamp.set_value(LOW);
+    ladyBrown.move_velocity(0);
+    chassis.turnToHeading(15, 1000);
+    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
+    pros::delay(2000); 
+    clamp.set_value(HIGH);
+    pros::delay(500);
+    intake.move(127);
+    pros::delay(1200);
+    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.turnToHeading(270, 1000);
+    chassis.moveToPoint(40, -29, 2000, {.forwards = true, .maxSpeed = 40});
+    pros::delay(3000);
+    intake.move(0);
 }
 
 void redSideLeftAutonomous() {
-
+    chassis.setPose(0, 0, 0);
+    clamp.set_value(LOW);
+    chassis.moveToPoint(0, -5, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 10, .earlyExitRange = 0.01});
 }
 
 void blueSideRightAutonomous() {
@@ -130,6 +148,7 @@ void skillsAutonomous() {
 }
 
 void autonomous() {
+    redSideLeftAutonomous();
 }
 
 
@@ -142,10 +161,10 @@ void opcontrol() {
         bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
 
-        bool clampButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+        bool clampButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1);
+        bool wingButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A);
 
-        bool ladyBrownButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+        bool ladyBrownButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2);
 
         wallstake_sensor.set_signature(1, &red_ring_sig);
         wallstake_sensor.set_signature(2, &blue_ring_sig);
@@ -211,10 +230,10 @@ void opcontrol() {
             }
         }
         else if (ladyBrownStage == 3) {
-            if (ladyBrownRotation.get_angle() > 15000 && ladyBrownRotation.get_angle() < 17000) {
+            if (ladyBrownRotation.get_angle() > 14000 && ladyBrownRotation.get_angle() < 16000) {
                 ladyBrown.move_velocity(0);
             } else {
-                if (ladyBrownRotation.get_angle() < 15000) {
+                if (ladyBrownRotation.get_angle() < 14000) {
                     ladyBrown.move(-70);
                 } 
                 else {
