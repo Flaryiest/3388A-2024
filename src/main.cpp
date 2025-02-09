@@ -162,7 +162,11 @@ void fourRingAutonRingSide() {
     intake.move(127);
     pros::delay(2000);
     intake.move(0);
-    chassis.moveToPoint( 27, -40, 2000, {.forwards = false, .maxSpeed = 80});
+    chassis.moveToPoint( 25, -40, 2000, {.forwards = false, .maxSpeed = 80});
+    chassis.moveToPoint( 25, -49, 2000, {.forwards = true, .maxSpeed = 80});
+    intake.move(127);
+    pros::delay(2000);
+    intake.move(0);
 }
 
 void blueSideLeftAutonomous() {
