@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Red side right",
+    "project_name": "4 ring red side left",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -298,9 +298,9 @@
       }
     },
     "upload_options": {
-      "icon": "clawbot",
+      "icon": "alien",
       "description": "AWOOOOOO",
-      "slot": 1
+      "slot": 4
     },
     "use_early_access": false
   }

@@ -10,6 +10,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_motors({-8, -7, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
+pros::Motor rightMotorTemp(20);
 pros::Motor intake(4, pros::MotorGearset::blue);
 pros::Motor ladyBrown(1, pros::MotorGearset::red);
 pros::adi::DigitalOut clamp('A', false);
@@ -139,8 +140,29 @@ void redSideRightAutonomous() {
     intake.move(0);
 }
 
-void blueSideRightAutonomous() {
-
+void fourRingAutonRingSide() {
+    chassis.setPose(0, 0, 0);
+    ladyBrown.move_relative(-400, -127);
+    clamp.set_value(LOW);
+    chassis.turnToHeading(-15, 1000);
+    chassis.moveToPoint(8, -26.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    pros::delay(2000); 
+    clamp.set_value(HIGH);
+    pros::delay(1000);
+    intake.move(127);
+    pros::delay(1200);
+    chassis.moveToPoint(8, -29.0, 2000, {.forwards = false, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(40, -29, 2000, {.forwards = true, .maxSpeed = 80});
+    pros::delay(2000);
+    intake.move(0);
+    chassis.moveToPoint(33, -29, 2000, {.forwards = false, .maxSpeed = 80});
+    chassis.turnToHeading(180, 1000);
+    chassis.moveToPoint( 33, -49, 2000, {.forwards = true, .maxSpeed = 80});
+    intake.move(127);
+    pros::delay(2000);
+    intake.move(0);
+    chassis.moveToPoint( 27, -40, 2000, {.forwards = false, .maxSpeed = 80});
 }
 
 void blueSideLeftAutonomous() {
@@ -172,7 +194,7 @@ void skillsAutonomous() {
 }
 
 void autonomous() {
-    redSideRightAutonomous();
+    fourRingAutonRingSide();
 }
 
 
@@ -180,14 +202,14 @@ void autonomous() {
 void opcontrol() {
     bool wingState = false;
     bool clampState = false;
+    bool motorCooked = false;
     int ladyBrownStage = 1;
     while (true) {
         bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
-
         bool clampButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1);
         bool wingButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A);
-
+        bool motorCookedButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP);
         bool ladyBrownButton = controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2);
 
         wallstake_sensor.set_signature(1, &red_ring_sig);
@@ -216,6 +238,14 @@ void opcontrol() {
             wingState = !wingState;
             wing.set_value(wingState ? HIGH : LOW);
             pros::delay(100);
+        }
+
+        if (motorCookedButton) {
+            motorCooked = !motorCooked;
+            pros::delay(100);
+        }
+        if (motorCooked) {
+            rightMotorTemp.move_velocity(1);
         }
 
         if (ladyBrownButton) {
