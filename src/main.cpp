@@ -2,9 +2,9 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
-#include "pros/rotation.hpp"
+#include "pros/rotation.hpp" // IWYU pragma: keep
 #include "pros/rtos.hpp"
-#include "pros/vision.h"
+#include "pros/vision.h" // IWYU pragma: keep
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -101,8 +101,6 @@ void skillsAutonomous() {
 void autonomous() {
 
 }
-
-
 
 void opcontrol() {
     while (true) {
