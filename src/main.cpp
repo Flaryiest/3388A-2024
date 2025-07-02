@@ -10,7 +10,8 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_motors({-8, -7, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
-pros::Motor intake(4, pros::MotorGearset::blue);
+pros::Motor leftIntake(1, pros::MotorGearset::blue);
+pros::Motor rightIntake(11, pros::MotorGearset::blue);
 
 lemlib::ExpoDriveCurve throttle_curve(5,
                                      10,
@@ -110,11 +111,14 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
  
         if (intakeButton) {
-            intake.move(127);
+            leftIntake.move(127);
+            rightIntake.move(-127);
         } else if (intakeReverseButton) {
-            intake.move(-127);
+            leftIntake.move(-127);
+            rightIntake.move(127);
         } else {
-            intake.move(0);
+            leftIntake.move(0);
+            rightIntake.move(0);
         }
 
         chassis.arcade(leftY, rightX);
