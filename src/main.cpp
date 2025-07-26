@@ -12,6 +12,7 @@ pros::MotorGroup left_motors({-8, -7, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
 pros::Motor leftIntake(1, pros::MotorGearset::blue);
 pros::Motor rightIntake(11, pros::MotorGearset::blue);
+pros::adi::DigitalOut intakeLift('A', false);
 
 lemlib::ExpoDriveCurve throttle_curve(5,
                                      10,
@@ -106,7 +107,9 @@ void autonomous() {
 void opcontrol() {
     while (true) {
         bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-        bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);;
+        bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+        bool intakeLiftButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+        bool intakeLiftState = false;
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
  
@@ -119,6 +122,12 @@ void opcontrol() {
         } else {
             leftIntake.move(0);
             rightIntake.move(0);
+        }
+
+        if (intakeLiftButton) {
+            intakeLiftState = !intakeLiftState;
+            intakeLift.set_value(intakeLiftState ? HIGH : LOW);
+            pros::delay(100);
         }
 
         chassis.arcade(leftY, rightX);

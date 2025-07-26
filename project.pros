@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "4 ring auton blue",
+    "project_name": "3 irons and their master",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -300,7 +300,7 @@
     "upload_options": {
       "icon": "alien",
       "description": "AWOOOOOO",
-      "slot": 5
+      "slot": 1
     },
     "use_early_access": false
   }
