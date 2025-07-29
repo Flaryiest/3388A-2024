@@ -10,8 +10,11 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_motors({-8, -7, -17}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
-pros::Motor leftIntake(1, pros::MotorGearset::blue);
-pros::Motor rightIntake(11, pros::MotorGearset::blue);
+pros::Motor leftIntakeBottom(1, pros::MotorGearset::green);
+pros::Motor leftIntakeTop(2, pros::MotorGearset::green);
+pros::Motor rightIntakeBottom(11, pros::MotorGearset::green);
+pros::Motor rightIntakeTop(12, pros::MotorGearset::green);
+
 pros::adi::DigitalOut intakeLift('A', false);
 
 lemlib::ExpoDriveCurve throttle_curve(5,
@@ -114,14 +117,21 @@ void opcontrol() {
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
  
         if (intakeButton) {
-            leftIntake.move(127);
-            rightIntake.move(-127);
+            leftIntakeBottom.move(127);
+            leftIntakeTop.move(127);
+            rightIntakeBottom.move(-127);
+            rightIntakeTop.move(-127);
         } else if (intakeReverseButton) {
-            leftIntake.move(-127);
-            rightIntake.move(127);
+            leftIntakeBottom.move(-127);
+            leftIntakeTop.move(-127);
+            rightIntakeBottom.move(127);
+            rightIntakeTop.move(127);
         } else {
-            leftIntake.move(0);
-            rightIntake.move(0);
+            leftIntakeBottom.move(0);
+            leftIntakeTop.move(0);
+            rightIntakeBottom.move(0);
+            rightIntakeTop.move(0);
+
         }
 
         if (intakeLiftButton) {
