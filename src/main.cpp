@@ -8,11 +8,11 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-8, -7, -17}, pros::MotorGearset::blue);
-pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
-pros::Motor leftIntakeBottom(1, pros::MotorGearset::green);
-pros::Motor leftIntakeTop(2, pros::MotorGearset::green);
-pros::Motor rightIntakeBottom(11, pros::MotorGearset::green);
+pros::MotorGroup left_motors({-8, -7, -6}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({19, 18, 17}, pros::MotorGearset::blue);
+pros::Motor leftIntakeBottom(10, pros::MotorGearset::green);
+pros::Motor leftIntakeTop(9, pros::MotorGearset::green);
+pros::Motor rightIntakeBottom(20, pros::MotorGearset::green);
 
 pros::adi::DigitalOut intakeLift('A', false);
 
