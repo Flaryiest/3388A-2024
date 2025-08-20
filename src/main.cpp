@@ -13,7 +13,6 @@ pros::MotorGroup right_motors({20, 19, 18}, pros::MotorGearset::blue);
 pros::Motor leftIntakeBottom(1, pros::MotorGearset::green);
 pros::Motor leftIntakeTop(2, pros::MotorGearset::green);
 pros::Motor rightIntakeBottom(11, pros::MotorGearset::green);
-pros::Motor rightIntakeTop(12, pros::MotorGearset::green);
 
 pros::adi::DigitalOut intakeLift('A', false);
 
@@ -109,35 +108,39 @@ void autonomous() {
 
 void opcontrol() {
     while (true) {
-        bool intakeButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-        bool intakeReverseButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
-        bool intakeLiftButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+        bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+        bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
+        bool intakeThree = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
+        bool intakeFour = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+
         bool intakeLiftState = false;
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
  
-        if (intakeButton) {
+        if (intakeOne) {
             leftIntakeBottom.move(127);
-            leftIntakeTop.move(127);
-            rightIntakeBottom.move(-127);
-            rightIntakeTop.move(-127);
-        } else if (intakeReverseButton) {
-            leftIntakeBottom.move(-127);
             leftIntakeTop.move(-127);
             rightIntakeBottom.move(127);
-            rightIntakeTop.move(127);
-        } else {
+
+        } else if (intakeTwo) {
+            leftIntakeBottom.move(127);
+
+
+        } else if (intakeThree) {
+            leftIntakeBottom.move(127);
+            leftIntakeTop.move(-127);
+            rightIntakeBottom.move(-127);
+
+        } else if (intakeFour) { // done
+            leftIntakeBottom.move(-127);
+            leftIntakeTop.move(127);
+            rightIntakeBottom.move(0);
+        }
+
+        else {
             leftIntakeBottom.move(0);
             leftIntakeTop.move(0);
             rightIntakeBottom.move(0);
-            rightIntakeTop.move(0);
-
-        }
-
-        if (intakeLiftButton) {
-            intakeLiftState = !intakeLiftState;
-            intakeLift.set_value(intakeLiftState ? HIGH : LOW);
-            pros::delay(100);
         }
 
         chassis.arcade(leftY, rightX);
@@ -145,3 +148,4 @@ void opcontrol() {
         pros::delay(5);
     }
 }
+
