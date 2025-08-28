@@ -298,7 +298,7 @@
       }
     },
     "upload_options": {
-      "icon": "alien",
+      "icon": "robot",
       "description": "AWOOOOOO",
       "slot": 1
     },

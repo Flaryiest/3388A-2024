@@ -10,8 +10,8 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
 pros::MotorGroup left_motors({-8, -7, -6}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({19, 18, 17}, pros::MotorGearset::blue);
-pros::Motor leftIntakeBottom(10, pros::MotorGearset::green);
-pros::Motor leftIntakeTop(9, pros::MotorGearset::green);
+pros::Motor leftIntakeBottom(9, pros::MotorGearset::green);
+pros::Motor leftIntakeTop(10, pros::MotorGearset::green);
 pros::Motor rightIntakeBottom(20, pros::MotorGearset::green);
 
 pros::adi::DigitalOut intakeLift('A', false);
@@ -132,7 +132,7 @@ void opcontrol() {
             rightIntakeBottom.move(-127);
 
         } else if (intakeFour) { // done
-            leftIntakeBottom.move(-127);
+            leftIntakeBottom.move(127);
             leftIntakeTop.move(127);
             rightIntakeBottom.move(0);
         }
