@@ -35,11 +35,15 @@ lemlib::Drivetrain drivetrain(&left_motors,
 );
 
 pros::Imu imu(5);
+pros::Rotation horizontal_encoder(4);
+
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.2);
+lemlib::TrackingWheel horizontal2_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, -0.2);
 
 lemlib::OdomSensors sensors(nullptr,
                             nullptr,
-                            nullptr,
-                            nullptr,
+                            &horizontal_tracking_wheel,
+                            &horizontal2_tracking_wheel,
                             &imu
 );
 
