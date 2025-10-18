@@ -23,7 +23,7 @@ pros::Distance park_distance(10);
 
 pros::adi::DigitalOut intake('A', true); 
 pros::adi::DigitalOut doinker('B', true); 
-pros::adi::DigitalOut expansion('C', false);
+pros::adi::DigitalOut expansion('C', true);
 lemlib::ExpoDriveCurve throttle_curve(5,
                                      10,
                                      1.019 
@@ -88,6 +88,7 @@ lemlib::Chassis chassis(drivetrain,
 void left_auton() {
     chassis.setPose(0, 0, 0);
     intake.set_value(false);
+    expansion.set_value(true);
     leftIntakeBottom.move(-127); //bottm
     leftIntakeTop.move(-127); //middle
     rightIntakeBottom.move(127); //top
@@ -137,6 +138,7 @@ void left_auton() {
 
 void right_auton() {
     chassis.setPose(0, 0, 0);
+    expansion.set_value(true);
     intake.set_value(false);
     leftIntakeBottom.move(-127); //bottm
     leftIntakeTop.move(-127); //middle
@@ -242,8 +244,8 @@ void opcontrol() {
     static bool doinkerState = true;           // false = retracted, true = extended
     static bool prevDoinkerButton = true;      // previous loop state of doinker button (A)
     // Persistent state for expansion toggle
-    static bool expansionState = false;        // false = retracted, true = extended (deployed)
-    static bool prevExpansionButton = false;   // previous loop state of expansion button (B)
+    static bool expansionState = true;        // false = retracted, true = extended (deployed)
+    static bool prevExpansionButton = true;   // previous loop state of expansion button (B)
     
     // Color sort config: 1 = red, 3 = blue
     // Change this based on which alliance you're on
