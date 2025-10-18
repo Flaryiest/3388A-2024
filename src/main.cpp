@@ -119,7 +119,7 @@ void left_auton() {
     pros::delay(200);
     chassis.moveToPoint(-27.3, 12, 2000, {.forwards = true, .maxSpeed = 127, .minSpeed = 10, .earlyExitRange = 0.01});
     rightIntakeBottom.move(127); //top
-    pros::delay(3000);
+    pros::delay(1500);
     chassis.moveToPoint(-26, 20, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
     pros::delay(1000);
     chassis.moveToPoint(-18, 30.5, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
@@ -169,7 +169,7 @@ void right_auton() {
     pros::delay(200);
     chassis.moveToPoint(25.2, 11, 2000, {.forwards = true, .maxSpeed = 127, .minSpeed = 10, .earlyExitRange = 0.01});
     rightIntakeBottom.move(127); //top
-    pros::delay(3000);
+    pros::delay(1500);
     chassis.moveToPoint(23.9, 19.5, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
     pros::delay(1000);
     chassis.moveToPoint(17.9, 29.8, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
