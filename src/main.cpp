@@ -312,18 +312,18 @@ void opcontrol() {
         if (intakeOne) {
             leftIntakeBottom.move(-127); //bottm
             leftIntakeTop.move(-127); //middle
-            rightIntakeBottom.move(127); //top
+            rightIntakeBottom.move(-127); //top
 
         } else if (intakeTwo) {
             leftIntakeBottom.move(-127); //bottm
             leftIntakeTop.move(-127); //middle
-            rightIntakeBottom.move(-127); //top
+            rightIntakeBottom.move(127); //top
 
 
         } else if (intakeThree) {
             leftIntakeBottom.move(127);
             leftIntakeTop.move(127);
-            rightIntakeBottom.move(-127);
+            rightIntakeBottom.move(127);
 
         } 
 
