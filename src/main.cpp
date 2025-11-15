@@ -22,14 +22,14 @@ pros::Distance park_distance(10);
 pros::adi::DigitalOut intake('A', true); 
 pros::adi::DigitalOut doinker('B', true); 
 pros::adi::DigitalOut expansion('C', true);
-lemlib::ExpoDriveCurve throttle_curve(5,
-                                     10,
+lemlib::ExpoDriveCurve throttle_curve(3,
+                                     6,
                                      1.019 
 );
 
 lemlib::ExpoDriveCurve steer_curve(3,
-                                  10,
-                                  1.009
+                                  6,
+                                  1.012
 );
 
 lemlib::Drivetrain drivetrain(&left_motors,
@@ -40,7 +40,7 @@ lemlib::Drivetrain drivetrain(&left_motors,
                               2
 );
 
-pros::Imu imu(13);
+pros::Imu imu(14);
 pros::Rotation horizontal_encoder(4);
 
 lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.2);
@@ -64,9 +64,9 @@ lemlib::ControllerSettings lateral_controller(10,
                                               20
 );
 
-lemlib::ControllerSettings angular_controller(2,
-                                              0.0010,
-                                              10,
+lemlib::ControllerSettings angular_controller(2.3,
+                                              0.003,
+                                              15,
                                               3,
                                               1,
                                               100,
@@ -83,124 +83,7 @@ lemlib::Chassis chassis(drivetrain,
                         &steer_curve
 );
 
-void left_auton() {
-    chassis.setPose(0, 0, 0);
-    intake.set_value(false);
-    expansion.set_value(true);
-    leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(127); //top
-    chassis.moveToPoint(0, 19.0, 2000, {.forwards = true, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(1000);
-    chassis.moveToPoint(-7, 29.0, 2000, {.forwards = true, .maxSpeed = 40, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(2000);
-    //chassis.moveToPoint(-10, 34.0, 2000, {.forwards = true, .maxSpeed = 80, .minSpeed = 10, .earlyExitRange = 0.01});
-    //pros::delay(1500);
-    chassis.moveToPoint(-5, 27.5, 2000, {.forwards = false, .maxSpeed = 50, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(250);
-    chassis.turnToHeading(
-    225,
-    4000,
-    {.maxSpeed = 50}, // will never exceed 50
-    false 
-    );
-    pros::delay(250);
-    chassis.moveToPoint(8.8, 32.7, 2000, {.forwards = false, .maxSpeed = 100, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500);
-    rightIntakeBottom.move(-127); //top
-    pros::delay(2000);
-    rightIntakeBottom.move(0);
 
-    chassis.moveToPoint(-19.8, 24, 2000, {.forwards = true, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500);
-    
-    doinker.set_value(false);
-    pros::delay(200);
-    chassis.moveToPoint(-27.3, 12, 2000, {.forwards = true, .maxSpeed = 127, .minSpeed = 10, .earlyExitRange = 0.01});
-    rightIntakeBottom.move(127); //top
-    pros::delay(1500);
-    chassis.moveToPoint(-26, 20, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(1000);
-    chassis.moveToPoint(-18, 30.5, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500);
-    rightIntakeBottom.move(-127);
-        leftIntakeBottom.move(127); //bottm
-    leftIntakeTop.move(127); //middle
-    doinker.set_value(true);
-    intake.set_value(true);
-    pros::delay(200);
-            leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(127);
-}
-
-void left_auton_v2() {
-    chassis.setPose(0, 0, 0);
-    intake.set_value(false);
-    expansion.set_value(true);
-    leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(-127); //top   
-    chassis.moveToPoint(0, 24, 2000, {.forwards = true, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(1000);
-    chassis.moveToPoint(0, 5, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500); 
-    chassis.moveToPoint(3, 0, 2000, {.forwards = true, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});   
-    pros::delay(500);
-    rightIntakeBottom.move(127); //top
-    chassis.moveToPoint(-30, 0, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});  
-}
-
-void right_auton() {
-    chassis.setPose(0, 0, 0);
-    expansion.set_value(true);
-    intake.set_value(false);
-    leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(127); //top
-    chassis.moveToPoint(0, 19, 2000, {.forwards = true, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(1000);
-    chassis.moveToPoint(6, 29.0, 2000, {.forwards = true, .maxSpeed = 38, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(2000);
-    //chassis.moveToPoint(-10, 34.0, 2000, {.forwards = true, .maxSpeed = 80, .minSpeed = 10, .earlyExitRange = 0.01});
-    //pros::delay(1500);
-    chassis.moveToPoint(5, 27.5, 2000, {.forwards = false, .maxSpeed = 50, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(250);
-    chassis.turnToHeading(
-    315,
-    4000,
-    {.maxSpeed = 50}, // will never exceed 50
-    false 
-    );
-    pros::delay(250);
-    chassis.moveToPoint(-8.8, 31, 2000, {.forwards = false, .maxSpeed = 100, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500);
-    //rightIntakeBottom.move(-127); //top
-    pros::delay(1000);
-    rightIntakeBottom.move(0);
-
-    chassis.moveToPoint(17.4, 24.5, 2000, {.forwards = true, .maxSpeed = 70, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500);
-    
-    doinker.set_value(false);
-    pros::delay(200);
-    chassis.moveToPoint(25.2, 11, 2000, {.forwards = true, .maxSpeed = 127, .minSpeed = 10, .earlyExitRange = 0.01});
-    rightIntakeBottom.move(127); //top
-    pros::delay(1500);
-    chassis.moveToPoint(23.9, 19.5, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(1000);
-    chassis.moveToPoint(17.9, 29.8, 2000, {.forwards = false, .maxSpeed = 120, .minSpeed = 10, .earlyExitRange = 0.01});
-    pros::delay(500);
-    rightIntakeBottom.move(-127);
-        leftIntakeBottom.move(127); //bottm
-    leftIntakeTop.move(127); //middle
-    doinker.set_value(true);
-    intake.set_value(true);
-    pros::delay(200);
-            leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(127);  
-}
 
 void good_auton() {
     
@@ -244,9 +127,65 @@ void skillsAutonomous() {
 
 }
 
-void autonomous() {
-    left_auton_v2();
+void left_auton() {
+    chassis.setPose(0, 0, 0);
+    intake.set_value(false);
+    expansion.set_value(true);
+}
 
+void right_auton() {
+    chassis.setPose(0, 0, 0);
+    intake.set_value(false);
+    expansion.set_value(true);
+}
+
+void solo_awp() {
+    chassis.setPose(0, 0, 0);
+    intake.set_value(true);
+    expansion.set_value(true);
+    leftIntakeBottom.move(-127); //bottm
+    leftIntakeTop.move(-127); //middle
+    rightIntakeBottom.move(-127); //top
+    //first three balls
+    chassis.moveToPoint(0, 7, 4000, {.maxSpeed = 120}); 
+    chassis.moveToPoint(11, 22, 4000, {.maxSpeed = 50}); 
+    pros::delay(500);
+    chassis.moveToPoint(12, 15, 4000, {.forwards = false, .maxSpeed = 120}); 
+    pros::delay(500);
+    chassis.turnToHeading(90, 4000);
+    // set up to match load
+    pros::delay(500);
+    chassis.moveToPoint(24, 5, 4000, {.maxSpeed = 120}); 
+    pros::delay(500);
+    chassis.turnToHeading(172, 1000);
+    doinker.set_value(false);
+    chassis.moveToPoint(25.5, -7, 4000, {.maxSpeed = 120}); 
+    pros::delay(1000);
+    chassis.moveToPoint(25.5, 20, 4000, {.forwards = false, .maxSpeed = 120});
+    pros::delay(200);
+    intake.set_value(false);
+    
+    // pros::delay(2000);
+    // chassis.turnToHeading(200, 4000);
+    // pros::delay(2000);
+    // doinker.set_value(false);
+    // //load next three balls
+    // chassis.moveToPoint(30, -10, 4000, {.maxSpeed = 120});
+    // pros::delay(1000);
+    // chassis.moveToPoint(30, 20, 4000, {.forwards = false, .maxSpeed = 120});
+
+}
+
+void testing_auton() {
+    chassis.setPose(0, 0, 0);
+    intake.set_value(false);
+    expansion.set_value(true);
+    chassis.turnToHeading(90, 100000);
+}
+
+void autonomous() {
+    //left_auton();
+    solo_awp();
 }
 
 
@@ -363,9 +302,6 @@ void opcontrol() {
                 pros::delay(100);
             }
         }
-
-
-
 
         chassis.arcade(leftY, rightX);
         prevIntakeFour = intakeFour; // update edge detector
