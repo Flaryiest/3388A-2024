@@ -239,7 +239,7 @@ void opcontrol() {
         }
 
         else {
-            leftIntakeBottom.move(0);
+             leftIntakeBottom.move(0);
             leftIntakeTop.move(0);
             rightIntakeBottom.move(0);
         }
