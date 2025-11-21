@@ -10,14 +10,14 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-20, -19, -18}, pros::MotorGearset::blue);
-pros::MotorGroup right_motors({10, 9, 8}, pros::MotorGearset::blue);
+pros::MotorGroup left_motors({20, -19, -18}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({-10, 9, 8}, pros::MotorGearset::blue);
 pros::Motor leftIntakeBottom(15, pros::MotorGearset::blue);
 pros::Motor leftIntakeTop(16, pros::MotorGearset::green);
 pros::Motor rightIntakeBottom(17, pros::MotorGearset::green);
 pros::Optical color_sensor(7);
 
-pros::Distance park_distance(10);
+pros::Distance park_distance(3);
 
 pros::adi::DigitalOut intake('A', true); 
 pros::adi::DigitalOut doinker('B', true); 
@@ -145,28 +145,21 @@ void solo_awp() {
     expansion.set_value(true);
     leftIntakeBottom.move(-127); //bottm
     leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(-127); //top
+    //rightIntakeBottom.move(-127); //top
     //first three balls
-    chassis.moveToPoint(0, 7, 4000, {.maxSpeed = 120}); 
-    chassis.moveToPoint(11, 22, 4000, {.maxSpeed = 50}); 
-    pros::delay(500);
-    chassis.moveToPoint(12, 15, 4000, {.forwards = false, .maxSpeed = 120}); 
-    pros::delay(500);
-    chassis.turnToHeading(90, 4000);
-    // set up to match load
-    pros::delay(500);
-    chassis.moveToPoint(24, 5, 4000, {.maxSpeed = 120}); 
-    pros::delay(500);
-    chassis.turnToHeading(172, 1000);
-    doinker.set_value(false);
-    chassis.moveToPoint(25.5, -7, 4000, {.maxSpeed = 120}); 
+    chassis.moveToPoint(0, 15, 4000, {.maxSpeed = 120}); 
+    chassis.turnToHeading(30, 4000);
     pros::delay(1000);
-    chassis.moveToPoint(25.5, 20, 4000, {.forwards = false, .maxSpeed = 120});
+    chassis.moveToPoint(5, 23, 4000, {.maxSpeed = 70}); 
     pros::delay(200);
-    intake.set_value(false);
+    chassis.turnToHeading(124, 4000);
+    pros::delay(1000);
     
-    // pros::delay(2000);
-    // chassis.turnToHeading(200, 4000);
+    chassis.moveToPoint(21, 12, 4000, {.maxSpeed = 70}); 
+    pros::delay(1000);
+    chassis.turnToHeading(180, 4000);
+    doinker.set_value(false);
+    chassis.moveToPoint(21, 3, 4000, {.maxSpeed = 100}); 
     // pros::delay(2000);
     // doinker.set_value(false);
     // //load next three balls
