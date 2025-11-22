@@ -1,5 +1,6 @@
 #include "lemlib/api.hpp" // IWYU pragma: keep
 #include "main.h" 
+#include "pros/adi.hpp"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
 #include "pros/rotation.hpp" // IWYU pragma: keep
@@ -10,8 +11,8 @@
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({20, -19, -18}, pros::MotorGearset::blue);
-pros::MotorGroup right_motors({-10, 9, 8}, pros::MotorGearset::blue);
+pros::MotorGroup left_motors({-20, -19, -18}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({10, 9, 8}, pros::MotorGearset::blue);
 pros::Motor leftIntakeBottom(15, pros::MotorGearset::blue);
 pros::Motor leftIntakeTop(16, pros::MotorGearset::green);
 pros::Motor rightIntakeBottom(17, pros::MotorGearset::green);
@@ -22,6 +23,7 @@ pros::Distance park_distance(3);
 pros::adi::DigitalOut intake('A', true); 
 pros::adi::DigitalOut doinker('B', true); 
 pros::adi::DigitalOut expansion('C', true);
+pros::adi::DigitalOut wings('D', false);
 lemlib::ExpoDriveCurve throttle_curve(3,
                                      6,
                                      1.019 
@@ -129,17 +131,38 @@ void skillsAutonomous() {
 
 void left_auton() {
     chassis.setPose(0, 0, 0);
-    intake.set_value(false);
+    intake.set_value(true);
     expansion.set_value(true);
+    leftIntakeBottom.move(-127); //bottm
+    leftIntakeTop.move(-127); //middle
+    //rightIntakeBottom.move(-127); //top
+    //first three balls
+    chassis.moveToPoint(0, 15.5, 2000, {.maxSpeed = 120}); 
+    chassis.turnToHeading(20, 1000);
+    pros::delay(1000);
+    chassis.moveToPoint(-5, 25, 4000, {.maxSpeed = 23}); 
+    pros::delay(200);
+    chassis.turnToHeading(124, 4000);
+    pros::delay(1000);
+    
+    chassis.moveToPoint(-21, 12, 4000, {.maxSpeed = 70}); 
+    pros::delay(1000);
+    chassis.turnToHeading(180, 4000);
+    doinker.set_value(false);
+    chassis.moveToPoint(-21, 3, 4000, {.maxSpeed = 100}); 
+    pros::delay(1200);
+    chassis.moveToPoint(-21, 23, 4000, {.forwards = false, .maxSpeed = 100}); 
+    intake.set_value(false);
+    pros::delay(500);
+    //doinker.set_value(true);
+    pros::delay(2000);
+    rightIntakeBottom.move(-127); //top
+    pros::delay(5000);
+    rightIntakeBottom.move(0); //top
 }
+
 
 void right_auton() {
-    chassis.setPose(0, 0, 0);
-    intake.set_value(false);
-    expansion.set_value(true);
-}
-
-void solo_awp() {
     chassis.setPose(0, 0, 0);
     intake.set_value(true);
     expansion.set_value(true);
@@ -147,10 +170,10 @@ void solo_awp() {
     leftIntakeTop.move(-127); //middle
     //rightIntakeBottom.move(-127); //top
     //first three balls
-    chassis.moveToPoint(0, 15, 4000, {.maxSpeed = 120}); 
-    chassis.turnToHeading(30, 4000);
+    chassis.moveToPoint(0, 15.5, 2000, {.maxSpeed = 120}); 
+    chassis.turnToHeading(20, 1000);
     pros::delay(1000);
-    chassis.moveToPoint(5, 23, 4000, {.maxSpeed = 70}); 
+    chassis.moveToPoint(5, 25, 4000, {.maxSpeed = 23}); 
     pros::delay(200);
     chassis.turnToHeading(124, 4000);
     pros::delay(1000);
@@ -160,8 +183,16 @@ void solo_awp() {
     chassis.turnToHeading(180, 4000);
     doinker.set_value(false);
     chassis.moveToPoint(21, 3, 4000, {.maxSpeed = 100}); 
-    // pros::delay(2000);
-    // doinker.set_value(false);
+    pros::delay(1200);
+    chassis.moveToPoint(21, 23, 4000, {.forwards = false, .maxSpeed = 100}); 
+    intake.set_value(false);
+    pros::delay(500);
+    //doinker.set_value(true);
+    pros::delay(2000);
+    rightIntakeBottom.move(-127); //top
+    pros::delay(5000);
+    rightIntakeBottom.move(0); //top
+    
     // //load next three balls
     // chassis.moveToPoint(30, -10, 4000, {.maxSpeed = 120});
     // pros::delay(1000);
@@ -178,7 +209,7 @@ void testing_auton() {
 
 void autonomous() {
     //left_auton();
-    solo_awp();
+    right_auton();
 }
 
 
@@ -192,12 +223,9 @@ void opcontrol() {
     // Persistent state for expansion toggle
     static bool expansionState = true;        // false = retracted, true = extended (deployed)
     static bool prevExpansionButton = true;   // previous loop state of expansion button (B)
-    // Persistent state for color sort toggle
-    static bool prevColorSortButton = true;   // previous loop state of color sort button (X)
-    
-    // Color sort config: 1 = red, 2 = blue
-    int colorToReject = 1; 
-    static bool colorSortMode = false; // false = off, true = on
+    // Persistent state for wing toggle
+    static bool wingState = false;            // false = retracted, true = extended
+    static bool prevWingButton = true;        // previous loop state of wing button (X)
     while (true) {
         bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -205,18 +233,13 @@ void opcontrol() {
         bool intakeFour = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
         bool intakeFive = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
 
-        bool colorSortButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
         bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
         bool intakeLiftState = false; // unused currently
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 
-        // Get object count to see if anything is detected
-
-        double hue = color_sensor.get_hue();
-
-        
         if (intakeOne) {
             leftIntakeBottom.move(-127); //bottm
             leftIntakeTop.move(-127); //middle
@@ -242,24 +265,6 @@ void opcontrol() {
              leftIntakeBottom.move(0);
             leftIntakeTop.move(0);
             rightIntakeBottom.move(0);
-        }
-
-        if (colorSortMode) {
-            if (hue >= 330 || hue <= 30) { // Red hue range
-                if (colorToReject == 1) {
-                    leftIntakeBottom.move(-127); //bottm
-                    leftIntakeTop.move(-127); //middle
-                    rightIntakeBottom.move(127); //top
-                    pros::delay(150);
-                }
-            } else if (hue >= 180 && hue <= 250) { // Blue hue range
-                if (colorToReject == 2) {
-                    leftIntakeBottom.move(-127); //bottm
-                    leftIntakeTop.move(-127); //middle
-                    rightIntakeBottom.move(127); //top
-                    pros::delay(150);
-                }
-            }
         }
 
         if (intakeFour) {
@@ -288,10 +293,11 @@ void opcontrol() {
             }
         }
         
-        if (colorSortButton) {
-            // Edge-triggered toggle for color sorting
-            if (!prevColorSortButton) {
-                colorSortMode = !colorSortMode;
+        if (wingButton) {
+            // Edge-triggered toggle for wings
+            if (!prevWingButton) {
+                wingState = !wingState;
+                wings.set_value(wingState);
                 pros::delay(100);
             }
         }
@@ -300,7 +306,7 @@ void opcontrol() {
         prevIntakeFour = intakeFour; // update edge detector
         prevDoinkerButton = doinkerButton; // update edge detector for doinker
         prevExpansionButton = expansionButton; // update edge detector for expansion
-        prevColorSortButton = colorSortButton; // update edge detector for color sort
+        prevWingButton = wingButton; // update edge detector for wing
         pros::delay(5);
     }
 }
