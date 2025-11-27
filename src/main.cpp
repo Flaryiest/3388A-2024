@@ -87,37 +87,140 @@ lemlib::Chassis chassis(drivetrain,
 
 
 
-void good_auton() {
-    
-}
-void simple_auton() {
-    
-}
+// Forward declarations for autonomous routines
+void left_auton();
+void right_auton();
+void testing_auton();
+void skillsAutonomous();
 
+// Create autonomous selector with all available routines
+// First parameter is the storage name - required for SD card persistence!
+// The name is used to create a file on the SD card to save your selection
 rd::Selector selector("auton_selector", {
-    {"Simple auton", simple_auton},
-    {"Good auton", good_auton},
+    {"Left Auton", left_auton},
+    {"Right Auton", right_auton},
+    {"Testing Auton", testing_auton},
+    {"Skills", skillsAutonomous},
 });
 
-void on_center_button() {
-	// Open the autonomous selector when center button is pressed
-	selector.focus();
+// Callback to print when an auton is selected
+void on_auton_selected(std::optional<rd::Selector::routine_t> routine) {
+    if (routine.has_value()) {
+        controller.print(1, 0, "Sel: %s", routine->name.c_str());
+        
+        // Manually save the selection to SD card since RoboDash may not be doing it
+        FILE* file = fopen("/usd/auton_selector", "w");
+        if (file != nullptr) {
+            fprintf(file, "%s", routine->name.c_str());
+            fclose(file);
+            controller.clear_line(2);
+            controller.print(2, 0, ">> SAVED OK <<");
+        } else {
+            controller.clear_line(2);
+            controller.print(2, 0, ">> SAVE FAILED <<");
+        }
+    } else {
+        controller.print(1, 0, "No selection");
+    }
 }
 
 void initialize() { 
     pros::delay(100);
-    // Don't initialize PROS LCD - it conflicts with RoboDash
-    pros::lcd::initialize();
+    // DO NOT initialize PROS LCD - it conflicts with RoboDash selector
+    // pros::lcd::initialize(); // COMMENTED OUT to allow RoboDash to work
     
-    // Add callback to get notified when autonomous is selected
-
+    // Check SD card status and print to controller
+    if (pros::usd::is_installed()) {
+        controller.print(0, 0, "SD: OK");
+        
+        // Check if the selector file exists
+        FILE* file = fopen("/usd/auton_selector", "r");
+        if (file != nullptr) {
+            controller.print(0, 8, "File exists");
+            fclose(file);
+        } else {
+            controller.print(0, 8, "No file");
+        }
+    } else {
+        controller.print(0, 0, "NO SD CARD!");
+    }
+    
+    // Try to manually load saved selection from SD card (try multiple paths)
+    const char* load_paths[] = {"/usd/auton.txt", "/usd/auton_selector", "auton.txt"};
+    bool loaded = false;
+    
+    for (int i = 0; i < 3 && !loaded; i++) {
+        FILE* file = fopen(load_paths[i], "r");
+        if (file != nullptr) {
+            char saved_name[50];
+            if (fgets(saved_name, sizeof(saved_name), file) != nullptr) {
+                // Find and select the matching auton
+                if (strcmp(saved_name, "Left Auton") == 0) {
+                    selector.next_auton(false);
+                    selector.prev_auton(false); // Go to first (Left Auton)
+                } else if (strcmp(saved_name, "Right Auton") == 0) {
+                    selector.next_auton(false); // Go to second
+                } else if (strcmp(saved_name, "Testing Auton") == 0) {
+                    selector.next_auton(false);
+                    selector.next_auton(false); // Go to third
+                } else if (strcmp(saved_name, "Skills") == 0) {
+                    selector.next_auton(false);
+                    selector.next_auton(false);
+                    selector.next_auton(false); // Go to fourth
+                }
+                controller.print(2, 0, "Loaded (p%d)", i);
+                loaded = true;
+            }
+            fclose(file);
+        }
+    }
+    
+    // Register callback to know when auton is selected
+    selector.on_select(on_auton_selected);
+    
+    // Show the autonomous selector on the brain screen BEFORE calibration
+    // TAP an auton on the screen to select it
+    // Then PRESS UP on controller to save the selection
+    selector.focus();
+    
+    // Wait for user to save with UP button
+    controller.print(2, 0, "Press UP to save");
+    while (true) {
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
+            auto current = selector.get_auton();
+            if (current.has_value()) {
+                // Try different file paths
+                const char* paths[] = {"/usd/auton.txt", "/usd/auton_selector", "auton.txt"};
+                bool saved = false;
+                
+                for (int i = 0; i < 3 && !saved; i++) {
+                    FILE* save_file = fopen(paths[i], "w");
+                    if (save_file != nullptr) {
+                        fprintf(save_file, "%s", current->name.c_str());
+                        fflush(save_file);
+                        fclose(save_file);
+                        controller.clear_line(2);
+                        controller.print(2, 0, "SAVED! (path %d)", i);
+                        saved = true;
+                        pros::delay(1000);
+                    }
+                }
+                
+                if (!saved) {
+                    controller.print(2, 0, "All paths failed");
+                }
+            } else {
+                controller.print(2, 0, "No auton selected");
+            }
+            break;
+        }
+        pros::delay(20);
+    }
+    
+    // Calibrate chassis (this runs in background)
 	chassis.calibrate();
     chassis.setBrakeMode(pros::E_MOTOR_BRAKE_BRAKE);
     pros::c::motor_set_brake_mode(1, pros::E_MOTOR_BRAKE_HOLD);
-    
-    // Configure vision sensor signatures for color sorting
-
-
 }
 
 void disabled() {}
@@ -126,7 +229,9 @@ void competition_initialize() {}
 
 
 void skillsAutonomous() {
-
+    // Add your skills autonomous routine here
+    chassis.setPose(0, 0, 0);
+    // Skills routine implementation...
 }
 
 void left_auton() {
@@ -208,8 +313,9 @@ void testing_auton() {
 }
 
 void autonomous() {
-    //left_auton();
-    right_auton();
+    // Run the autonomous routine selected on the brain screen
+    // Selection is saved to SD card and persists across reboots
+    selector.run_auton();
 }
 
 
