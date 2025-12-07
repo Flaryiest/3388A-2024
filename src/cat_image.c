@@ -1,0 +1,82 @@
+// Cat image for RoboDash display
+// Simple 32x32 pixel cat face icon
+// Color format: LVGL CF_TRUE_COLOR (RGB565 - 16 bit per pixel)
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "liblvgl/lvgl.h"
+
+#ifndef LV_ATTRIBUTE_MEM_ALIGN
+#define LV_ATTRIBUTE_MEM_ALIGN
+#endif
+
+// Colors in RGB565 format (little endian)
+#define BG   0x0000  // Black background
+#define OR   0x20FD  // Orange (cat fur) - 0xFD20 swapped
+#define YL   0xE0FF  // Yellow (light fur) - 0xFFE0 swapped
+#define GR   0xE007  // Green (eyes) - 0x07E0 swapped
+#define PK   0xB2F8  // Pink (nose) - 0xF8B2 swapped
+#define WH   0xFFFF  // White (whiskers/highlights)
+#define BK   0x0000  // Black (pupils/outline)
+
+// 32x32 cat face pixel data
+static const uint16_t cat_img_map[] = {
+    // Row 0-3: Top with ear tips
+    BG,BG,BG,BG,BG,BG,OR,OR,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,OR,OR,BG,BG,BG,BG,BG,BG,BG,BG,
+    BG,BG,BG,BG,BG,OR,OR,OR,OR,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,OR,OR,OR,OR,BG,BG,BG,BG,BG,BG,BG,
+    BG,BG,BG,BG,OR,OR,YL,OR,OR,OR,BG,BG,BG,BG,BG,BG,BG,BG,BG,BG,OR,OR,OR,YL,OR,OR,BG,BG,BG,BG,BG,BG,
+    BG,BG,BG,OR,OR,YL,YL,YL,OR,OR,OR,BG,BG,BG,BG,BG,BG,BG,BG,OR,OR,OR,YL,YL,YL,OR,OR,BG,BG,BG,BG,BG,
+    // Row 4-7: Ears connecting to head
+    BG,BG,OR,OR,YL,YL,YL,YL,YL,OR,OR,OR,BG,BG,BG,BG,BG,BG,OR,OR,OR,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,BG,
+    BG,BG,OR,OR,YL,YL,YL,YL,YL,YL,OR,OR,OR,BG,BG,BG,BG,OR,OR,OR,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,OR,OR,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    // Row 8-11: Top of face
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    // Row 12-15: Eyes row
+    BG,OR,OR,YL,YL,YL,WH,WH,GR,GR,BK,YL,YL,YL,YL,YL,YL,YL,YL,YL,WH,WH,GR,GR,BK,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,WH,WH,GR,GR,BK,YL,YL,YL,YL,YL,YL,YL,YL,YL,WH,WH,GR,GR,BK,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,WH,WH,GR,GR,BK,YL,YL,YL,YL,YL,YL,YL,YL,YL,WH,WH,GR,GR,BK,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    // Row 16-19: Nose area
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,PK,PK,PK,PK,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,PK,PK,PK,PK,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,PK,PK,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    // Row 20-23: Whiskers area
+    WH,OR,OR,YL,YL,WH,WH,WH,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,WH,WH,WH,YL,YL,OR,OR,WH,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,WH,WH,WH,YL,YL,YL,YL,YL,YL,YL,YL,WH,WH,WH,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    WH,OR,OR,YL,YL,WH,WH,WH,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,WH,WH,WH,YL,YL,OR,OR,WH,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    // Row 24-27: Lower face
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,BG,BG,BG,
+    BG,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,BG,BG,BG,
+    BG,BG,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,BG,BG,BG,BG,
+    // Row 28-31: Bottom of face
+    BG,BG,BG,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,BG,BG,BG,BG,BG,
+    BG,BG,BG,BG,OR,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,OR,BG,BG,BG,BG,BG,BG,
+    BG,BG,BG,BG,BG,OR,OR,OR,OR,OR,OR,YL,YL,YL,YL,YL,YL,YL,YL,OR,OR,OR,OR,OR,OR,BG,BG,BG,BG,BG,BG,BG,
+    BG,BG,BG,BG,BG,BG,BG,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,OR,BG,BG,BG,BG,BG,BG,BG,BG,BG,
+};
+
+const lv_img_dsc_t cat_img = {
+    .header = {
+        .cf = LV_IMG_CF_TRUE_COLOR,
+        .always_zero = 0,
+        .reserved = 0,
+        .w = 32,
+        .h = 32,
+    },
+    .data_size = 32 * 32 * sizeof(uint16_t),
+    .data = (const uint8_t*)cat_img_map,
+};
+
+#ifdef __cplusplus
+}
+#endif

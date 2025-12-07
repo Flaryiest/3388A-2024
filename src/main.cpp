@@ -9,21 +9,26 @@
 
 #include "robodash/api.h" // GUI
 
+// External reference to the cat image
+extern "C" {
+    extern const lv_img_dsc_t cat_img;
+}
+
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({-20, -19, -18}, pros::MotorGearset::blue);
-pros::MotorGroup right_motors({10, 9, 8}, pros::MotorGearset::blue);
-pros::Motor leftIntakeBottom(15, pros::MotorGearset::blue);
-pros::Motor leftIntakeTop(16, pros::MotorGearset::green);
-pros::Motor rightIntakeBottom(17, pros::MotorGearset::green);
-pros::Optical color_sensor(7);
+pros::MotorGroup left_motors({1, 2, -3}, pros::MotorGearset::blue);
+pros::MotorGroup right_motors({-13, -12, 15}, pros::MotorGearset::blue);
+pros::Motor leftIntakeBottom(10, pros::MotorGearset::blue);
+pros::Motor leftIntakeTop(7, pros::MotorGearset::green);
+pros::Motor rightIntakeBottom(9, pros::MotorGearset::green);
+pros::Optical color_sensor(20);
 
-pros::Distance park_distance(3);
+pros::Distance park_distance(8); //base distance is around 200 mm. With ball is around 50-120
 
-pros::adi::DigitalOut intake('A', true); 
-pros::adi::DigitalOut doinker('B', true); 
-pros::adi::DigitalOut expansion('C', true);
-pros::adi::DigitalOut wings('D', false);
+pros::adi::DigitalOut intake('A', false); 
+pros::adi::DigitalOut doinker('F', true); 
+pros::adi::DigitalOut expansion('D', false);
+pros::adi::DigitalOut wings('E', false);
 lemlib::ExpoDriveCurve throttle_curve(3,
                                      6,
                                      1.019 
@@ -38,11 +43,11 @@ lemlib::Drivetrain drivetrain(&left_motors,
                               &right_motors,
                               10,
                               lemlib::Omniwheel::NEW_275,
-                              360,
+                              450,
                               2
 );
 
-pros::Imu imu(14);
+pros::Imu imu(15);
 pros::Rotation horizontal_encoder(4);
 
 lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.2);
@@ -102,6 +107,9 @@ rd::Selector selector("auton_selector", {
     {"Testing Auton", testing_auton},
     {"Skills", skillsAutonomous},
 });
+
+// Create cat image view - this appears as a separate tab you can swipe to
+rd::Image cat_view(&cat_img, "Cat :3");
 
 // Callback to print when an auton is selected
 void on_auton_selected(std::optional<rd::Selector::routine_t> routine) {
@@ -178,44 +186,9 @@ void initialize() {
     // Register callback to know when auton is selected
     selector.on_select(on_auton_selected);
     
-    // Show the autonomous selector on the brain screen BEFORE calibration
+    // Show the autonomous selector on the brain screen
     // TAP an auton on the screen to select it
-    // Then PRESS UP on controller to save the selection
     selector.focus();
-    
-    // Wait for user to save with UP button
-    controller.print(2, 0, "Press UP to save");
-    while (true) {
-        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) {
-            auto current = selector.get_auton();
-            if (current.has_value()) {
-                // Try different file paths
-                const char* paths[] = {"/usd/auton.txt", "/usd/auton_selector", "auton.txt"};
-                bool saved = false;
-                
-                for (int i = 0; i < 3 && !saved; i++) {
-                    FILE* save_file = fopen(paths[i], "w");
-                    if (save_file != nullptr) {
-                        fprintf(save_file, "%s", current->name.c_str());
-                        fflush(save_file);
-                        fclose(save_file);
-                        controller.clear_line(2);
-                        controller.print(2, 0, "SAVED! (path %d)", i);
-                        saved = true;
-                        pros::delay(1000);
-                    }
-                }
-                
-                if (!saved) {
-                    controller.print(2, 0, "All paths failed");
-                }
-            } else {
-                controller.print(2, 0, "No auton selected");
-            }
-            break;
-        }
-        pros::delay(20);
-    }
     
     // Calibrate chassis (this runs in background)
 	chassis.calibrate();
@@ -321,48 +294,72 @@ void autonomous() {
 
 void opcontrol() {
     // Persistent state for intake piston toggle
-    static bool intakePistonState = true;      // false = retracted, true = extended
-    static bool prevIntakeFour = true;         // previous loop state of R2 button
+    static bool intakePistonState = false;     // false = retracted, true = extended
+    static bool prevIntakePistonButton = true; // previous loop state of Y button
     // Persistent state for doinker toggle
     static bool doinkerState = true;           // false = retracted, true = extended
     static bool prevDoinkerButton = true;      // previous loop state of doinker button (A)
     // Persistent state for expansion toggle
-    static bool expansionState = true;        // false = retracted, true = extended (deployed)
+    static bool expansionState = false;       // false = retracted, true = extended (deployed)
     static bool prevExpansionButton = true;   // previous loop state of expansion button (B)
     // Persistent state for wing toggle
     static bool wingState = false;            // false = retracted, true = extended
-    static bool prevWingButton = true;        // previous loop state of wing button (X)
+    static bool prevWingButton = true;        // previous loop state of wing button (R2)
+    // Persistent state for park macro
+    static bool parkMacroRunning = false;     // true when park macro is active
     while (true) {
         bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
         bool intakeThree = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-        bool intakeFour = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-        bool intakeFive = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+        bool intakePistonButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
 
-        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
         bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-        bool intakeLiftState = false; // unused currently
+        bool parkMacroButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-
-        if (intakeOne) {
-            leftIntakeBottom.move(-127); //bottm
-            leftIntakeTop.move(-127); //middle
-            rightIntakeBottom.move(-127); //top
-
-        } else if (intakeTwo) {
+        
+        // Park macro: when X is pressed, run intake in reverse at half speed until ball detected
+        if (parkMacroButton) {
+            int distance = park_distance.get();
+            
+            // Check if ball is detected (distance dropped from ~200 to ~70-100)
+            if (distance < 120 && distance > 0) {
+                // Ball detected, stop the macro
+                leftIntakeBottom.move(0);
+                leftIntakeTop.move(0);
+                rightIntakeBottom.move(0);
+                parkMacroRunning = false;
+                controller.rumble("-");  // Short rumble to indicate ball detected
+            } else {
+                // Run intake motors in reverse at half speed (opposite of intakeOne)
+                // intakeOne runs: leftIntakeBottom(-127), leftIntakeTop(-127), rightIntakeBottom(127)
+                // So opposite at half speed: leftIntakeBottom(63), leftIntakeTop(63), rightIntakeBottom(-63)
+                leftIntakeBottom.move(40);
+                leftIntakeTop.move(63);
+                rightIntakeBottom.move(-127);
+                parkMacroRunning = true;
+            }
+        } else if (parkMacroRunning) {
+            // Button released while macro was running - stop motors
+            leftIntakeBottom.move(0);
+            leftIntakeTop.move(0);
+            rightIntakeBottom.move(0);
+            parkMacroRunning = false;
+        } else if (intakeOne) {
             leftIntakeBottom.move(-127); //bottm
             leftIntakeTop.move(-127); //middle
             rightIntakeBottom.move(127); //top
 
+        } else if (intakeTwo) {
+            leftIntakeBottom.move(-127); //bottm
+            leftIntakeTop.move(-127); //middle
+            rightIntakeBottom.move(-127); //top
+
 
         } else if (intakeThree) {
             leftIntakeBottom.move(127);
-            leftIntakeTop.move(127);
-            rightIntakeBottom.move(127);
-        } else if (intakeFive) {
-            leftIntakeBottom.move(0);
             leftIntakeTop.move(127);
             rightIntakeBottom.move(-127);
         }
@@ -373,9 +370,9 @@ void opcontrol() {
             rightIntakeBottom.move(0);
         }
 
-        if (intakeFour) {
+        if (intakePistonButton) {
             // Edge-triggered toggle: only toggle when button transitions from not pressed to pressed
-            if (!prevIntakeFour) {
+            if (!prevIntakePistonButton) {
                 intakePistonState = !intakePistonState;
                 intake.set_value(intakePistonState);
                 pros::delay(100); 
@@ -409,7 +406,7 @@ void opcontrol() {
         }
 
         chassis.arcade(leftY, rightX);
-        prevIntakeFour = intakeFour; // update edge detector
+        prevIntakePistonButton = intakePistonButton; // update edge detector
         prevDoinkerButton = doinkerButton; // update edge detector for doinker
         prevExpansionButton = expansionButton; // update edge detector for expansion
         prevWingButton = wingButton; // update edge detector for wing
