@@ -317,6 +317,7 @@ void soloAWP() {
     pros::delay(1000);
     //back out and go to tube
     chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
+    intake.set_value(true);
 }
 
 void autonomous() {
