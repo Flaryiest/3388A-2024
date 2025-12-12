@@ -200,6 +200,23 @@ void disabled() {}
 
 void competition_initialize() {}
 
+void scoreHigh() {
+    leftIntakeBottom.move(-127); //bottm
+    leftIntakeTop.move(-127); //middle
+    rightIntakeBottom.move(127); //top
+}
+
+void scoreMiddleHigh() {
+    leftIntakeBottom.move(-127); //bottm
+    leftIntakeTop.move(-127); //middle
+    rightIntakeBottom.move(-127); //top
+}
+
+void stopAllMotors() {
+    leftIntakeBottom.move(0); //bottm
+    leftIntakeTop.move(0); //middle
+    rightIntakeBottom.move(0); //top
+}
 
 void skillsAutonomous() {
     // Add your skills autonomous routine here
@@ -208,35 +225,6 @@ void skillsAutonomous() {
 }
 
 void left_auton() {
-    chassis.setPose(0, 0, 0);
-    intake.set_value(true);
-    expansion.set_value(true);
-    leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    //rightIntakeBottom.move(-127); //top
-    //first three balls
-    chassis.moveToPoint(0, 15.5, 2000, {.maxSpeed = 120}); 
-    chassis.turnToHeading(20, 1000);
-    pros::delay(1000);
-    chassis.moveToPoint(-5, 25, 4000, {.maxSpeed = 23}); 
-    pros::delay(200);
-    chassis.turnToHeading(124, 4000);
-    pros::delay(1000);
-    
-    chassis.moveToPoint(-21, 12, 4000, {.maxSpeed = 70}); 
-    pros::delay(1000);
-    chassis.turnToHeading(180, 4000);
-    doinker.set_value(false);
-    chassis.moveToPoint(-21, 3, 4000, {.maxSpeed = 100}); 
-    pros::delay(1200);
-    chassis.moveToPoint(-21, 23, 4000, {.forwards = false, .maxSpeed = 100}); 
-    intake.set_value(false);
-    pros::delay(500);
-    //doinker.set_value(true);
-    pros::delay(2000);
-    rightIntakeBottom.move(-127); //top
-    pros::delay(5000);
-    rightIntakeBottom.move(0); //top
 }
 
 
@@ -285,10 +273,56 @@ void testing_auton() {
     chassis.turnToHeading(90, 100000);
 }
 
+
+
+void soloAWP() {
+    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
+    chassis.setPose(0, 0, 0);
+    //move in front of match loader
+    chassis.moveToPoint(0, 14.25, 3000, {.maxSpeed = 120});
+    chassis.turnToHeading(90, 1000); //face match loader
+    pros::delay(500);
+    //go to match loader and intake
+    scoreHigh();
+    doinker.set_value(true);
+    chassis.moveToPoint(10, 14.25, 3000);
+    pros::delay(1000);
+    //go to tube and score
+    chassis.moveToPoint(-16, 14.25, 3000, {.forwards = false, .maxSpeed = 100, });
+    pros::delay(300);
+    doinker.set_value(false);
+    intake.set_value(true);
+    pros::delay(1000);
+    //get out, and line up
+    chassis.moveToPoint(-12, 14.25, 3000);
+    chassis.turnToHeading(-120, 1000); //face balls
+    intake.set_value(false);
+    pros::delay(500);
+    chassis.moveToPoint(-20, 7, 4000, {.maxSpeed = 100});
+    //straight line get balls
+    chassis.turnToHeading(180, 1000); //face balls
+    chassis.moveToPoint(-20, -40, 4000, {.maxSpeed = 100});
+    chassis.moveToPoint(-20, -35, 4000, {.forwards = false, .maxSpeed = 100});
+    //score balls middle top goal
+    chassis.turnToHeading(225, 1000); //face goal
+    chassis.moveToPoint(-25, -25, 4000, {.forwards = false, .maxSpeed = 100});
+    scoreMiddleHigh();
+    pros::delay(1000);
+    // last match loader
+    scoreHigh();
+    chassis.moveToPoint(-8, -55, 4000, {.maxSpeed = 100});
+    //go into it
+    doinker.set_value(true);
+    chassis.moveToPoint(10, -55, 4000, {.maxSpeed = 100});
+    pros::delay(1000);
+    //back out and go to tube
+    chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
+}
+
 void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    selector.run_auton();
+    soloAWP();
 }
 
 
