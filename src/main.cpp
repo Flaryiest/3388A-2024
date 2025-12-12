@@ -308,7 +308,7 @@ void soloAWP() {
     chassis.moveToPoint(-25, -25, 4000, {.forwards = false, .maxSpeed = 100});
     scoreMiddleHigh();
     pros::delay(1000);
-    // last match loader
+    // match loader
     scoreHigh();
     chassis.moveToPoint(-8, -55, 4000, {.maxSpeed = 100});
     //go into it
@@ -318,6 +318,8 @@ void soloAWP() {
     //back out and go to tube
     chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
     intake.set_value(true);
+    pros::delay(1000);
+    stopAllMotors();
 }
 
 void autonomous() {
