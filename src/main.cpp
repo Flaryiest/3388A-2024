@@ -212,6 +212,12 @@ void scoreMiddleHigh() {
     rightIntakeBottom.move(-127); //top
 }
 
+void reverseMotors() {
+    leftIntakeBottom.move(127); //bottm
+    leftIntakeTop.move(127); //middle
+    rightIntakeBottom.move(-127); //top
+}
+
 void stopAllMotors() {
     leftIntakeBottom.move(0); //bottm
     leftIntakeTop.move(0); //middle
@@ -280,7 +286,7 @@ void soloAWP() {
     chassis.setPose(0, 0, 0);
     wings.set_value(false);
     //move in front of match loader
-    chassis.moveToPoint(0, 26.3, 3000, {.maxSpeed = 120});
+    chassis.moveToPoint(0, 26.8, 3000, {.maxSpeed = 120});
     pros::delay(200);
     chassis.turnToHeading(104, 1000); //face match loader
     pros::delay(500);
@@ -288,44 +294,46 @@ void soloAWP() {
     scoreHigh();
     doinker.set_value(true);
     pros::delay(100);
-    chassis.moveToPoint(13.5, 26.1, 1000);
+    chassis.moveToPoint(13.5, 26.6, 1000);
     pros::delay(1000);
     // //go to tube and score
     stopAllMotors();
     wings.set_value(true);
-    chassis.moveToPoint(-15, 30, 3000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(-15, 30.5, 3000, {.forwards = false, .maxSpeed = 100});
     pros::delay(800);
     doinker.set_value(false);
     scoreHigh();
-    pros::delay(2000);
+    pros::delay(1400);
     // //get out, and line up
     chassis.moveToPoint(-8, 30, 3000);
-    chassis.turnToHeading(-120, 1000); //face balls
+    chassis.turnToHeading(-120, 500); //face balls
     wings.set_value(false);
     // intake.set_value(false);
     // pros::delay(500);
     chassis.moveToPoint(-20, 20, 4000, {.maxSpeed = 100});
     chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 50});
     // //straight line get balls
-    pros::delay(1500);
+    pros::delay(1000);
     chassis.turnToHeading(180, 1000); //face balls
-    chassis.moveToPoint(-40, -24, 4000, {.maxSpeed = 50});
-    pros::delay(1000);
-    chassis.moveToPoint(-47, -9.6, 4000, {.forwards = false, .maxSpeed = 100});
-    rightIntakeBottom.move(127);
-    pros::delay(1000);
-    // //score balls middle top goal
-    // chassis.turnToHeading(225, 1000); //face goal
-    // chassis.moveToPoint(-25, -25, 4000, {.forwards = false, .maxSpeed = 100});
-    // scoreMiddleHigh();
-    // pros::delay(1000);
-    // // match loader
-    // scoreHigh();
-    // chassis.moveToPoint(-8, -55, 4000, {.maxSpeed = 100});
-    // //go into it
-    // doinker.set_value(true);
-    // chassis.moveToPoint(10, -55, 4000, {.maxSpeed = 100});
-    // pros::delay(1000);
+    chassis.moveToPoint(-40, -25, 4000, {.maxSpeed = 60});
+    pros::delay(800);
+    chassis.moveToPoint(-46, -10.6, 4000, {.forwards = false, .maxSpeed = 100});
+    doinker.set_value(true);
+    pros::delay(300);
+    reverseMotors();
+    pros::delay(300);
+    scoreMiddleHigh();
+    pros::delay(800);
+    scoreHigh();
+    pros::delay(300);
+    chassis.moveToPoint(-30, -49, 4000, {.forwards = true, .maxSpeed = 127});
+    chassis.turnToHeading(90, 1000);
+    chassis.moveToPoint(-10, -49, 4000, {.forwards = true, .maxSpeed = 127});
+    pros::delay(400);
+    wings.set_value(true);
+    stopAllMotors();
+    chassis.moveToPoint(-40, -49, 4000, {.forwards = true, .maxSpeed = 127});
+    scoreHigh();
     // //back out and go to tube
     // chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
     // intake.set_value(true);
