@@ -235,53 +235,6 @@ void left_auton() {
 
 
 void right_auton() {
-    chassis.setPose(0, 0, 0);
-    intake.set_value(true);
-    expansion.set_value(true);
-    leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    //rightIntakeBottom.move(-127); //top
-    //first three balls
-    chassis.moveToPoint(0, 15.5, 2000, {.maxSpeed = 120}); 
-    chassis.turnToHeading(20, 1000);
-    pros::delay(1000);
-    chassis.moveToPoint(5, 25, 4000, {.maxSpeed = 23}); 
-    pros::delay(200);
-    chassis.turnToHeading(124, 4000);
-    pros::delay(1000);
-    
-    chassis.moveToPoint(21, 12, 4000, {.maxSpeed = 70}); 
-    pros::delay(1000);
-    chassis.turnToHeading(180, 4000);
-    doinker.set_value(false);
-    chassis.moveToPoint(21, 3, 4000, {.maxSpeed = 100}); 
-    pros::delay(1200);
-    chassis.moveToPoint(21, 23, 4000, {.forwards = false, .maxSpeed = 100}); 
-    intake.set_value(false);
-    pros::delay(500);
-    //doinker.set_value(true);
-    pros::delay(2000);
-    rightIntakeBottom.move(-127); //top
-    pros::delay(5000);
-    rightIntakeBottom.move(0); //top
-    
-    // //load next three balls
-    // chassis.moveToPoint(30, -10, 4000, {.maxSpeed = 120});
-    // pros::delay(1000);
-    // chassis.moveToPoint(30, 20, 4000, {.forwards = false, .maxSpeed = 120});
-
-}
-
-void testing_auton() {
-    chassis.setPose(0, 0, 0);
-    intake.set_value(false);
-    expansion.set_value(true);
-    chassis.turnToHeading(90, 100000);
-}
-
-
-
-void soloAWP() {
     //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     chassis.setPose(0, 0, 0);
     wings.set_value(false);
@@ -311,40 +264,93 @@ void soloAWP() {
     // intake.set_value(false);
     // pros::delay(500);
     chassis.moveToPoint(-20, 20, 4000, {.maxSpeed = 100});
-    chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 50});
-    // //straight line get balls
     pros::delay(1000);
-    chassis.turnToHeading(180, 1000); //face balls
-    chassis.moveToPoint(-40, -25, 4000, {.maxSpeed = 60});
+    chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 90});
+    pros::delay(400);
+    chassis.turnToHeading(-125, 1000); //face balls
+    pros::delay(2000);
+    reverseMotors();
+
+}
+
+void testing_auton() {
+    chassis.setPose(0, 0, 0);
+    intake.set_value(false);
+    expansion.set_value(true);
+    chassis.turnToHeading(90, 100000);
+}
+
+
+void giveAWP() {
+    // Add your autonomous routine here
+    chassis.setPose(0, 0, 0);
+    wings.set_value(false);
+    chassis.moveToPoint(0, 1, 3000, {.maxSpeed = 120});
+    // AWP routine implementation...
+}
+
+void soloAWP() {
+    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
+    chassis.setPose(0, 0, 0);
+    wings.set_value(false);
+    //move in front of match loader
+    chassis.moveToPoint(0, 26.8, 3000, {.maxSpeed = 120});
+    pros::delay(200);
+    chassis.turnToHeading(104, 1000); //face match loader
+    pros::delay(500);
+    //go to match loader and intake
+    scoreHigh();
+    doinker.set_value(true);
+    pros::delay(100);
+    chassis.moveToPoint(13.5, 26.6, 1000);
+    pros::delay(1000);
+    // //go to tube and score
+    stopAllMotors();
+    wings.set_value(true);
+    chassis.moveToPoint(-15, 30.5, 3000, {.forwards = false, .maxSpeed = 120});
     pros::delay(800);
+    doinker.set_value(false);
+    scoreHigh();
+    pros::delay(1400);
+    // //get out, and line up
+    chassis.moveToPoint(-8, 30, 3000);
+    chassis.turnToHeading(-120, 500); //face balls
+    wings.set_value(false);
+    // intake.set_value(false);
+    // pros::delay(500);
+    chassis.moveToPoint(-20, 20, 4000, {.maxSpeed = 120});
+    chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 90});
+    // //straight line get balls
+    pros::delay(400);
+    chassis.turnToHeading(180, 1000); //face balls
+    chassis.moveToPoint(-40, -25, 4000, {.maxSpeed = 100});
+    pros::delay(700);
     chassis.moveToPoint(-46, -10.6, 4000, {.forwards = false, .maxSpeed = 100});
     doinker.set_value(true);
     pros::delay(300);
     reverseMotors();
-    pros::delay(300);
+    pros::delay(200);
     scoreMiddleHigh();
-    pros::delay(800);
+    pros::delay(700);
     scoreHigh();
-    pros::delay(300);
-    chassis.moveToPoint(-30, -49, 4000, {.forwards = true, .maxSpeed = 127});
+    pros::delay(200);
+    chassis.moveToPoint(-30, -48, 2000, {.forwards = true, .maxSpeed = 127});
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(-10, -49, 4000, {.forwards = true, .maxSpeed = 127});
+    chassis.moveToPoint(-4, -48, 1000, {.forwards = true, .maxSpeed = 127});
     pros::delay(400);
     wings.set_value(true);
     stopAllMotors();
-    chassis.moveToPoint(-40, -49, 4000, {.forwards = true, .maxSpeed = 127});
+    chassis.moveToPoint(-40, -48, 1000, {.forwards = true, .maxSpeed = 127});
+    pros::delay(300);
     scoreHigh();
-    // //back out and go to tube
-    // chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
-    // intake.set_value(true);
-    // pros::delay(1000);
-    // stopAllMotors();
 }
 
 void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    soloAWP();
+    right_auton();
+    //soloAWP();
+    //giveAWP();
     // testing_auton();
 }
 
