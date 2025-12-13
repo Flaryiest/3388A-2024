@@ -26,9 +26,9 @@ pros::Optical color_sensor(20);
 pros::Distance park_distance(8); //base distance is around 200 mm. With ball is around 50-120
 
 pros::adi::DigitalOut intake('A', false); 
-pros::adi::DigitalOut doinker('F', true); 
+pros::adi::DigitalOut doinker('F', false); 
 pros::adi::DigitalOut expansion('D', false);
-pros::adi::DigitalOut wings('E', false);
+pros::adi::DigitalOut wings('E', true);
 lemlib::ExpoDriveCurve throttle_curve(3,
                                      6,
                                      1.019 
@@ -36,7 +36,7 @@ lemlib::ExpoDriveCurve throttle_curve(3,
 
 lemlib::ExpoDriveCurve steer_curve(3,
                                   6,
-                                  1.012
+                                  1.014
 );
 
 lemlib::Drivetrain drivetrain(&left_motors,
@@ -47,7 +47,7 @@ lemlib::Drivetrain drivetrain(&left_motors,
                               2
 );
 
-pros::Imu imu(15);
+pros::Imu imu(18);
 pros::Rotation horizontal_encoder(4);
 
 lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.2);
@@ -71,10 +71,10 @@ lemlib::ControllerSettings lateral_controller(10,
                                               20
 );
 
-lemlib::ControllerSettings angular_controller(2.3,
-                                              0.003,
-                                              15,
-                                              3,
+lemlib::ControllerSettings angular_controller(2.8,
+                                              0.03,
+                                              25,
+                                              30,
                                               1,
                                               100,
                                               3,
@@ -278,54 +278,66 @@ void testing_auton() {
 void soloAWP() {
     //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     chassis.setPose(0, 0, 0);
+    wings.set_value(false);
     //move in front of match loader
-    chassis.moveToPoint(0, 14.25, 3000, {.maxSpeed = 120});
-    chassis.turnToHeading(90, 1000); //face match loader
+    chassis.moveToPoint(0, 26.3, 3000, {.maxSpeed = 120});
+    pros::delay(200);
+    chassis.turnToHeading(104, 1000); //face match loader
     pros::delay(500);
     //go to match loader and intake
     scoreHigh();
     doinker.set_value(true);
-    chassis.moveToPoint(10, 14.25, 3000);
+    pros::delay(100);
+    chassis.moveToPoint(13.5, 26.1, 1000);
     pros::delay(1000);
-    //go to tube and score
-    chassis.moveToPoint(-16, 14.25, 3000, {.forwards = false, .maxSpeed = 100, });
-    pros::delay(300);
-    doinker.set_value(false);
-    intake.set_value(true);
-    pros::delay(1000);
-    //get out, and line up
-    chassis.moveToPoint(-12, 14.25, 3000);
-    chassis.turnToHeading(-120, 1000); //face balls
-    intake.set_value(false);
-    pros::delay(500);
-    chassis.moveToPoint(-20, 7, 4000, {.maxSpeed = 100});
-    //straight line get balls
-    chassis.turnToHeading(180, 1000); //face balls
-    chassis.moveToPoint(-20, -40, 4000, {.maxSpeed = 100});
-    chassis.moveToPoint(-20, -35, 4000, {.forwards = false, .maxSpeed = 100});
-    //score balls middle top goal
-    chassis.turnToHeading(225, 1000); //face goal
-    chassis.moveToPoint(-25, -25, 4000, {.forwards = false, .maxSpeed = 100});
-    scoreMiddleHigh();
-    pros::delay(1000);
-    // match loader
-    scoreHigh();
-    chassis.moveToPoint(-8, -55, 4000, {.maxSpeed = 100});
-    //go into it
-    doinker.set_value(true);
-    chassis.moveToPoint(10, -55, 4000, {.maxSpeed = 100});
-    pros::delay(1000);
-    //back out and go to tube
-    chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
-    intake.set_value(true);
-    pros::delay(1000);
+    // //go to tube and score
     stopAllMotors();
+    wings.set_value(true);
+    chassis.moveToPoint(-15, 30, 3000, {.forwards = false, .maxSpeed = 100});
+    pros::delay(800);
+    doinker.set_value(false);
+    scoreHigh();
+    pros::delay(2000);
+    // //get out, and line up
+    chassis.moveToPoint(-8, 30, 3000);
+    chassis.turnToHeading(-120, 1000); //face balls
+    wings.set_value(false);
+    // intake.set_value(false);
+    // pros::delay(500);
+    chassis.moveToPoint(-20, 20, 4000, {.maxSpeed = 100});
+    chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 50});
+    // //straight line get balls
+    pros::delay(1500);
+    chassis.turnToHeading(180, 1000); //face balls
+    chassis.moveToPoint(-40, -24, 4000, {.maxSpeed = 50});
+    pros::delay(1000);
+    chassis.moveToPoint(-47, -9.6, 4000, {.forwards = false, .maxSpeed = 100});
+    rightIntakeBottom.move(127);
+    pros::delay(1000);
+    // //score balls middle top goal
+    // chassis.turnToHeading(225, 1000); //face goal
+    // chassis.moveToPoint(-25, -25, 4000, {.forwards = false, .maxSpeed = 100});
+    // scoreMiddleHigh();
+    // pros::delay(1000);
+    // // match loader
+    // scoreHigh();
+    // chassis.moveToPoint(-8, -55, 4000, {.maxSpeed = 100});
+    // //go into it
+    // doinker.set_value(true);
+    // chassis.moveToPoint(10, -55, 4000, {.maxSpeed = 100});
+    // pros::delay(1000);
+    // //back out and go to tube
+    // chassis.moveToPoint(-16, -55, 4000, {.forwards = false, .maxSpeed = 100});
+    // intake.set_value(true);
+    // pros::delay(1000);
+    // stopAllMotors();
 }
 
 void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     soloAWP();
+    // testing_auton();
 }
 
 
@@ -364,17 +376,20 @@ void opcontrol() {
             // Check if ball is detected (distance dropped from ~200 to ~70-100)
             if (distance < 120 && distance > 0) {
                 // Ball detected, stop the macro
+                pros::delay(22);
                 leftIntakeBottom.move(0);
                 leftIntakeTop.move(0);
                 rightIntakeBottom.move(0);
+                
+                expansion.set_value(true);
                 parkMacroRunning = false;
                 controller.rumble("-");  // Short rumble to indicate ball detected
             } else {
                 // Run intake motors in reverse at half speed (opposite of intakeOne)
                 // intakeOne runs: leftIntakeBottom(-127), leftIntakeTop(-127), rightIntakeBottom(127)
                 // So opposite at half speed: leftIntakeBottom(63), leftIntakeTop(63), rightIntakeBottom(-63)
-                leftIntakeBottom.move(40);
-                leftIntakeTop.move(63);
+                leftIntakeBottom.move(80);
+                leftIntakeTop.move(83);
                 rightIntakeBottom.move(-127);
                 parkMacroRunning = true;
             }
