@@ -25,10 +25,11 @@ pros::Optical color_sensor(20);
 
 pros::Distance park_distance(8); //base distance is around 200 mm. With ball is around 50-120
 
-pros::adi::DigitalOut intake('A', false); 
+pros::adi::DigitalOut intake('A', true); 
 pros::adi::DigitalOut doinker('F', false); 
 pros::adi::DigitalOut expansion('D', false);
 pros::adi::DigitalOut wings('E', true);
+pros::adi::DigitalOut middleDescore('G', false);
 lemlib::ExpoDriveCurve throttle_curve(3,
                                      6,
                                      1.019 
@@ -36,52 +37,50 @@ lemlib::ExpoDriveCurve throttle_curve(3,
 
 lemlib::ExpoDriveCurve steer_curve(3,
                                   6,
-                                  1.014
+                                  1.016
 );
 
 lemlib::Drivetrain drivetrain(&left_motors,
                               &right_motors,
                               10,
-                              lemlib::Omniwheel::NEW_275,
+                              lemlib::Omniwheel::NEW_325,
                               450,
                               2
 );
 
 pros::Imu imu(18);
-pros::Rotation horizontal_encoder(4);
+pros::Rotation vertical_encoder(4);
 
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.2);
-lemlib::TrackingWheel horizontal2_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, -0.2);
+lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, 0);
 
-lemlib::OdomSensors sensors(nullptr,
+lemlib::OdomSensors sensors(&vertical_tracking_wheel,
                             nullptr,
                             nullptr,
                             nullptr,
                             &imu
 );
 
-lemlib::ControllerSettings lateral_controller(10,
-                                              0, 
-                                              3,
-                                              3,
-                                              1,
-                                              100,
-                                              3,
-                                              500,
-                                              20
+lemlib::ControllerSettings lateral_controller(10, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              3, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
 );
 
-lemlib::ControllerSettings angular_controller(2.8,
-                                              0.03,
-                                              25,
-                                              30,
-                                              1,
-                                              100,
-                                              3,
-                                              500,
-                                              0
+lemlib::ControllerSettings angular_controller(12, // proportional gain (kP)
+                                              0, // integral gain (kI)
+                                              8, // derivative gain (kD)
+                                              0, // anti windup
+                                              0, // small error range, in inches
+                                              0, // small error range timeout, in milliseconds
+                                              0, // large error range, in inches
+                                              0, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
 );
-
 lemlib::Chassis chassis(drivetrain,
                         lateral_controller,
                         angular_controller,
@@ -274,10 +273,101 @@ void right_auton() {
 }
 
 void testing_auton() {
+    // ===== PID TUNING AUTONOMOUS =====
+    // Instructions:
+    // 1. First tune ANGULAR PID (turning), then tune LATERAL PID (driving straight)
+    // 2. Comment/uncomment test sections below as needed
+    // 3. Watch the robot and adjust PID values in the controller settings at the top of the file
+    
     chassis.setPose(0, 0, 0);
-    intake.set_value(false);
-    expansion.set_value(true);
-    chassis.turnToHeading(90, 100000);
+    
+    // ===== ANGULAR PID TUNING (Turn Tests) =====
+    // Use these to tune angular controller (kP, kD, then kI if needed)
+    // FLOWCHART:
+    // - If robot oscillates (wiggles back and forth): INCREASE kD
+    // - If robot is too slow to reach target: INCREASE kP
+    // - If robot overshoots: DECREASE kP
+    // - If robot settles but not at target (steady-state error): ADD small kI (0.01-0.05)
+    
+    // Test 1: 90 degree turn
+    controller.print(0, 0, "Turn 90");
+    chassis.turnToHeading(90, 2000);
+    pros::delay(2000);
+    
+    // Test 2: 180 degree turn
+    controller.print(0, 0, "Turn 180");
+    chassis.turnToHeading(180, 2000);
+    pros::delay(2000);
+    
+    // Test 3: 270 degree turn
+    controller.print(0, 0, "Turn 270");
+    chassis.turnToHeading(270, 2000);
+    pros::delay(2000);
+    
+    // Test 4: Back to 0
+    controller.print(0, 0, "Turn 0");
+    chassis.turnToHeading(0, 2000);
+    pros::delay(2000);
+    
+    
+    // ===== LATERAL PID TUNING (Straight Line Tests) =====
+    // Uncomment these AFTER tuning angular PID
+    // Use these to tune lateral controller (kP, kD, slew, then kI if needed)
+    // FLOWCHART:
+    // - If robot oscillates (moves jerky): INCREASE kD
+    // - If robot is too slow: INCREASE kP
+    // - If robot overshoots: DECREASE kP
+    // - If wheels slip: DECREASE slew (start at 20 and go down)
+    // - If robot tips: DECREASE slew
+    // - If robot settles but not at target: ADD small kI (0.01-0.05)
+    
+    /*
+    chassis.setPose(0, 0, 0);
+    
+    // Test 1: Drive 24 inches forward (1 tile)
+    controller.print(0, 0, "Fwd 24in");
+    chassis.moveToPoint(0, 24, 100000);
+    pros::delay(2000);
+    
+    // Test 2: Drive 48 inches forward (2 tiles)
+    controller.print(0, 0, "Fwd 48in");
+    chassis.moveToPoint(0, 48, 100000);
+    pros::delay(2000);
+    
+    // Test 3: Drive back to start
+    controller.print(0, 0, "Back 0");
+    chassis.moveToPoint(0, 0, 100000);
+    pros::delay(2000);
+    */
+    
+    
+    // ===== COMBINED TEST (After both are tuned) =====
+    // Uncomment to test both angular and lateral together
+    /*
+    chassis.setPose(0, 0, 0);
+    controller.print(0, 0, "Square Test");
+    
+    chassis.moveToPoint(0, 24, 10000);
+    pros::delay(500);
+    chassis.turnToHeading(90, 10000);
+    pros::delay(500);
+    
+    chassis.moveToPoint(24, 24, 10000);
+    pros::delay(500);
+    chassis.turnToHeading(180, 10000);
+    pros::delay(500);
+    
+    chassis.moveToPoint(24, 0, 10000);
+    pros::delay(500);
+    chassis.turnToHeading(270, 10000);
+    pros::delay(500);
+    
+    chassis.moveToPoint(0, 0, 10000);
+    pros::delay(500);
+    chassis.turnToHeading(0, 10000);
+    */
+    
+    controller.print(0, 0, "Tuning Done!");
 }
 
 
@@ -348,10 +438,11 @@ void soloAWP() {
 void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    right_auton();
+    //right_auton();
     //soloAWP();
     //giveAWP();
-    // testing_auton();
+    intake.set_value(false);
+    testing_auton();
 }
 
 
@@ -368,6 +459,9 @@ void opcontrol() {
     // Persistent state for wing toggle
     static bool wingState = false;            // false = retracted, true = extended
     static bool prevWingButton = true;        // previous loop state of wing button (R2)
+    // Persistent state for middleDescore toggle
+    static bool middleDescoreState = false;   // false = retracted, true = extended
+    static bool prevMiddleDescoreButton = true; // previous loop state of middleDescore button
     // Persistent state for park macro
     static bool parkMacroRunning = false;     // true when park macro is active
     while (true) {
@@ -379,6 +473,7 @@ void opcontrol() {
         bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
         bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
+        bool middleDescoreButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP);
         bool parkMacroButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
@@ -470,12 +565,22 @@ void opcontrol() {
                 pros::delay(100);
             }
         }
+        
+        if (middleDescoreButton) {
+            // Edge-triggered toggle for middleDescore
+            if (!prevMiddleDescoreButton) {
+                middleDescoreState = !middleDescoreState;
+                middleDescore.set_value(middleDescoreState);
+                pros::delay(100);
+            }
+        }
 
         chassis.arcade(leftY, rightX);
         prevIntakePistonButton = intakePistonButton; // update edge detector
         prevDoinkerButton = doinkerButton; // update edge detector for doinker
         prevExpansionButton = expansionButton; // update edge detector for expansion
         prevWingButton = wingButton; // update edge detector for wing
+        prevMiddleDescoreButton = middleDescoreButton; // update edge detector for middleDescore
         pros::delay(5);
     }
 }
