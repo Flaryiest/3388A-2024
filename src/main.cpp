@@ -208,8 +208,8 @@ void scoreHigh() {
 
 void scoreMiddleHigh() {
     leftIntakeBottom.move(-127); //bottm
-    leftIntakeTop.move(-127); //middle
-    rightIntakeBottom.move(-127); //top
+    leftIntakeTop.move(-60); //middle
+    rightIntakeBottom.move(-60); //top
 }
 
 void reverseMotors() {
@@ -235,42 +235,6 @@ void left_auton() {
 
 
 void right_auton() {
-    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
-    chassis.setPose(0, 0, 0);
-    wings.set_value(false);
-    //move in front of match loader
-    chassis.moveToPoint(0, 26.8, 3000, {.maxSpeed = 120});
-    pros::delay(200);
-    chassis.turnToHeading(104, 1000); //face match loader
-    pros::delay(500);
-    //go to match loader and intake
-    scoreHigh();
-    doinker.set_value(true);
-    pros::delay(100);
-    chassis.moveToPoint(13.5, 26.6, 1000);
-    pros::delay(1000);
-    // //go to tube and score
-    stopAllMotors();
-    wings.set_value(true);
-    chassis.moveToPoint(-15, 30.5, 3000, {.forwards = false, .maxSpeed = 100});
-    pros::delay(800);
-    doinker.set_value(false);
-    scoreHigh();
-    pros::delay(1400);
-    // //get out, and line up
-    chassis.moveToPoint(-8, 30, 3000);
-    chassis.turnToHeading(-120, 500); //face balls
-    wings.set_value(false);
-    // intake.set_value(false);
-    // pros::delay(500);
-    chassis.moveToPoint(-20, 20, 4000, {.maxSpeed = 100});
-    pros::delay(1000);
-    chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 90});
-    pros::delay(400);
-    chassis.turnToHeading(-125, 1000); //face balls
-    pros::delay(2000);
-    reverseMotors();
-
 }
 
 void testing_auton() {
@@ -387,73 +351,61 @@ void giveAWP() {
 }
 
 void soloAWP() {
-    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     chassis.setPose(0, 0, 0);
-    wings.set_value(false);
-    //move in front of match loader
-    chassis.moveToPoint(0, 26.8, 3000, {.maxSpeed = 120});
+    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     pros::delay(200);
-    chassis.turnToHeading(104, 1000); //face match loader
+    
+    wings.set_value(false);
+    doinker.set_value(true);
+    chassis.moveToPoint(0, 35.2, 3000, {.maxSpeed = 120});
+    pros::delay(200);
+    chassis.turnToHeading(73.5, 500);
+    scoreHigh();
+    chassis.moveToPoint(10.25, 35.2, 2000, {.maxSpeed = 120}); //going into matchload
     pros::delay(500);
-    //go to match loader and intake
-    scoreHigh();
-    doinker.set_value(true);
-    pros::delay(100);
-    chassis.moveToPoint(13.5, 26.6, 1000);
-    pros::delay(1000);
-    // //go to tube and score
-    stopAllMotors();
-    wings.set_value(true);
-    chassis.moveToPoint(-15, 30.5, 3000, {.forwards = false, .maxSpeed = 120});
-    pros::delay(800);
+    chassis.moveToPoint(-26, 31.2, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
+    pros::delay(700);
     doinker.set_value(false);
-    scoreHigh();
-    pros::delay(1400);
-    // //get out, and line up
-    chassis.moveToPoint(-8, 30, 3000);
-    chassis.turnToHeading(-120, 500); //face balls
-    wings.set_value(false);
-    // intake.set_value(false);
-    // pros::delay(500);
-    chassis.moveToPoint(-20, 20, 4000, {.maxSpeed = 120});
-    chassis.moveToPoint(-28, 14, 4000, {.maxSpeed = 90});
-    // //straight line get balls
-    pros::delay(400);
-    chassis.turnToHeading(180, 1000); //face balls
-    chassis.moveToPoint(-40, -25, 4000, {.maxSpeed = 100});
-    pros::delay(700);
-    chassis.moveToPoint(-46, -10.6, 4000, {.forwards = false, .maxSpeed = 100});
-    doinker.set_value(true);
-    pros::delay(300);
-    reverseMotors();
-    pros::delay(200);
-    scoreMiddleHigh();
-    pros::delay(700);
-    scoreHigh();
-    pros::delay(200);
-    chassis.moveToPoint(-30, -48, 2000, {.forwards = true, .maxSpeed = 127});
-    chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(-4, -48, 1000, {.forwards = true, .maxSpeed = 127});
-    pros::delay(400);
     wings.set_value(true);
+    pros::delay(600);
+    wings.set_value(false);
+    chassis.moveToPoint(-13, 31.2, 1000, {.forwards = true, .maxSpeed = 120}); //get out of long tube
+    chassis.turnToHeading(215, 500);
+    chassis.moveToPoint(-27, 7, 1000, {.forwards = true, .maxSpeed = 90}); //first three balls in middle
+    chassis.moveToPoint(-28, 4, 500, {.forwards = true, .maxSpeed = 100});
+    chassis.turnToHeading( 160, 400); //turn to next 3
+    chassis.moveToPoint(-24, -42, 2000, {.forwards = true, .maxSpeed = 127}); //next three balls in matchload
+    chassis.turnToHeading(115, 400); //turn mid goal
+    doinker.set_value(true);
+    chassis.moveToPoint(-36, -30, 1000, {.forwards = false, .maxSpeed = 120});
+    pros::delay(200);
+    reverseMotors();
+    pros::delay(150);
     stopAllMotors();
-    chassis.moveToPoint(-40, -48, 1000, {.forwards = true, .maxSpeed = 127});
-    pros::delay(300);
+    pros::delay(100);
+    scoreMiddleHigh();
+    pros::delay(600);
     scoreHigh();
+    chassis.moveToPoint(-8, -69, 2000, {.forwards = true, .maxSpeed = 120});
+    chassis.turnToHeading(-270, 300); //turn mid goal
+    chassis.moveToPoint(11, -69, 2000, {.forwards = true, .maxSpeed = 120});
+    pros::delay(500);
+    chassis.moveToPoint(-26, -69, 2000, {.forwards = false, .maxSpeed = 127});
 }
 
 void autonomous() {
+    intake.set_value(false);
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    //soloAWP();
+    soloAWP();
     //giveAWP();
-    intake.set_value(false);
-    lateralTestingAuton();
+    //lateralTestingAuton();
 }
 
 
 void opcontrol() {
+    intake.set_value(false);
     // Persistent state for intake piston toggle
     static bool intakePistonState = false;     // false = retracted, true = extended
     static bool prevIntakePistonButton = true; // previous loop state of Y button
@@ -471,6 +423,7 @@ void opcontrol() {
     static bool prevMiddleDescoreButton = true; // previous loop state of middleDescore button
     // Persistent state for park macro
     static bool parkMacroRunning = false;     // true when park macro is active
+    
     while (true) {
         bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
