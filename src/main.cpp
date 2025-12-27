@@ -16,7 +16,7 @@ extern "C" {
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-pros::MotorGroup left_motors({1, 2, -3}, pros::MotorGearset::blue);
+pros::MotorGroup left_motors({-5, 1, 3}, pros::MotorGearset::blue);
 pros::MotorGroup right_motors({-13, -12, 15}, pros::MotorGearset::blue);
 pros::Motor leftIntakeBottom(10, pros::MotorGearset::blue);
 pros::Motor leftIntakeTop(7, pros::MotorGearset::green);
