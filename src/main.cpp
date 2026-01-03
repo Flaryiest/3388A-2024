@@ -309,43 +309,45 @@ void soloAWP() {
     //benckl t
     wings.set_value(false);
     doinker.set_value(true);
-    chassis.moveToPoint(0, 35.2, 3000, {.maxSpeed = 100});
+    chassis.moveToPoint(0, 34.5, 3000, {.maxSpeed = 100});
     pros::delay(100);
-    chassis.turnToHeading(72, 500);
+    chassis.turnToHeading(65, 500);
     scoreHigh();
-    chassis.moveToPoint(10.25, 35.2, 1000, {.maxSpeed = 120}); //going into matchload
-    pros::delay(400);
-    chassis.moveToPoint(-26, 30.5, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
+    chassis.moveToPoint(9, 34.5, 1000, {.maxSpeed = 120}); //going into matchload
+    pros::delay(600);
+    chassis.moveToPoint(-24, 30, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
     pros::delay(700);
     doinker.set_value(false);
     wings.set_value(true);
-    pros::delay(500);
+    pros::delay(600);
     wings.set_value(false);
     chassis.moveToPoint(-13, 31.2, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
-    chassis.turnToHeading(200, 500);
+    chassis.turnToHeading(180, 600);
     chassis.moveToPoint(-27, 7, 900, {.forwards = true, .maxSpeed = 100}); //first three balls in middle
     chassis.moveToPoint(-28, 4, 300, {.forwards = true, .maxSpeed = 100});
     chassis.turnToHeading( 160, 400); //turn to next 3
     chassis.moveToPoint(-24, -42, 2000, {.forwards = true, .maxSpeed = 127}); //next three balls in matchload
-    chassis.turnToHeading(115, 300); //turn mid goal
+    pros::delay(100);
+    chassis.turnToHeading( 135, 200); //turn to next 3
+    chassis.moveToPoint(-38, -34, 1000, {.forwards = false, .maxSpeed = 120});
     doinker.set_value(true);
-    chassis.moveToPoint(-36, -30, 1000, {.forwards = false, .maxSpeed = 127});
-    pros::delay(200);
+    pros::delay(100);
     reverseMotors();
-    pros::delay(150);
+    chassis.turnToHeading( 135, 200); //turn to next 3  
     stopAllMotors();
     pros::delay(100);
     scoreMiddleHigh();
-    pros::delay(600);
+    pros::delay(700);
     scoreHigh();
-    chassis.moveToPoint(-8, -70, 2000, {.forwards = true, .maxSpeed = 127});
+    chassis.turnToHeading(145, 300); //turn mid goal
+    chassis.moveToPoint(1, -68.5, 2000, {.forwards = true, .maxSpeed = 127});
     reverseMotors();
     pros::delay(200);
     scoreHigh();
     chassis.turnToHeading(-270, 300); //turn mid goal
-    chassis.moveToPoint(13.5, -70, 2000, {.forwards = true, .maxSpeed = 127});
+    chassis.moveToPoint(13, -68.5, 2000, {.forwards = true, .maxSpeed = 127});
     pros::delay(900);
-    chassis.moveToPoint(-25, -70, 2000, {.forwards = false, .maxSpeed = 127});
+    chassis.moveToPoint(-25, -67.5, 2000, {.forwards = false, .maxSpeed = 127});
     pros::delay(500);
     wings.set_value(true);
 }
@@ -420,8 +422,8 @@ void autonomous() {
     // Selection is saved to SD card and persists across reboots
     //right_auton();
     //left_auton();
-    //soloAWP();
-    giveAWP();
+    soloAWP();
+    //giveAWP();
     //lateralTestingAuton();
 }
 
