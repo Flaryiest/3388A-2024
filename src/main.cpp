@@ -224,6 +224,12 @@ void stopAllMotors() {
     rightIntakeBottom.move(0); //top
 }
 
+void reverseMotorsButTop() {
+    leftIntakeBottom.move(127); //bottm
+    leftIntakeTop.move(127); //middle
+    rightIntakeBottom.move(0); //top
+}
+
 void skillsAutonomous() {
     // Add your skills autonomous routine here
     chassis.setPose(0, 0, 0);
@@ -319,7 +325,7 @@ void soloAWP() {
     pros::delay(700);
     doinker.set_value(false);
     wings.set_value(true);
-    pros::delay(600);
+    pros::delay(700);
     wings.set_value(false);
     chassis.moveToPoint(-13, 31.2, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
     chassis.turnToHeading(180, 600);
@@ -329,27 +335,21 @@ void soloAWP() {
     chassis.moveToPoint(-24, -42, 2000, {.forwards = true, .maxSpeed = 127}); //next three balls in matchload
     pros::delay(100);
     chassis.turnToHeading( 135, 200); //turn to next 3
-    chassis.moveToPoint(-38, -34, 1000, {.forwards = false, .maxSpeed = 120});
+    chassis.moveToPoint(-37.5, -33.2, 1000, {.forwards = false, .maxSpeed = 120});
     doinker.set_value(true);
-    pros::delay(100);
+    chassis.turnToHeading( 125, 100); //turn to next 3  
     reverseMotors();
-    chassis.turnToHeading( 135, 200); //turn to next 3  
-    stopAllMotors();
     pros::delay(100);
     scoreMiddleHigh();
-    pros::delay(700);
+    pros::delay(800);
     scoreHigh();
-    chassis.turnToHeading(145, 300); //turn mid goal
-    chassis.moveToPoint(1, -68.5, 2000, {.forwards = true, .maxSpeed = 127});
-    reverseMotors();
-    pros::delay(200);
-    scoreHigh();
+    chassis.moveToPoint(-3, -69.5, 2000, {.forwards = true, .maxSpeed = 127});
     chassis.turnToHeading(-270, 300); //turn mid goal
-    chassis.moveToPoint(13, -68.5, 2000, {.forwards = true, .maxSpeed = 127});
-    pros::delay(900);
-    chassis.moveToPoint(-25, -67.5, 2000, {.forwards = false, .maxSpeed = 127});
-    pros::delay(500);
-    wings.set_value(true);
+    // chassis.moveToPoint(13, -69.5, 2000, {.forwards = true, .maxSpeed = 127});
+    // pros::delay(900);
+    // chassis.moveToPoint(-25, -68.5, 2000, {.forwards = false, .maxSpeed = 127});
+    // pros::delay(500);
+    // wings.set_value(true);
 }
 
 void left_auton() {
@@ -357,63 +357,38 @@ void left_auton() {
     wings.set_value(false);
     scoreHigh();
     pros::delay(100);
-    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 100});
-    chassis.moveToPoint(-6, 28, 3000, {.maxSpeed = 50});
-    pros::delay(1500);
+    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
+    chassis.moveToPoint(-6, 28, 3000, {.maxSpeed = 65});
+    pros::delay(700);
     doinker.set_value(true);
-    chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 100});
+    pros::delay(600);
+    chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(250, 1000);
-    chassis.moveToPoint(-35.7, 10, 3000, {.maxSpeed = 100});
+    chassis.moveToPoint(-36.5, 10, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-35.7, -7, 2000, {.maxSpeed = 80});
-    pros::delay(500);
-    chassis.moveToPoint(-34.7, 32, 2000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(-36.7, -1.4, 2000, {.maxSpeed = 100});
+    pros::delay(600);
+    chassis.moveToPoint(-36.1, 28.5, 1000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
     wings.set_value(true);
-    pros::delay(200);
-    reverseMotors();
+    reverseMotorsButTop();
     pros::delay(200);
     scoreHigh();
-    pros::delay(1000);
-    reverseMotors();
+    chassis.moveToPoint(-36.1, 28.8, 1000, {.forwards = false, .maxSpeed = 100});
+    pros::delay(1500);
+    reverseMotorsButTop();
+    pros::delay(50);
+    scoreHigh();
     pros::delay(500);
-    scoreHigh();
-    pros::delay(2000);
-    chassis.moveToPoint(-34.7, 23, 2000, {.forwards = false, .maxSpeed = 100});
-    pros::delay(200);
-    chassis.moveToPoint(-34.7, 32, 2000, {.forwards = false, .maxSpeed = 127});
+    chassis.moveToPoint(-36.1, 15, 2000, {.forwards = true, .maxSpeed = 120});
+    chassis.moveToPoint(-25.8, 15, 2000, {.forwards = false, .maxSpeed = 120});
+    chassis.turnToHeading(180, 300); //turn mid goal
+    pros::delay(500);
+    chassis.moveToPoint(-25.8, 45, 2000, {.forwards = false, .maxSpeed = 100});
+    chassis.turnToHeading(180, 300); //turn mid goal
 }
 
 void right_auton() {
-    chassis.setPose(0, 0, 0);
-    wings.set_value(false);
-    scoreHigh();
-    pros::delay(100);
-    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 100});
-    chassis.moveToPoint(6, 28, 3000, {.maxSpeed = 50});
-    pros::delay(1500);
-    doinker.set_value(true);
-    chassis.moveToPoint(6, 18, 3000, {.forwards = false, .maxSpeed = 100});
-    chassis.turnToHeading(360-250, 1000);
-    chassis.moveToPoint(34.7, 10, 3000, {.maxSpeed = 100});
-    chassis.turnToHeading(360-180, 1000);
-    chassis.moveToPoint(34.7, -7, 2000, {.maxSpeed = 80});
-    pros::delay(500);
-    chassis.moveToPoint(34.7, 32, 2000, {.forwards = false, .maxSpeed = 100});
-    pros::delay(1000);
-    wings.set_value(true);
-    pros::delay(200);
-    reverseMotors();
-    pros::delay(200);
-    scoreHigh();
-    pros::delay(1000);
-    reverseMotors();
-    pros::delay(500);
-    scoreHigh();
-    pros::delay(2000);
-    chassis.moveToPoint(34.7, 23, 2000, {.forwards = false, .maxSpeed = 100});
-    pros::delay(200);
-    chassis.moveToPoint(34.7, 32, 2000, {.forwards = false, .maxSpeed = 127});
 }
 
 void autonomous() {
@@ -421,8 +396,8 @@ void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    //left_auton();
-    soloAWP();
+    left_auton();
+    //soloAWP();
     //giveAWP();
     //lateralTestingAuton();
 }
