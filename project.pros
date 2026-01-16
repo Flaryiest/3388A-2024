@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Left Wing",
+    "project_name": "left",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -325,7 +325,7 @@
     "upload_options": {
       "description": "AWOOOOOO",
       "icon": "pros",
-      "slot": 2
+      "slot": 1
     },
     "use_early_access": false
   }

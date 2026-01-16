@@ -371,13 +371,13 @@ void left_auton() {
     chassis.moveToPoint(-36.1, 28.5, 1000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
     wings.set_value(true);
-    reverseMotorsButTop();
-    pros::delay(200);
+    // reverseMotorsButTop();
+    // pros::delay(200);
     scoreHigh();
     chassis.moveToPoint(-36.1, 28.8, 1000, {.forwards = false, .maxSpeed = 100});
-    pros::delay(1500);
-    reverseMotorsButTop();
-    pros::delay(50);
+    // pros::delay(1500);
+    // reverseMotorsButTop();
+    // pros::delay(50);
     scoreHigh();
     pros::delay(500);
     chassis.moveToPoint(-36.1, 15, 2000, {.forwards = true, .maxSpeed = 120});
@@ -391,12 +391,37 @@ void left_auton() {
 void right_auton() {
 }
 
+void newSAWP() {
+    chassis.setPose(0, 0, 0);
+    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
+    pros::delay(100);
+    //benckl t
+    wings.set_value(false);
+    doinker.set_value(true);
+    chassis.moveToPoint(0, 34.5, 3000, {.maxSpeed = 100});
+    pros::delay(100);
+    chassis.turnToHeading(65, 500);
+    scoreHigh();
+    chassis.moveToPoint(-9, 34.5, 1000, {.maxSpeed = 120}); //going into matchload
+    pros::delay(600);
+    chassis.moveToPoint(24, 30, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
+    pros::delay(700);
+    doinker.set_value(false);
+    wings.set_value(true);
+    pros::delay(700);
+    wings.set_value(false);
+    chassis.moveToPoint(13, 31.2, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
+    chassis.turnToHeading(180, 600);
+    chassis.moveToPoint(27, 7, 900, {.forwards = true, .maxSpeed = 100}); //first three balls in middle  
+}
+
 void autonomous() {
     intake.set_value(false);
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    left_auton();
+    //left_auton();
+    newSAWP();
     //soloAWP();
     //giveAWP();
     //lateralTestingAuton();
