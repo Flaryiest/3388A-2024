@@ -366,25 +366,25 @@ void left_auton() {
     chassis.turnToHeading(250, 1000);
     chassis.moveToPoint(-36.5, 10, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-36.7, -1.4, 2000, {.maxSpeed = 100});
-    pros::delay(600);
+    chassis.moveToPoint(-36.7, -0.1, 2000, {.maxSpeed = 100});
+    pros::delay(750);
     chassis.moveToPoint(-36.1, 28.5, 1000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
     wings.set_value(true);
     // reverseMotorsButTop();
     // pros::delay(200);
     scoreHigh();
-    chassis.moveToPoint(-36.1, 28.8, 1000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(-36.1, 29.5, 1000, {.forwards = false, .maxSpeed = 100});
     // pros::delay(1500);
     // reverseMotorsButTop();
     // pros::delay(50);
     scoreHigh();
-    pros::delay(500);
-    chassis.moveToPoint(-36.1, 15, 2000, {.forwards = true, .maxSpeed = 120});
-    chassis.moveToPoint(-25.8, 15, 2000, {.forwards = false, .maxSpeed = 120});
+    pros::delay(1800);
+    chassis.moveToPoint(-36.1, 20, 2000, {.forwards = true, .maxSpeed = 120});
+    chassis.moveToPoint(-26.2, 20, 2000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(180, 300); //turn mid goal
     pros::delay(500);
-    chassis.moveToPoint(-25.8, 45, 2000, {.forwards = false, .maxSpeed = 100});
+    chassis.moveToPoint(-26.2, 45, 2000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(180, 300); //turn mid goal
 }
 
@@ -420,8 +420,8 @@ void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    //left_auton();
-    newSAWP();
+    left_auton();
+    //newSAWP();
     //soloAWP();
     //giveAWP();
     //lateralTestingAuton();
