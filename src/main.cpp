@@ -364,9 +364,9 @@ void left_auton() {
     pros::delay(200);
     chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(250, 1000);
-    chassis.moveToPoint(-36.5, 10, 3000, {.maxSpeed = 102});
+    chassis.moveToPoint(-37, 10, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-36.7, -0.5, 2000, {.maxSpeed = 100});
+    chassis.moveToPoint(-37.1, -0.5, 2000, {.maxSpeed = 80});
     pros::delay(900);
     chassis.moveToPoint(-36.1, 28.5, 1000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
@@ -387,10 +387,10 @@ void left_auton() {
     // pros::delay(500);
     // wing stuffs
     chassis.moveToPoint(-36.1, 20, 2000, {.forwards = true, .maxSpeed = 120});
-    chassis.moveToPoint(-26.5, 20, 2000, {.forwards = false, .maxSpeed = 120});
+    chassis.moveToPoint(-26.45, 20, 2000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(180, 300); //turn mid goal
     pros::delay(500);
-    chassis.moveToPoint(-26.5, 45, 2000, {.forwards = false, .maxSpeed = 120});
+    chassis.moveToPoint(-26.45, 43, 2000, {.forwards = false, .maxSpeed = 110});
     chassis.turnToHeading(180, 300); //turn mid goal
 }
 
@@ -467,8 +467,8 @@ void autonomous() {
     intake.set_value(false);
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    right_auton();
-    //left_auton();
+    //right_auton();
+    left_auton();
     //newSAWP();
     //soloAWP();
     //giveAWP();
