@@ -21,7 +21,7 @@ pros::MotorGroup right_motors({-13, -12, 15}, pros::MotorGearset::blue);
 pros::Motor leftIntakeBottom(10, pros::MotorGearset::blue);
 pros::Motor leftIntakeTop(7, pros::MotorGearset::green);
 pros::Motor rightIntakeBottom(9, pros::MotorGearset::green);
-pros::Optical color_sensor(20);
+pros::Optical color_sensor(11);
 
 pros::Distance park_distance(8); //base distance is around 200 mm. With ball is around 50-120
 
@@ -30,6 +30,7 @@ pros::adi::DigitalOut doinker('F', false);
 pros::adi::DigitalOut expansion('D', false);
 pros::adi::DigitalOut wings('E', true);
 pros::adi::DigitalOut middleDescore('G', false);
+pros::adi::DigitalOut odomLift('B', false);
 lemlib::ExpoDriveCurve throttle_curve(3,
                                      6,
                                      1.019 
@@ -136,7 +137,7 @@ void initialize() {
     pros::delay(100);
     // DO NOT initialize PROS LCD - it conflicts with RoboDash selector
     // pros::lcd::initialize(); // COMMENTED OUT to allow RoboDash to work
-    
+    color_sensor.set_led_pwm(100);
     // Check SD card status and print to controller
     if (pros::usd::is_installed()) {
         controller.print(0, 0, "SD: OK");
@@ -445,6 +446,19 @@ void opcontrol() {
     // Persistent state for middleDescore toggle
     static bool middleDescoreState = false;   // false = retracted, true = extended
     static bool prevMiddleDescoreButton = true; // previous loop state of middleDescore button
+    // Persistent state for odomLift toggle
+    static bool odomLiftState = false;        // false = off/down (matches initial value)
+    static bool prevOdomLiftButton = true;    // previous loop state of odomLift button (DOWN)
+    // Persistent state for color sort toggle
+    static bool colorSortEnabled = true;      // true = color sorting active
+    static bool prevColorSortButton = true;   // previous loop state of color sort button (LEFT)
+    static bool colorSortEjecting = false;    // true when actively ejecting wrong color
+    static uint32_t ejectStartTime = 0;       // when eject started
+    static uint32_t ejectCooldownEnd = 0;     // when cooldown ends (to avoid re-detecting same ball)
+    // Color sort config: set to true to KEEP red (eject blue), false to KEEP blue (eject red)
+    static const bool KEEP_RED = true;        // Change this based on your alliance color!
+    static const int EJECT_DURATION_MS = 250; // How long to reverse top motor
+    static const int EJECT_COOLDOWN_MS = 100; // Cooldown before detecting next ball
     // Persistent state for park macro
     static bool parkMacroRunning = false;     // true when park macro is active
     
@@ -458,6 +472,8 @@ void opcontrol() {
         bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
         bool middleDescoreButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP);
+        bool odomLiftButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
+        bool colorSortButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT);
         bool parkMacroButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
@@ -492,27 +508,62 @@ void opcontrol() {
             leftIntakeTop.move(0);
             rightIntakeBottom.move(0);
             parkMacroRunning = false;
-        } else if (intakeOne) {
-            leftIntakeBottom.move(-127); //bottm
-            leftIntakeTop.move(-127); //middle
-            rightIntakeBottom.move(127); //top
+        } else {
+            // ===== COLOR SORT DETECTION (runs always, not just when intake pressed) =====
+            // Check if we need to eject wrong color ball
+            if (colorSortEnabled && !colorSortEjecting && pros::millis() > ejectCooldownEnd) {
+                // Read color sensor hue (0-360)
+                double hue = color_sensor.get_hue();
+                int proximity = color_sensor.get_proximity();
+                
+                // Only check color if ball is close enough (proximity > 200)
+                if (proximity > 100) {
+                    bool isRed = (hue < 30 || hue > 330);  // Red hue range
+                    bool isBlue = (hue > 80 && hue < 250); // Blue hue range
+                    
+                    // Check if we should eject this ball
+                    bool shouldEject = (KEEP_RED && isBlue) || (!KEEP_RED && isRed);
+                    
+                    if (shouldEject) {
+                        colorSortEjecting = true;
+                        ejectStartTime = pros::millis();
+                    }
+                }
+            }
+            
+            // ===== HANDLE EJECT (overrides normal intake control) =====
+            if (colorSortEjecting) {
+                if (pros::millis() - ejectStartTime < EJECT_DURATION_MS) {
+                    // Eject: reverse top motor to spit out wrong color
+                    leftIntakeBottom.move(-127); //bottom keeps running
+                    leftIntakeTop.move(-30); //middle slowed
+                    rightIntakeBottom.move(-127); //top reversed to eject
+                } else {
+                    // Eject done, start cooldown before detecting next ball
+                    colorSortEjecting = false;
+                    ejectCooldownEnd = pros::millis() + EJECT_COOLDOWN_MS;
+                }
+            }
+            // ===== NORMAL INTAKE CONTROL (only when not ejecting) =====
+            else if (intakeOne) {
+                leftIntakeBottom.move(-127); //bottom
+                leftIntakeTop.move(-127); //middle
+                rightIntakeBottom.move(127); //top normal scoring
 
-        } else if (intakeTwo) {
-            leftIntakeBottom.move(-127); //bottm
-            leftIntakeTop.move(-127); //middle
-            rightIntakeBottom.move(-127); //top
+            } else if (intakeTwo) {
+                leftIntakeBottom.move(-127); //bottm
+                leftIntakeTop.move(-127); //middle
+                rightIntakeBottom.move(-127); //top
 
-
-        } else if (intakeThree) {
-            leftIntakeBottom.move(127);
-            leftIntakeTop.move(127);
-            rightIntakeBottom.move(-127);
-        }
-
-        else {
-             leftIntakeBottom.move(0);
-            leftIntakeTop.move(0);
-            rightIntakeBottom.move(0);
+            } else if (intakeThree) {
+                leftIntakeBottom.move(127);
+                leftIntakeTop.move(127);
+                rightIntakeBottom.move(-127);
+            } else {
+                leftIntakeBottom.move(0);
+                leftIntakeTop.move(0);
+                rightIntakeBottom.move(0);
+            }
         }
 
         if (intakePistonButton) {
@@ -558,6 +609,25 @@ void opcontrol() {
                 pros::delay(100);
             }
         }
+        
+        if (odomLiftButton) {
+            // Edge-triggered toggle for odomLift
+            if (!prevOdomLiftButton) {
+                odomLiftState = !odomLiftState;
+                odomLift.set_value(odomLiftState);
+                pros::delay(100);
+            }
+        }
+        
+        if (colorSortButton) {
+            // Edge-triggered toggle for color sort
+            if (!prevColorSortButton) {
+                colorSortEnabled = !colorSortEnabled;
+                // Feedback: rumble to indicate state
+                controller.rumble(colorSortEnabled ? "." : "-");
+                pros::delay(100);
+            }
+        }
 
         chassis.arcade(leftY, rightX);
         prevIntakePistonButton = intakePistonButton; // update edge detector
@@ -565,6 +635,8 @@ void opcontrol() {
         prevExpansionButton = expansionButton; // update edge detector for expansion
         prevWingButton = wingButton; // update edge detector for wing
         prevMiddleDescoreButton = middleDescoreButton; // update edge detector for middleDescore
+        prevOdomLiftButton = odomLiftButton; // update edge detector for odomLift
+        prevColorSortButton = colorSortButton; // update edge detector for color sort
         pros::delay(5);
     }
 }
