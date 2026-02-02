@@ -25,7 +25,7 @@ pros::Optical color_sensor(11);
 
 pros::Distance park_distance(8); //base distance is around 200 mm. With ball is around 50-120
 
-pros::adi::DigitalOut intake('A', false); //,maybe true for size
+pros::adi::DigitalOut hood('A', false); //,maybe true for size
 pros::adi::DigitalOut doinker('F', false); 
 pros::adi::DigitalOut expansion('D', false);
 pros::adi::DigitalOut wings('E', true);
@@ -51,9 +51,11 @@ lemlib::Drivetrain drivetrain(&left_motors,
 
 pros::Imu imu(6);
 pros::Rotation vertical_encoder(-17);
+pros::Rotation horizontal_encoder(19);
 
 lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, 0);
-
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.5);
+    
 lemlib::OdomSensors sensors(&vertical_tracking_wheel,
                             nullptr,
                             nullptr,
@@ -297,14 +299,25 @@ void testing_auton() {
 
 void lateralTestingAuton() {
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(0, 48, 2000);
+        chassis.moveToPose(
+        24,
+        48,
+        90,
+        4000,
+        {.minSpeed=30}
+        // a minSpeed of 72 means that the chassis will slow down as
+        // it approaches the target point, but it won't come to a full stop
+
+        // an earlyExitRange of 8 means the movement will exit 8" away from
+        // the target point
+    );
 }
 
 
 void giveAWP() {
     // Add your autonomous routine here
     chassis.setPose(0, 0, 0);
-    wings.set_value(false);
+    hood.set_value(false);
     chassis.moveToPoint(0, 3, 3000, {.maxSpeed = 120});
     // AWP routine implementation...
 }
@@ -314,7 +327,7 @@ void soloAWP() {
     //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     pros::delay(100);
     //benckl t
-    wings.set_value(false);
+    hood.set_value(false);
     doinker.set_value(true);
     chassis.moveToPoint(0, 34.5, 3000, {.maxSpeed = 100});
     pros::delay(100);
@@ -325,9 +338,9 @@ void soloAWP() {
     chassis.moveToPoint(-24, 30, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
     pros::delay(700);
     doinker.set_value(false);
-    wings.set_value(true);
+    hood.set_value(true);
     pros::delay(700);
-    wings.set_value(false);
+    hood.set_value(false);
     chassis.moveToPoint(-13, 31.2, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
     chassis.turnToHeading(180, 600);
     chassis.moveToPoint(-27, 7, 900, {.forwards = true, .maxSpeed = 100}); //first three balls in middle
@@ -355,7 +368,7 @@ void soloAWP() {
 
 void left_auton() {
     chassis.setPose(0, 0, 0);
-    wings.set_value(false);
+    hood.set_value(false);
     scoreHigh();
     pros::delay(100);
     chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
@@ -371,7 +384,7 @@ void left_auton() {
     pros::delay(900);
     chassis.moveToPoint(-36.1, 28.5, 1000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
-    wings.set_value(true);
+    hood.set_value(true);
     // reverseMotorsButTop();
     // pros::delay(200);
     scoreHigh();
@@ -397,7 +410,7 @@ void left_auton() {
 
 void right_auton() {
     chassis.setPose(0, 0, 0);
-    wings.set_value(false);
+    hood.set_value(false);
     scoreHigh();
     pros::delay(100);
     chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
@@ -413,7 +426,7 @@ void right_auton() {
     pros::delay(900);
     chassis.moveToPoint(36.1, 29.5, 1000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
-    wings.set_value(true);
+    hood.set_value(true);
     // reverseMotorsButTop();
     // pros::delay(200);
     scoreHigh();
@@ -442,35 +455,48 @@ void right_auton() {
 
 void newSAWP() {
     chassis.setPose(0, 0, 0);
+    hood.set_value(false);
+    doinker.set_value(true);
     //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     pros::delay(100);
     //benckl t
-    wings.set_value(false);
-    doinker.set_value(true);
-    chassis.moveToPoint(0, 34.5, 3000, {.maxSpeed = 100});
+
+    chassis.moveToPoint(0, 33.5, 3000, {.maxSpeed = 100});
     pros::delay(100);
-    chassis.turnToHeading(65, 500);
+    chassis.turnToHeading(-65, 500);
     scoreHigh();
-    chassis.moveToPoint(-9, 34.5, 1000, {.maxSpeed = 120}); //going into matchload
+    chassis.moveToPoint(-8.5, 34.5, 2000, {.maxSpeed = 120}); //going into matchload
     pros::delay(600);
-    chassis.moveToPoint(24, 30, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
+    chassis.moveToPoint(24,     32, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
     pros::delay(700);
     doinker.set_value(false);
-    wings.set_value(true);
-    pros::delay(700);
-    wings.set_value(false);
-    chassis.moveToPoint(13, 31.2, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
-    chassis.turnToHeading(180, 600);
-    chassis.moveToPoint(27, 7, 900, {.forwards = true, .maxSpeed = 100}); //first three balls in middle  
+    hood.set_value(true);
+    pros::delay(1000);
+    hood.set_value(false);
+    chassis.moveToPoint(13, 32, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
+    pros::delay(1000);
+    chassis.moveToPose(
+        14,
+        -36,
+        180,
+        4000,
+        {.maxSpeed = 70, .minSpeed=15,.earlyExitRange=8}
+        // a minSpeed of 72 means that the chassis will slow down as
+        // it approaches the target point, but it won't come to a full stop
+
+        // an earlyExitRange of 8 means the movement will exit 8" away from
+        // the target point
+    );
+
 }
 
 void autonomous() {
-    intake.set_value(false);
+    hood.set_value(false);
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    left_auton();
-    //newSAWP();
+    //left_auton();
+    newSAWP();
     //soloAWP();
     //giveAWP();
     //lateralTestingAuton();
@@ -478,7 +504,8 @@ void autonomous() {
 
 
 void opcontrol() {
-    intake.set_value(false);
+    hood.set_value(false);
+    odomLift.set_value(true);
     // Persistent state for intake piston toggle
     static bool intakePistonState = false;     // false = retracted, true = extended
     static bool prevIntakePistonButton = true; // previous loop state of Y button
@@ -618,7 +645,7 @@ void opcontrol() {
             // Edge-triggered toggle: only toggle when button transitions from not pressed to pressed
             if (!prevIntakePistonButton) {
                 intakePistonState = !intakePistonState;
-                intake.set_value(intakePistonState);
+                hood.set_value(intakePistonState);
                 pros::delay(100); 
             }
         } 
