@@ -541,9 +541,9 @@ void opcontrol() {
         bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
         bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
         bool intakeThree = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-        bool intakePistonButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
+        bool intakePistonButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
 
-        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+        bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
         bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
         bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
         bool middleDescoreButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP);
