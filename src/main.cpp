@@ -59,7 +59,7 @@ lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omn
 lemlib::OdomSensors sensors(&vertical_tracking_wheel,
                             nullptr,
                             nullptr,
-                            nullptr,
+                            &horizontal_tracking_wheel,
                             &imu
 );
 
@@ -140,6 +140,7 @@ void initialize() {
     // DO NOT initialize PROS LCD - it conflicts with RoboDash selector
     // pros::lcd::initialize(); // COMMENTED OUT to allow RoboDash to work
     color_sensor.set_led_pwm(100);
+
     // Check SD card status and print to controller
     if (pros::usd::is_installed()) {
         controller.print(0, 0, "SD: OK");
@@ -217,6 +218,12 @@ void scoreMiddleHigh() {
 
 void reverseMotors() {
     leftIntakeBottom.move(127); //bottm
+    leftIntakeTop.move(127); //middle
+    rightIntakeBottom.move(-127); //top
+}
+
+void reverseMotorsSlow() {
+    leftIntakeBottom.move(110); //bottm
     leftIntakeTop.move(127); //middle
     rightIntakeBottom.move(-127); //top
 }
@@ -323,7 +330,7 @@ void giveAWP() {
 }
 
 void soloAWP() {
-    chassis.setPose(0, 0, 0);
+    
     //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
     pros::delay(100);
     //benckl t
@@ -453,44 +460,79 @@ void right_auton() {
     // chassis.turnToHeading(360-180, 300); //turn mid goal
 }
 
+// Move forward/backward a certain distance in the current heading direction
+void moveDistance(float distance, int timeout, float maxSpeed = 60) {
+    lemlib::Pose currentPose = chassis.getPose();
+    float heading = currentPose.theta * M_PI / 180.0; // Convert to radians
+    
+    // Calculate target point based on current heading
+    float targetX = currentPose.x + distance * sin(heading);
+    float targetY = currentPose.y + distance * cos(heading);
+    
+    chassis.moveToPoint(targetX, targetY, timeout, {
+        .forwards = (distance > 0),
+        .maxSpeed = maxSpeed
+    });
+}
+
 void newSAWP() {
     chassis.setPose(0, 0, 0);
-    hood.set_value(false);
+    hood.set_value(true);
     doinker.set_value(true);
-    //start facing the right side wall, bot is perpendicular with around half of the bot sticking out of park zone
-    pros::delay(100);
-    //benckl t
 
-    chassis.moveToPoint(0, 33.5, 3000, {.maxSpeed = 100});
+
+    chassis.moveToPoint(0, 34.2, 3000, {.maxSpeed = 80});
     pros::delay(100);
-    chassis.turnToHeading(-65, 500);
+    chassis.turnToHeading(-73, 1000);
+    pros::delay(100);
     scoreHigh();
-    chassis.moveToPoint(-8.5, 34.5, 2000, {.maxSpeed = 120}); //going into matchload
-    pros::delay(600);
-    chassis.moveToPoint(24,     32, 2000, {.forwards = false, .maxSpeed = 120}); // long tube 1
+    chassis.moveToPoint(-7.5, 37.8, 2000, {.maxSpeed = 120, .minSpeed = 100}); //going into matchload
+    chassis.moveToPoint(-7.8, 37.8, 750, {.maxSpeed = 30, .minSpeed = 20}); //going into matchload
+    pros::delay(400);
+    chassis.moveToPoint(22.5,31.4, 2000, {.forwards = false, .maxSpeed = 65}); // long tube 1
     pros::delay(700);
     doinker.set_value(false);
-    hood.set_value(true);
-    pros::delay(1000);
     hood.set_value(false);
-    chassis.moveToPoint(13, 32, 1000, {.forwards = true, .maxSpeed = 127}); //get out of long tube
     pros::delay(1000);
+    hood.set_value(true);
     chassis.moveToPose(
-        14,
-        -36,
-        180,
-        4000,
-        {.maxSpeed = 70, .minSpeed=15,.earlyExitRange=8}
+        22,
+        7,
+        -180,
+        2000,
+        {.maxSpeed = 110, .minSpeed=60,.earlyExitRange=8}
         // a minSpeed of 72 means that the chassis will slow down as
         // it approaches the target point, but it won't come to a full stop
 
         // an earlyExitRange of 8 means the movement will exit 8" away from
         // the target point
     );
+    chassis.moveToPoint(22, -37, 3000, {.forwards = true, .maxSpeed = 95}); //get out of long tube
+    pros::delay(200);
+    chassis.turnToHeading(45, 1000);
+    pros::delay(600);
+    moveDistance(15,  2000);
+    pros::delay(700);
+    reverseMotorsSlow();
+    pros::delay(1000);
 
+    // out of mid goal and to the match loader
+    moveDistance(-8, 500);
+    scoreHigh();
+    chassis.moveToPoint(4, -57.5, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=20}); //get out of long tube
+    pros::delay(300);
+    doinker.set_value(true);
+    chassis.turnToHeading(-90, 1000);
+    pros::delay(100);
+    chassis.moveToPoint(-17, -57.4, 1000, {.forwards = true, .maxSpeed = 100, .minSpeed=60}); //get out of long tube
+    pros::delay(425);
+    chassis.moveToPoint(22, -61, 1000, {.forwards = false, .maxSpeed = 100, .minSpeed=60}); //get out of long tube
+    pros::delay(600);
+    hood.set_value(false);
 }
 
 void autonomous() {
+    chassis.setPose(0, 0, 0); 
     hood.set_value(false);
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
