@@ -488,7 +488,7 @@ void newSAWP() {
     scoreHigh();
     chassis.moveToPoint(-7.5, 37.8, 2000, {.maxSpeed = 120, .minSpeed = 100}); //going into matchload
     chassis.moveToPoint(-7.8, 37.8, 750, {.maxSpeed = 30, .minSpeed = 20}); //going into matchload
-    pros::delay(400);
+    pros::delay(300);
     chassis.moveToPoint(22.5,31.4, 2000, {.forwards = false, .maxSpeed = 65}); // long tube 1
     pros::delay(700);
     doinker.set_value(false);
@@ -500,15 +500,15 @@ void newSAWP() {
         7,
         -180,
         2000,
-        {.maxSpeed = 110, .minSpeed=60,.earlyExitRange=8}
+        {.maxSpeed = 110, .minSpeed=70,.earlyExitRange=4}
         // a minSpeed of 72 means that the chassis will slow down as
         // it approaches the target point, but it won't come to a full stop
 
         // an earlyExitRange of 8 means the movement will exit 8" away from
         // the target point
     );
-    chassis.moveToPoint(22, -37, 3000, {.forwards = true, .maxSpeed = 95}); //get out of long tube
-    pros::delay(200);
+    chassis.moveToPoint(22, -39, 3000, {.forwards = true, .maxSpeed = 95}); //get out of long tube
+    pros::delay(125);
     chassis.turnToHeading(45, 1000);
     pros::delay(600);
     moveDistance(15,  2000);
@@ -519,16 +519,17 @@ void newSAWP() {
     // out of mid goal and to the match loader
     moveDistance(-8, 500);
     scoreHigh();
-    chassis.moveToPoint(4, -57.5, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=20}); //get out of long tube
+    chassis.moveToPoint(4, -55.5, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=20}); //get out of long tube
     pros::delay(300);
     doinker.set_value(true);
     chassis.turnToHeading(-90, 1000);
     pros::delay(100);
-    chassis.moveToPoint(-17, -57.4, 1000, {.forwards = true, .maxSpeed = 100, .minSpeed=60}); //get out of long tube
+    chassis.moveToPoint(-16, -55.2, 1000, {.forwards = true, .maxSpeed = 110, .minSpeed=60}); //get out of long tube
     pros::delay(425);
-    chassis.moveToPoint(22, -61, 1000, {.forwards = false, .maxSpeed = 100, .minSpeed=60}); //get out of long tube
+    chassis.moveToPoint(22, -57.7, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=60}); //get out of long tube
     pros::delay(600);
     hood.set_value(false);
+    chassis.moveToPoint(23, -57.7, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=60}); //get out of long tube
 }
 
 void autonomous() {
