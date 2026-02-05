@@ -51,15 +51,15 @@ lemlib::Drivetrain drivetrain(&left_motors,
 
 pros::Imu imu(6);
 pros::Rotation vertical_encoder(-17);
-pros::Rotation horizontal_encoder(19);
+pros::Rotation horizontal_encoder(16);
 
 lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, 0);
 lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.5);
     
 lemlib::OdomSensors sensors(&vertical_tracking_wheel,
                             nullptr,
-                            nullptr,
                             &horizontal_tracking_wheel,
+                            nullptr,
                             &imu
 );
 
@@ -223,7 +223,7 @@ void reverseMotors() {
 }
 
 void reverseMotorsSlow() {
-    leftIntakeBottom.move(110); //bottm
+    leftIntakeBottom.move(127); //bottm
     leftIntakeTop.move(127); //middle
     rightIntakeBottom.move(-127); //top
 }
@@ -375,43 +375,30 @@ void soloAWP() {
 
 void left_auton() {
     chassis.setPose(0, 0, 0);
-    hood.set_value(false);
+    hood.set_value(true);
     scoreHigh();
     pros::delay(100);
     chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
     chassis.moveToPoint(-6, 28, 3000, {.maxSpeed = 65});
     pros::delay(700);
     doinker.set_value(true);
-    pros::delay(200);
+    pros::delay(100);
     chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(250, 1000);
-    chassis.moveToPoint(-37, 10, 3000, {.maxSpeed = 102});
+    chassis.moveToPoint(-37.5, 11, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-37.1, -0.5, 2000, {.maxSpeed = 80});
-    pros::delay(900);
-    chassis.moveToPoint(-36.1, 28.5, 1000, {.forwards = false, .maxSpeed = 120});
+    chassis.moveToPoint(-39, 1, 2000, {.maxSpeed = 80});
+    pros::delay(600);
+    chassis.moveToPoint(-38.7, 37, 2000, {.forwards = false, .maxSpeed = 120});
     pros::delay(1000);
-    hood.set_value(true);
-    // reverseMotorsButTop();
-    // pros::delay(200);
+    hood.set_value(false);
     scoreHigh();
-    chassis.moveToPoint(-36.1, 29.5, 1000, {.forwards = false, .maxSpeed = 100});
-    // pros::delay(1500);
-    // reverseMotorsButTop();
-    // pros::delay(50);
-    scoreHigh();
-    pros::delay(1800);
-    // reverseMotorsButTop();
-    // pros::delay(200);
-    chassis.moveToPoint(-36.1, 30, 1000, {.forwards = false, .maxSpeed = 100});
-    // scoreHigh();
-    // pros::delay(500);
-    // wing stuffs
-    chassis.moveToPoint(-36.1, 20, 2000, {.forwards = true, .maxSpeed = 120});
-    chassis.moveToPoint(-26.45, 20, 2000, {.forwards = false, .maxSpeed = 120});
+    pros::delay(2000);
+    chassis.moveToPoint(-39, 20, 2000, {.forwards = true, .maxSpeed = 120});
+    chassis.moveToPoint(-26.5, 20, 2000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(180, 300); //turn mid goal
     pros::delay(500);
-    chassis.moveToPoint(-26.45, 43, 2000, {.forwards = false, .maxSpeed = 110});
+    chassis.moveToPoint(-26.5, 63, 3000, {.forwards = false, .maxSpeed = 110});
     chassis.turnToHeading(180, 300); //turn mid goal
 }
 
@@ -486,61 +473,58 @@ void newSAWP() {
     chassis.turnToHeading(-73, 1000);
     pros::delay(100);
     scoreHigh();
-    chassis.moveToPoint(-7.5, 37.8, 2000, {.maxSpeed = 120, .minSpeed = 100}); //going into matchload
-    chassis.moveToPoint(-7.8, 37.8, 750, {.maxSpeed = 30, .minSpeed = 20}); //going into matchload
-    pros::delay(300);
-    chassis.moveToPoint(22.5,31.4, 2000, {.forwards = false, .maxSpeed = 65}); // long tube 1
+    chassis.moveToPoint(-7.2, 38, 1000, {.maxSpeed = 80, .minSpeed = 70}); //going into matchload
+    pros::delay(400);
+    chassis.moveToPoint(23.0,32.2, 2000, {.forwards = false, .maxSpeed = 75, .minSpeed = 60}); // long tube 1
     pros::delay(700);
     doinker.set_value(false);
     hood.set_value(false);
     pros::delay(1000);
     hood.set_value(true);
     chassis.moveToPose(
-        22,
-        7,
+        21,
+        6,
         -180,
         2000,
-        {.maxSpeed = 110, .minSpeed=70,.earlyExitRange=4}
+        {.maxSpeed = 110, .minSpeed=70}
         // a minSpeed of 72 means that the chassis will slow down as
         // it approaches the target point, but it won't come to a full stop
 
         // an earlyExitRange of 8 means the movement will exit 8" away from
         // the target point
     );
-    chassis.moveToPoint(22, -39, 3000, {.forwards = true, .maxSpeed = 95}); //get out of long tube
+    chassis.moveToPoint(21, -35, 3000, {.forwards = true, .maxSpeed = 105}); //get out of long tube
     pros::delay(125);
     chassis.turnToHeading(45, 1000);
     pros::delay(600);
-    moveDistance(15,  2000);
-    pros::delay(700);
+    moveDistance(17.4,  2000);
+    pros::delay(600);
     reverseMotorsSlow();
     pros::delay(1000);
 
     // out of mid goal and to the match loader
     moveDistance(-8, 500);
     scoreHigh();
-    chassis.moveToPoint(4, -55.5, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=20}); //get out of long tube
+    chassis.moveToPoint(4, -50, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=20}); //get out of long tube
     pros::delay(300);
     doinker.set_value(true);
     chassis.turnToHeading(-90, 1000);
     pros::delay(100);
-    chassis.moveToPoint(-16, -55.2, 1000, {.forwards = true, .maxSpeed = 110, .minSpeed=60}); //get out of long tube
+    chassis.moveToPoint(-14, -50, 1000, {.forwards = true, .maxSpeed = 110, .minSpeed=60}); //get out of long tube
     pros::delay(425);
-    chassis.moveToPoint(22, -57.7, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=60}); //get out of long tube
+    chassis.moveToPoint(22, -57, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=60}); //get out of long tube
     pros::delay(600);
     hood.set_value(false);
-    chassis.moveToPoint(23, -57.7, 1000, {.forwards = false, .maxSpeed = 127, .minSpeed=60}); //get out of long tube
+    chassis.moveToPoint(30, -57, 1000, { .forwards = false,.maxSpeed = 100, .minSpeed=20}); //get out of long tube
 }
 
 void autonomous() {
     chassis.setPose(0, 0, 0); 
-    hood.set_value(false);
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    //left_auton();
-    newSAWP();
-    //soloAWP();
+    left_auton();
+    //newSAWP();
     //giveAWP();
     //lateralTestingAuton();
 }
