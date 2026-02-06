@@ -19,5 +19,6 @@ void skillsAutonomous();
 void giveAWP();
 void soloAWP();
 void newSAWP();
+void left_split();
 
 #endif // _AUTONS_HPP_

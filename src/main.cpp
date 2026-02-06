@@ -35,7 +35,8 @@ void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //left_auton();
-    newSAWP();
+    //newSAWP();
+    left_split();
     //giveAWP();
     //lateralTestingAuton();
 }
