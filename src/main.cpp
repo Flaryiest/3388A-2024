@@ -34,9 +34,9 @@ void autonomous() {
     chassis.setPose(0, 0, 0); 
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    //left_auton();
+    left_auton();
     //newSAWP();
-    left_split();
+    //left_split();
     //giveAWP();
     //lateralTestingAuton();
 }
@@ -45,17 +45,14 @@ void autonomous() {
 void opcontrol() {
     hood.set_value(false);
     odomLift.set_value(true);
-    // Persistent state for intake piston toggle
-    static bool intakePistonState = false;     // false = retracted, true = extended
-    static bool prevIntakePistonButton = true; // previous loop state of Y button
     // Persistent state for doinker toggle
-    static bool doinkerState = true;           // false = retracted, true = extended
+    static bool doinkerState = false;           // false = retracted, true = extended
     static bool prevDoinkerButton = true;      // previous loop state of doinker button (A)
     // Persistent state for expansion toggle
     static bool expansionState = false;       // false = retracted, true = extended (deployed)
     static bool prevExpansionButton = true;   // previous loop state of expansion button (B)
     // Persistent state for wing toggle
-    static bool wingState = false;            // false = retracted, true = extended
+    static bool wingState = true;            // false = retracted, true = extended
     static bool prevWingButton = true;        // previous loop state of wing button (R2)
     // Persistent state for middleDescore toggle
     static bool middleDescoreState = false;   // false = retracted, true = extended
@@ -73,17 +70,21 @@ void opcontrol() {
     static const bool KEEP_RED = true;        // Change this based on your alliance color!
     static const int EJECT_DURATION_MS = 250; // How long to reverse top motor
     static const int EJECT_COOLDOWN_MS = 100; // Cooldown before detecting next ball
+    // Persistent state for intakeTwo reverse burst
+    static bool intakeTwoBursting = false;    // true during initial reverse burst
+    static uint32_t intakeTwoBurstStart = 0;  // when burst started
+    static bool prevIntakeTwo = false;        // previous loop state of L2
     // Persistent state for park macro
     static bool parkMacroRunning = false;     // true when park macro is active
     
     while (true) {
-        bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+        bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
         bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
         bool intakeThree = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-        bool intakePistonButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
+        bool intakePistonButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 
         bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
-        bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+        bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
         bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
         bool middleDescoreButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP);
         bool odomLiftButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
@@ -159,15 +160,29 @@ void opcontrol() {
                 }
             }
             // ===== NORMAL INTAKE CONTROL (only when not ejecting) =====
-            else if (intakeOne) {
+            else if (intakeOne || intakePistonButton) {
                 leftIntakeBottom.move(-127); //bottom
                 leftIntakeTop.move(-127); //middle
                 rightIntakeBottom.move(127); //top normal scoring
 
             } else if (intakeTwo) {
-                leftIntakeBottom.move(-127); //bottm
-                leftIntakeTop.move(-127); //middle
-                rightIntakeBottom.move(-127); //top
+                // On first press, run reverse burst for 100ms
+                if (!prevIntakeTwo) {
+                    intakeTwoBursting = true;
+                    intakeTwoBurstStart = pros::millis();
+                }
+                if (intakeTwoBursting && (pros::millis() - intakeTwoBurstStart < 100)) {
+                    // Reverse burst (same as intakeThree)
+                    leftIntakeBottom.move(127);
+                    leftIntakeTop.move(127);
+                    rightIntakeBottom.move(-127);
+                } else {
+                    intakeTwoBursting = false;
+                    // Normal intakeTwo
+                    leftIntakeBottom.move(-127); //bottom
+                    leftIntakeTop.move(-127); //middle
+                    rightIntakeBottom.move(-127); //top
+                }
 
             } else if (intakeThree) {
                 leftIntakeBottom.move(127);
@@ -180,14 +195,7 @@ void opcontrol() {
             }
         }
 
-        if (intakePistonButton) {
-            // Edge-triggered toggle: only toggle when button transitions from not pressed to pressed
-            if (!prevIntakePistonButton) {
-                intakePistonState = !intakePistonState;
-                hood.set_value(intakePistonState);
-                pros::delay(100); 
-            }
-        } 
+        hood.set_value(!intakePistonButton);
         if (doinkerButton) {
             // Edge-triggered toggle for doinker
             if (!prevDoinkerButton) {
@@ -244,7 +252,7 @@ void opcontrol() {
         }
 
         chassis.arcade(leftY, rightX);
-        prevIntakePistonButton = intakePistonButton; // update edge detector
+        prevIntakeTwo = intakeTwo; // update edge detector for intakeTwo burst
         prevDoinkerButton = doinkerButton; // update edge detector for doinker
         prevExpansionButton = expansionButton; // update edge detector for expansion
         prevWingButton = wingButton; // update edge detector for wing

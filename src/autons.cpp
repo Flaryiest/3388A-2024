@@ -156,19 +156,17 @@ void left_auton() {
     chassis.turnToHeading(250, 1000);
     chassis.moveToPoint(-37.5, 11, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-39, 1, 2000, {.maxSpeed = 80});
+    chassis.moveToPoint(-38.5, -4, 2000, {.maxSpeed = 80});
     pros::delay(600);
-    chassis.moveToPoint(-38.7, 37, 2000, {.forwards = false, .maxSpeed = 120});
+    chassis.moveToPoint(-37, 37, 2000, {.forwards = false, .maxSpeed = 80});
     pros::delay(1000);
     hood.set_value(false);
     scoreHigh();
     pros::delay(2000);
-    chassis.moveToPoint(-39, 20, 2000, {.forwards = true, .maxSpeed = 120});
-    chassis.moveToPoint(-26.5, 20, 2000, {.forwards = false, .maxSpeed = 120});
-    chassis.turnToHeading(180, 300); //turn mid goal
-    pros::delay(500);
-    chassis.moveToPoint(-26.5, 63, 3000, {.forwards = false, .maxSpeed = 110});
-    chassis.turnToHeading(180, 300); //turn mid goal
+    reverseMotors();
+    pros::delay(150);
+    scoreHigh();
+
 }
 
 void left_split() {
