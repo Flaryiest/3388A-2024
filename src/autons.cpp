@@ -156,9 +156,9 @@ void left_auton() {
     chassis.turnToHeading(250, 1000);
     chassis.moveToPoint(-37.5, 11, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-38.5, -4, 2000, {.maxSpeed = 80});
-    pros::delay(600);
-    chassis.moveToPoint(-37, 37, 2000, {.forwards = false, .maxSpeed = 80});
+    chassis.moveToPoint(-38.3, -4, 2000, {.maxSpeed = 80});
+    pros::delay(500);
+    chassis.moveToPoint(-36.5, 37, 2000, {.forwards = false, .maxSpeed = 80});
     pros::delay(1000);
     hood.set_value(false);
     scoreHigh();
