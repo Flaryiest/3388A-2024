@@ -51,9 +51,7 @@ void opcontrol() {
     // Persistent state for expansion toggle
     static bool expansionState = false;       // false = retracted, true = extended (deployed)
     static bool prevExpansionButton = true;   // previous loop state of expansion button (B)
-    // Persistent state for wing toggle
-    static bool wingState = true;            // false = retracted, true = extended
-    static bool prevWingButton = true;        // previous loop state of wing button (R2)
+
     // Persistent state for middleDescore toggle
     static bool middleDescoreState = false;   // false = retracted, true = extended
     static bool prevMiddleDescoreButton = true; // previous loop state of middleDescore button
@@ -180,8 +178,8 @@ void opcontrol() {
                     intakeTwoBursting = false;
                     // Normal intakeTwo
                     leftIntakeBottom.move(-127); //bottom
-                    leftIntakeTop.move(-127); //middle
-                    rightIntakeBottom.move(-127); //top
+                    leftIntakeTop.move(-60); //middle
+                    rightIntakeBottom.move(-60); //top
                 }
 
             } else if (intakeThree) {
@@ -214,14 +212,8 @@ void opcontrol() {
             }
         }
         
-        if (wingButton) {
-            // Edge-triggered toggle for wings
-            if (!prevWingButton) {
-                wingState = !wingState;
-                wings.set_value(wingState);
-                pros::delay(100);
-            }
-        }
+        // Wings: OFF when not pressed, ON when pressed (hold to activate)
+        wings.set_value(wingButton);
         
         if (middleDescoreButton) {
             // Edge-triggered toggle for middleDescore
@@ -255,7 +247,7 @@ void opcontrol() {
         prevIntakeTwo = intakeTwo; // update edge detector for intakeTwo burst
         prevDoinkerButton = doinkerButton; // update edge detector for doinker
         prevExpansionButton = expansionButton; // update edge detector for expansion
-        prevWingButton = wingButton; // update edge detector for wing
+
         prevMiddleDescoreButton = middleDescoreButton; // update edge detector for middleDescore
         prevOdomLiftButton = odomLiftButton; // update edge detector for odomLift
         prevColorSortButton = colorSortButton; // update edge detector for color sort

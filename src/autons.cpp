@@ -154,11 +154,11 @@ void left_auton() {
     pros::delay(100);
     chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 120});
     chassis.turnToHeading(250, 1000);
-    chassis.moveToPoint(-37.5, 11, 3000, {.maxSpeed = 102});
+    chassis.moveToPoint(-36.2, 11, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-38.3, -4, 2000, {.maxSpeed = 80});
-    pros::delay(500);
-    chassis.moveToPoint(-36.5, 37, 2000, {.forwards = false, .maxSpeed = 80});
+    chassis.moveToPoint(-36.8, -2, 2000, {.maxSpeed = 80});
+    pros::delay(600);
+    chassis.moveToPoint(-35.2, 36, 2000, {.forwards = false, .maxSpeed = 65});
     pros::delay(1000);
     hood.set_value(false);
     scoreHigh();
@@ -174,32 +174,38 @@ void left_split() {
     pros::delay(100);
     hood.set_value(true);
     doinker.set_value(true);
-    chassis.moveToPoint(0, 34.2, 3000, {.maxSpeed = 70});
+
+
+    chassis.moveToPoint(0, 34.2, 3000, {.maxSpeed = 60});
     pros::delay(700);
     chassis.turnToHeading(-74, 1000);
     pros::delay(100);
     scoreHigh();
-    chassis.moveToPoint(-7.2, 38, 1000, {.maxSpeed = 110, .minSpeed = 100}); //going into matchload
-    pros::delay(400);
-    chassis.moveToPoint(23.0,32.6, 2000, {.forwards = false, .maxSpeed = 75, .minSpeed = 60, .earlyExitRange = 3}); // long tube 1
+    chassis.moveToPoint(-7.2, 38, 1000, {.maxSpeed = 70, .minSpeed = 50}); //going into matchload
+    pros::delay(800);
+    chassis.moveToPoint(23.0,32.2, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 20}); // long tube 1
     pros::delay(850);
     doinker.set_value(false);
     hood.set_value(false);
-    pros::delay(1000);
+    pros::delay(1300);
+    chassis.moveToPoint(10,32.2, 2000, {.forwards = false, .maxSpeed = 100, .minSpeed = 20}); // long tube 1
     hood.set_value(true);
-    chassis.moveToPoint(17.0,32.6, 2000, {.forwards = true, .maxSpeed = 75, .minSpeed = 60, .earlyExitRange = 3}); // long tube 1 
     chassis.moveToPose(
-        29,
-        2,
-        315,
+        23.3,
+        7,
+        180,
         3000,
-        {.maxSpeed = 110, .minSpeed=70}
-        // a minSpeed of 72 means that the chassis will slow down as
-        // it approaches the target point, but it won't come to a full stop
-
-        // an earlyExitRange of 8 means the movement will exit 8" away from
-        // the target point
+        {.maxSpeed = 70, .minSpeed=20}
     );
+    chassis.turnToHeading(-45, 2000);
+    chassis.moveToPoint(26.3, 7, 2000);
+    chassis.turnToHeading(-45, 2000);
+    chassis.moveToPoint(32.8, -4.3, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 20});
+    pros::delay(1000);
+    reverseMotors();
+    pros::delay(200);
+    scoreMiddleHigh();
+
 }
 
 void right_auton() {

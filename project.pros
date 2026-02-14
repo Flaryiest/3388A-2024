@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "rock side",
+    "project_name": "left 7",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -324,8 +324,8 @@
     },
     "upload_options": {
       "description": "AWOOOOOO",
-      "icon": "robot",
-      "slot": 1
+      "icon": "pizza",
+      "slot": 2
     },
     "use_early_access": false
   }
