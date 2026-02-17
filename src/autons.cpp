@@ -209,6 +209,29 @@ void left_split() {
 }
 
 void right_auton() {
+    chassis.setPose(0, 0, 0);
+    hood.set_value(true);
+    scoreHigh();
+    pros::delay(100);
+    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
+    chassis.moveToPoint(6, 28, 3000, {.maxSpeed = 65});
+    pros::delay(700);
+    doinker.set_value(true);
+    pros::delay(100);
+    chassis.moveToPoint(6, 18, 3000, {.forwards = false, .maxSpeed = 120});
+    chassis.turnToHeading(360-250, 1000);
+    chassis.moveToPoint(38.5, 12, 3000, {.maxSpeed = 102});
+    chassis.turnToHeading(360-180, 1000);
+    chassis.moveToPoint(38.6, -2, 2000, {.maxSpeed = 80});
+    pros::delay(600);
+    chassis.moveToPoint(37.7, 36, 2000, {.forwards = false, .maxSpeed = 60});
+    pros::delay(1200);
+    hood.set_value(false);
+    scoreHigh();
+    pros::delay(2000);
+    reverseMotors();
+    pros::delay(150);
+    scoreHigh();
 }
 
 void newSAWP() {
