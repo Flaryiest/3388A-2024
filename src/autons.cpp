@@ -8,7 +8,14 @@ void scoreHigh() {
     rightIntakeBottom.move(127); //top
 }
 
+void liftOdom() {
+    odomLift.set_value(true);
+}
+
 void scoreMiddleHigh() {
+    reverseMotors();
+    leftIntakeBottom.move(0); //bottm
+    pros::delay(100);
     leftIntakeBottom.move(-127); //bottm
     leftIntakeTop.move(-60); //middle
     rightIntakeBottom.move(-60); //top
@@ -17,12 +24,14 @@ void scoreMiddleHigh() {
 void reverseMotors() {
     leftIntakeBottom.move(127); //bottm
     leftIntakeTop.move(127); //middle
+    pros::delay(100); // delay top motor by 100ms
     rightIntakeBottom.move(-127); //top
 }
 
 void reverseMotorsSlow() {
     leftIntakeBottom.move(127); //bottm
     leftIntakeTop.move(127); //middle
+    pros::delay(100); // delay top motor by 100ms
     rightIntakeBottom.move(-127); //top
 }
 
@@ -51,6 +60,53 @@ void moveDistance(float distance, int timeout, float maxSpeed) {
         .forwards = (distance > 0),
         .maxSpeed = maxSpeed
     });
+}
+
+void skillsDriveToPark() {
+    // Drive straight until the color sensor crosses the park zone line twice,
+    // then drive 3 more inches and stop.
+    // Park zone lines are colored (red or blue) on the gray field tiles.
+    
+    int crossingCount = 0;
+    bool onLine = false;
+    float targetHeading = chassis.getPose().theta; // maintain current heading
+    
+    color_sensor.set_led_pwm(100); // ensure LED is on for detection
+    
+    while (crossingCount < 2) {
+        // Drive straight with IMU heading correction
+        float headingError = targetHeading - chassis.getPose().theta;
+        // Normalize heading error to -180..180
+        while (headingError > 180) headingError -= 360;
+        while (headingError < -180) headingError += 360;
+        int correction = (int)(headingError * 2.0); // P-correction
+        left_motors.move(60 + correction);
+        right_motors.move(60 - correction);
+        
+        // Check color sensor for park zone line
+        double hue = color_sensor.get_hue();
+        int proximity = color_sensor.get_proximity();
+        
+        // Detect colored line: red (hue < 30 or > 330) or blue (hue 80-250)
+        bool isColored = (proximity > 100) && 
+                         ((hue < 30 || hue > 330) || (hue > 80 && hue < 250));
+        
+        if (isColored && !onLine) {
+            onLine = true; // entered the colored line
+        } else if (!isColored && onLine) {
+            onLine = false; // exited the colored line
+            crossingCount++;
+        }
+        
+        pros::delay(10);
+    }
+    
+    // Stop driving
+    left_motors.move(0);
+    right_motors.move(0);
+    
+    // Drive 3 more inches forward
+    moveDistance(3, 2000, 60);
 }
 
 void skillsAutonomous() {
