@@ -83,15 +83,15 @@ void skillsDrivePastPark() {
         while (headingError > 180) headingError -= 360;
         while (headingError < -180) headingError += 360;
         int correction = (int)(headingError * 2.0); // P-correction
-        left_motors.move(60 + correction);
-        right_motors.move(60 - correction);
+        left_motors.move(74 + correction);
+        right_motors.move(74 - correction);
         
         // Check color sensor for park zone line
         double hue = color_sensor.get_hue();
         int proximity = color_sensor.get_proximity();
         
         // Detect colored line: red (hue < 30 or > 330) or blue (hue 80-250)
-        bool isColored = (proximity > 100) && 
+        bool isColored = (proximity > 60) && 
                          ((hue < 30 || hue > 330) || (hue > 80 && hue < 250));
         
         if (isColored && !onLine) {
@@ -99,6 +99,9 @@ void skillsDrivePastPark() {
         } else if (!isColored && onLine) {
             onLine = false; // exited the colored line
             crossingCount++;
+            if (crossingCount == 1) {
+                doinker.set_value(true); // put down doinker after first crossing
+            }
         }
         
         pros::delay(10);
@@ -108,12 +111,14 @@ void skillsDrivePastPark() {
     left_motors.move(0);
     right_motors.move(0);
     // Drive 5 more inches forward
-    moveDistance(5, 2000, 60);
+    moveDistance(2, 2000, 60);
 }
 
 void skillsAutonomous() {
     // cross park and get 6
     chassis.setPose(0, 0, 0);
+    chassis.moveToPoint(0, -6, 400, {.forwards = false, .maxSpeed = 70});
+    pros::delay(1000);
     liftOdom();
     scoreHigh();
     skillsDrivePastPark();
@@ -121,16 +126,17 @@ void skillsAutonomous() {
 
     // reset off park
     liftOdom();
-    stopAllMotors();
-    moveDistance(-3, 300, 40);
+    //stopAllMotors();
+    moveDistance(-3, 1000, 40);
     pros::delay(300);
     chassis.setPose(0, 0, 0);
-    pros::delay(100);
-    //line up to directly and back toward mid goal
+
+    pros::delay(3000); // change to like 100 after
+    // //line up to directly and back toward mid goal
     chassis.moveToPoint(0, 10, 1500);
-    chassis.turnToHeading(45, 1000);
-    chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
-    chassis.turnToHeading(135, 1300);
+    // chassis.turnToHeading(45, 1000);
+    // chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
+    // chassis.turnToHeading(135, 1300);
     //chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
     
     

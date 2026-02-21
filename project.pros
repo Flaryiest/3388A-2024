@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "right side",
+    "project_name": "skills",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -325,7 +325,7 @@
     "upload_options": {
       "description": "AWOOOOOO",
       "icon": "pizza",
-      "slot": 7
+      "slot": 1
     },
     "use_early_access": false
   }
