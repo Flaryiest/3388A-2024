@@ -8,8 +8,11 @@ void scoreHigh() {
     rightIntakeBottom.move(127); //top
 }
 
+static bool odomLiftStateAuton = false; // tracks odomLift state for toggle
+
 void liftOdom() {
-    odomLift.set_value(true);
+    odomLiftStateAuton = !odomLiftStateAuton;
+    odomLift.set_value(odomLiftStateAuton);
 }
 
 void scoreMiddleHigh() {
@@ -29,7 +32,7 @@ void reverseMotors() {
 }
 
 void reverseMotorsSlow() {
-    leftIntakeBottom.move(127); //bottm
+    leftIntakeBottom.move(80); //bottm
     leftIntakeTop.move(127); //middle
     pros::delay(100); // delay top motor by 100ms
     rightIntakeBottom.move(-127); //top
@@ -62,7 +65,7 @@ void moveDistance(float distance, int timeout, float maxSpeed) {
     });
 }
 
-void skillsDriveToPark() {
+void skillsDrivePastPark() {
     // Drive straight until the color sensor crosses the park zone line twice,
     // then drive 3 more inches and stop.
     // Park zone lines are colored (red or blue) on the gray field tiles.
@@ -104,15 +107,37 @@ void skillsDriveToPark() {
     // Stop driving
     left_motors.move(0);
     right_motors.move(0);
-    
-    // Drive 3 more inches forward
-    moveDistance(3, 2000, 60);
+    // Drive 5 more inches forward
+    moveDistance(5, 2000, 60);
 }
 
 void skillsAutonomous() {
-    // Add your skills autonomous routine here
+    // cross park and get 6
     chassis.setPose(0, 0, 0);
+    liftOdom();
+    scoreHigh();
+    skillsDrivePastPark();
+    pros::delay(400);
+
+    // reset off park
+    liftOdom();
+    stopAllMotors();
+    moveDistance(-3, 300, 40);
+    pros::delay(300);
+    chassis.setPose(0, 0, 0);
+    pros::delay(100);
+    //line up to directly and back toward mid goal
+    chassis.moveToPoint(0, 10, 1500);
+    chassis.turnToHeading(45, 1000);
+    chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
+    chassis.turnToHeading(135, 1300);
+    //chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
+    
+    
+    
+
     // Skills routine implementation...
+    
 }
 
 

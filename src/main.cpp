@@ -34,7 +34,8 @@ void autonomous() {
     chassis.setPose(0, 0, 0); 
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    right_auton();
+    //right_auton();
+    skillsAutonomous();
     //left_auton();
     //newSAWP();
     //left_split();
@@ -147,7 +148,7 @@ void opcontrol() {
                     intakeThreeDelaying = true;
                     intakeThreeDelayStart = pros::millis();
                 }
-                leftIntakeBottom.move(127);
+                leftIntakeBottom.move(80);
                 leftIntakeTop.move(127);
                 if (intakeThreeDelaying && (pros::millis() - intakeThreeDelayStart < 100)) {
                     rightIntakeBottom.move(0); // don't spin top for first 100ms
