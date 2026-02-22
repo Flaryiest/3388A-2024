@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "skills",
+    "project_name": "SAWP before provs",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -324,8 +324,8 @@
     },
     "upload_options": {
       "description": "AWOOOOOO",
-      "icon": "pizza",
-      "slot": 1
+      "icon": "ufo",
+      "slot": 3
     },
     "use_early_access": false
   }

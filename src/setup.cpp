@@ -40,7 +40,7 @@ pros::Rotation vertical_encoder(-17);
 pros::Rotation horizontal_encoder(16);
 
 lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, 0);
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.5);
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_2, 0.15);
     
 lemlib::OdomSensors sensors(&vertical_tracking_wheel,
                             nullptr,

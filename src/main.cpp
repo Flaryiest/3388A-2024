@@ -35,9 +35,9 @@ void autonomous() {
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
     //right_auton();
-    skillsAutonomous();
+    //skillsAutonomous();
     //left_auton();
-    //newSAWP();
+    newSAWP();
     //left_split();
     //giveAWP();
     //lateralTestingAuton();
@@ -50,9 +50,7 @@ void opcontrol() {
     // Persistent state for doinker toggle
     static bool doinkerState = false;           // false = retracted, true = extended
     static bool prevDoinkerButton = true;      // previous loop state of doinker button (A)
-    // Persistent state for expansion toggle
-    static bool expansionState = false;       // false = retracted, true = extended (deployed)
-    static bool prevExpansionButton = true;   // previous loop state of expansion button (B)
+
 
     // Persistent state for middleDescore toggle
     static bool middleDescoreState = false;   // false = retracted, true = extended
@@ -79,7 +77,7 @@ void opcontrol() {
 
         bool wingButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_Y);
         bool doinkerButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT);
-        bool expansionButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_B);
+
         bool middleDescoreButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP);
         bool odomLiftButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
         bool parkMacroButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
@@ -173,14 +171,8 @@ void opcontrol() {
             }
         }
         
-        if (expansionButton) {
-            // Edge-triggered toggle for expansion
-            if (!prevExpansionButton) {
-                expansionState = !expansionState;
-                expansion.set_value(expansionState);
-                pros::delay(100);
-            }
-        }
+        // Expansion follows intakeThree (R1): ON when pressed, OFF when released
+        expansion.set_value(intakeThree);
         
         // Wings: OFF when not pressed, ON when pressed (hold to activate)
         wings.set_value(wingButton);
@@ -207,7 +199,7 @@ void opcontrol() {
         prevIntakeTwo = intakeTwo; // update edge detector for intakeTwo burst
         prevIntakeThree = intakeThree; // update edge detector for intakeThree delay
         prevDoinkerButton = doinkerButton; // update edge detector for doinker
-        prevExpansionButton = expansionButton; // update edge detector for expansion
+
 
         prevMiddleDescoreButton = middleDescoreButton; // update edge detector for middleDescore
         prevOdomLiftButton = odomLiftButton; // update edge detector for odomLift
