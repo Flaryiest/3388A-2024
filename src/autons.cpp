@@ -22,7 +22,8 @@ void liftOdom() {
 }
 
 void scoreMiddleHigh() {
-    reverseMotorsButTop();
+    //reverseMotorsButTop();
+    reverseMotors();
     pros::delay(150);
     leftIntakeBottom.move(-127); //bottm
     leftIntakeTop.move(-70); //middle
@@ -325,42 +326,43 @@ void newSAWP() {
     hood.set_value(true);
     doinker.set_value(true);
     chassis.moveToPoint(0, 34.8, 3000, {.maxSpeed = 80});
-    pros::delay(200);
+    pros::delay(100);
     chassis.turnToHeading(74, 1000);
     scoreHigh();
     chassis.moveToPoint(5.4, 38.45, 1000, {.maxSpeed = 80, .minSpeed = 20}); //going into matchload
+    pros::delay(550);
+    chassis.moveToPoint(-22.2,31.7, 1600, {.forwards = false, .maxSpeed = 110, .minSpeed = 30}); // long tube 1
     pros::delay(600);
-    chassis.moveToPoint(-22.2,31.7, 1600, {.forwards = false, .maxSpeed = 100, .minSpeed = 30}); // long tube 1
-    pros::delay(680);
     doinker.set_value(false);
     hood.set_value(false);
     chassis.turnToHeading(90, 400);
-    pros::delay(500);
+    pros::delay(520);
     scoreHigh();
     chassis.setPose(0, 0, 0); //in long goal reset
-    chassis.moveToPoint(0,14, 2000, {.maxSpeed = 100}); // long tube 1
+    //chassis.moveToPoint(0,14, 2000, {.maxSpeed = 110}); // long tube 1
+    chassis.turnToHeading(90, 1000);
     hood.set_value(true);
-    chassis.turnToHeading(135, 1000);
-    chassis.moveToPoint(23,-2.3, 2000, {.maxSpeed = 100}); // long tube 1
-    chassis.turnToHeading(90, 600);
-    chassis.moveToPoint(76,-8.5, 2500, {.maxSpeed = 110}); // second pair of 3 balls
-    chassis.waitUntil(44.4);
+    //chassis.turnToHeading(135, 500);
+    chassis.moveToPoint(23.5,-2.3, 2000, {.maxSpeed = 100}); // long tube 1
+    chassis.turnToHeading(90, 300);
+    chassis.moveToPoint(69,-4.5, 2500, {.maxSpeed = 110}); // second pair of 3 balls
+    chassis.waitUntil(40);
     doinker.set_value(true);
-    chassis.turnToHeading(45, 400);
-    chassis.moveToPoint(62.2,-21.5, 2000, {.forwards = false, .maxSpeed = 100}); // second pair of 3 balls
-    pros::delay(800);
+    chassis.turnToHeading(45, 300);
+    chassis.moveToPoint(63,-17, 1200, {.forwards = false, .maxSpeed = 110}); // second pair of 3 balls
+    pros::delay(600);
     scoreMiddleHigh();
     pros::delay(600);
     suck();
     // stopAllMotors();
-    chassis.moveToPoint(100,5, 2000, {.maxSpeed = 90}); // second pair of 3 balls
+    chassis.moveToPoint(100,5, 2000, {.maxSpeed = 127}); // second pair of 3 balls
     chassis.waitUntil(20);
     scoreHigh();
-    chassis.turnToHeading(356, 400);
-    chassis.moveToPoint(102.4,21.4, 2000, {.maxSpeed = 90}); // second pair of 3 balls
+    chassis.turnToHeading(356, 500);
+    chassis.moveToPoint(108,22.2, 2000, {.maxSpeed = 80}); // second pair of 3 balls
     pros::delay(500);
-    chassis.moveToPoint(108, -20, 2000, {.forwards = false, .maxSpeed = 90}); // second pair of 3 balls
-    pros::delay(1000);
+    chassis.moveToPoint(112, -20, 2000, {.forwards = false, .maxSpeed = 120}); // second pair of 3 balls
+    pros::delay(500);
     hood.set_value(false);
 
 
