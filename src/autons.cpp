@@ -345,7 +345,7 @@ void newSAWP() {
     //chassis.turnToHeading(135, 500);
     chassis.moveToPoint(23.5,-2.3, 2000, {.maxSpeed = 100}); // long tube 1
     chassis.turnToHeading(90, 300);
-    chassis.moveToPoint(69,-4.5, 2500, {.maxSpeed = 110}); // second pair of 3 balls
+    chassis.moveToPoint(69,-2.3, 2500, {.maxSpeed = 100}); // second pair of 3 balls
     chassis.waitUntil(40);
     doinker.set_value(true);
     chassis.turnToHeading(45, 300);
