@@ -23,8 +23,8 @@ void liftOdom() {
 
 void scoreMiddleHigh() {
     //reverseMotorsButTop();
-    reverseMotors();
-    pros::delay(150);
+    // reverseMotors();
+    // pros::delay(150);
     leftIntakeBottom.move(-127); //bottm
     leftIntakeTop.move(-70); //middle
     rightIntakeBottom.move(-70); //top
@@ -324,6 +324,7 @@ void right_auton() {
 void newSAWP() {
     chassis.setPose(0, 0, 0);
     hood.set_value(true);
+    wings.set_value(false);
     doinker.set_value(true);
     chassis.moveToPoint(0, 34.8, 3000, {.maxSpeed = 80});
     pros::delay(100);
@@ -331,55 +332,54 @@ void newSAWP() {
     scoreHigh();
     chassis.moveToPoint(5.5, 38.45, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
     pros::delay(650);
-    chassis.moveToPoint(-22.2,31.7, 1600, {.forwards = false, .maxSpeed = 110, .minSpeed = 30}); // long tube 1
+    chassis.moveToPoint(-22.2,31.7, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 70}); // long tube 1
     chassis.waitUntil(28);
     doinker.set_value(false);
     hood.set_value(false);
-    chassis.turnToHeading(90, 400);
-    pros::delay(620);
+    pros::delay(200);
+    left_motors.move(-80);
+    right_motors.move(-80);
+    pros::delay(320);
+    left_motors.move(0);
+    right_motors.move(0);
+    pros::delay(220);
     scoreHigh();
-    chassis.setPose(0, 0, 0); //in long goal reset
-    //chassis.moveToPoint(0,14, 2000, {.maxSpeed = 110}); // long tube 1
+    chassis.setPose(0, 0, 0); // reset
+
     chassis.turnToHeading(90, 800);
     hood.set_value(true);
     suck();
     pros::delay(200);
     scoreHigh();
-    //chassis.turnToHeading(135, 500);
-    chassis.moveToPoint(23.5,-0.6, 2000, {.maxSpeed = 90}); // long tube 1
-    chassis.turnToHeading(90, 200);
-    chassis.moveToPoint(66,-0.6, 2500, {.maxSpeed = 90}); // second pair of 3 balls
+    chassis.moveToPoint(23.5,0, 2000, {.maxSpeed = 90}); // long tube 1
+    chassis.turnToHeading(90, 400);
+    chassis.moveToPoint(66,-2, 2500, {.maxSpeed = 90}); // second pair of 3 balls
     chassis.waitUntil(40);
     doinker.set_value(true);
-    // chassis.turnToHeading(45, 300);
-    // chassis.moveToPoint(63,-17, 1200, {.forwards = false, .maxSpeed = 110}); // second pair of 3 balls
-    // pros::delay(600);
-    // scoreMiddleHigh();
-    // pros::delay(600);
-    // suck();
-    // // stopAllMotors();
-    chassis.moveToPoint(89.2,20, 2000, {.maxSpeed = 100}); // second pair of 3 balls
+    chassis.moveToPoint(90.5,14, 2000, {.maxSpeed = 100}); // second pair of 3 balls
     chassis.turnToHeading(0, 400);
-    chassis.moveToPoint(91.2,2, 1200, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
+    chassis.moveToPoint(92.1,-4.5, 1200, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
     chassis.waitUntil(12);
     hood.set_value(false);
     chassis.waitUntil(1);
-    chassis.turnToHeading(0, 600);
-    pros::delay(700);
+    pros::delay(200);
+    left_motors.move(-80);
+    right_motors.move(-80);
+    pros::delay(320);
+    left_motors.move(0);
+    right_motors.move(0);
+    pros::delay(100);
     hood.set_value(true);
+
+
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(-1, 30, 2000, {.maxSpeed = 90}); // second pair of 3 balls
-    pros::delay(600);
-    chassis.moveToPoint(-36, -20, 2000, {.forwards = false, .maxSpeed = 90}); // second pair of 3 balls
+    chassis.moveToPoint(-1.5, 30.3, 2000, {.maxSpeed = 70, .minSpeed = 20}); // second pair of 3 balls
+    pros::delay(1000);
+    chassis.moveToPoint(-35.8, -18, 2000, {.forwards = false, .maxSpeed = 127, .minSpeed = 80}); // second pair of 3 balls
+    chassis.waitUntil(61);
+    scoreMiddleHigh();
     chassis.turnToHeading(45, 500);
-    // chassis.waitUntil(20);
-    // scoreHigh();
-    // chassis.turnToHeading(356, 500);
-    // chassis.moveToPoint(108,22.2, 2000, {.maxSpeed = 80}); // second pair of 3 balls
-    // pros::delay(500);
-    // chassis.moveToPoint(112, -20, 2000, {.forwards = false, .maxSpeed = 120}); // second pair of 3 balls
-    // pros::delay(500);
-    // hood.set_value(false);
+
 
 
 
