@@ -121,34 +121,19 @@ void skillsDrivePastPark() {
 }
 
 void skillsAutonomous() {
-    // cross park and get 6
     chassis.setPose(0, 0, 0);
     hood.set_value(true);
-    liftOdom();
+    wings.set_value(false);
+    doinker.set_value(true);
+    chassis.moveToPoint(0, 34.8, 3000, {.maxSpeed = 80});
+    pros::delay(100);
+    chassis.turnToHeading(74, 1000);
     scoreHigh();
-    skillsDrivePastPark();
-    pros::delay(400);
-
-    // reset off park
-    liftOdom();
-    //stopAllMotors();
-    moveDistance(-8, 1500, 40);
-    pros::delay(300);
-    chassis.setPose(0, 0, 0);
-
-    //pros::delay(3000); // change to like 100 after
-    // //line up to directly and back toward mid goal
-    //chassis.moveToPoint(0, 10, 1500);
-    // chassis.turnToHeading(45, 1000);
-    // chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
-    // chassis.turnToHeading(135, 1300);
-    //chassis.moveToPoint(-38, -24, 3000, {.forwards = false, .maxSpeed = 70});
-    
-    
-    
-
-    // Skills routine implementation...
-    
+    chassis.moveToPoint(-5.5, 38.35, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
+    pros::delay(1500);
+    chassis.moveToPose(10, 54, 0, 3000, {.forwards = false, .maxSpeed = 90, .minSpeed = 30});
+    chassis.moveToPose(100, 54, 0, 3000, {.forwards = false, .maxSpeed = 90, .minSpeed = 30});
+    doinker.set_value(false);
 }
 
 
@@ -157,56 +142,6 @@ void skillsAutonomous() {
 
 
 void testing_auton() {
-    // ===== PID TUNING AUTONOMOUS =====
-    // Instructions:
-    // 1. First tune ANGULAR PID (turning), then tune LATERAL PID (driving straight)
-    // 2. Comment/uncomment test sections below as needed
-    // 3. Watch the robot and adjust PID values in the controller settings at the top of the file
-    
-    chassis.setPose(0, 0, 0);
-    
-    pros::delay(6000);
-    // ===== ANGULAR PID TUNING (Turn Tests) =====
-    // Use these to tune angular controller (kP, kD, then kI if needed)
-    // FLOWCHART:
-    // - If robot oscillates (wiggles back and forth): INCREASE kD
-    // - If robot is too slow to reach target: INCREASE kP
-    // - If robot overshoots: DECREASE kP
-    // - If robot settles but not at target (steady-state error): ADD small kI (0.01-0.05)
-    
-    // Test 1: 90 degree turn
-    controller.print(0, 0, "Turn 90");
-    chassis.turnToHeading(90, 2000);
-    pros::delay(2000);
-    
-    // Test 2: 180 degree turn
-    controller.print(0, 0, "Turn 180");
-    chassis.turnToHeading(180, 2000);
-    pros::delay(2000);
-    
-    // Test 3: 270 degree turn
-    controller.print(0, 0, "Turn 270");
-    chassis.turnToHeading(270, 2000);
-    pros::delay(2000);
-    
-    // Test 4: Back to 0
-    controller.print(0, 0, "Turn 0");
-    chassis.turnToHeading(0, 2000);
-    pros::delay(2000);
-    
-    
-    // ===== LATERAL PID TUNING (Straight Line Tests) =====
-    // Uncomment these AFTER tuning angular PID
-    // Use these to tune lateral controller (kP, kD, slew, then kI if needed)
-    // FLOWCHART:
-    // - If robot oscillates (moves jerky): INCREASE kD
-    // - If robot is too slow: INCREASE kP
-    // - If robot overshoots: DECREASE kP
-    // - If wheels slip: DECREASE slew (start at 20 and go down)
-    // - If robot tips: DECREASE slew
-    // - If robot settles but not at target: ADD small kI (0.01-0.05)
-    
-    controller.print(0, 0, "Tuning Done!");
 }
 
 void lateralTestingAuton() {
@@ -231,94 +166,14 @@ void giveAWP() {
 
 void left_auton() {
     chassis.setPose(0, 0, 0);
-    hood.set_value(true);
-    scoreHigh();
-    pros::delay(100);
-    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
-    chassis.moveToPoint(-6, 28, 3000, {.maxSpeed = 65});
-    pros::delay(700);
-    doinker.set_value(true);
-    pros::delay(100);
-    chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 120});
-    chassis.turnToHeading(250, 1000);
-    chassis.moveToPoint(-36.2, 11, 3000, {.maxSpeed = 102});
-    chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-36.8, -2, 2000, {.maxSpeed = 80});
-    pros::delay(600);
-    chassis.moveToPoint(-35.2, 36, 2000, {.forwards = false, .maxSpeed = 65});
-    pros::delay(1000);
-    hood.set_value(false);
-    scoreHigh();
-    pros::delay(2000);
-    reverseMotors();
-    pros::delay(150);
-    scoreHigh();
-
 }
 
 void left_split() {
     chassis.setPose(0, 0, 0);
-    pros::delay(100);
-    hood.set_value(true);
-    doinker.set_value(true);
-
-
-    chassis.moveToPoint(0, 34.2, 3000, {.maxSpeed = 60});
-    pros::delay(700);
-    chassis.turnToHeading(-74, 1000);
-    pros::delay(100);
-    scoreHigh();
-    chassis.moveToPoint(-7.2, 38, 1000, {.maxSpeed = 70, .minSpeed = 50}); //going into matchload
-    pros::delay(800);
-    chassis.moveToPoint(23.0,31.6, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 20}); // long tube 1
-    pros::delay(850);
-    doinker.set_value(false);
-    hood.set_value(false);
-    pros::delay(1300);
-    chassis.moveToPoint(10,32.2, 2000, {.forwards = false, .maxSpeed = 100, .minSpeed = 20}); // long tube 1
-    hood.set_value(true);
-    chassis.moveToPose(
-        23.3,
-        7,
-        180,
-        3000,
-        {.maxSpeed = 70, .minSpeed=20}
-    );
-    chassis.turnToHeading(-45, 2000);
-    chassis.moveToPoint(26.3, 7, 2000);
-    chassis.turnToHeading(-45, 2000);
-    chassis.moveToPoint(32.8, -4.3, 2000, {.forwards = false, .maxSpeed = 60, .minSpeed = 20});
-    pros::delay(1000);
-    reverseMotors();
-    pros::delay(200);
-    scoreMiddleHigh();
-
 }
 
 void right_auton() {
     chassis.setPose(0, 0, 0);
-    hood.set_value(true);
-    scoreHigh();
-    pros::delay(100);
-    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120});
-    chassis.moveToPoint(6, 28, 3000, {.maxSpeed = 65});
-    pros::delay(700);
-    doinker.set_value(true);
-    pros::delay(100);
-    chassis.moveToPoint(6, 18, 3000, {.forwards = false, .maxSpeed = 120});
-    chassis.turnToHeading(360-250, 1000);
-    chassis.moveToPoint(38.5, 12, 3000, {.maxSpeed = 102});
-    chassis.turnToHeading(360-180, 1000);
-    chassis.moveToPoint(38.6, -2, 2000, {.maxSpeed = 80});
-    pros::delay(600);
-    chassis.moveToPoint(37.7, 36, 2000, {.forwards = false, .maxSpeed = 60});
-    pros::delay(1200);
-    hood.set_value(false);
-    scoreHigh();
-    pros::delay(2000);
-    reverseMotors();
-    pros::delay(150);
-    scoreHigh();
 }
 
 void newSAWP() {
@@ -330,9 +185,9 @@ void newSAWP() {
     pros::delay(100);
     chassis.turnToHeading(74, 1000);
     scoreHigh();
-    chassis.moveToPoint(5.5, 38.45, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
-    pros::delay(650);
-    chassis.moveToPoint(-22.2,31.7, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 70}); // long tube 1
+    chassis.moveToPoint(5.5, 38.35, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
+    pros::delay(725);
+    chassis.moveToPoint(-22.2,32.5, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 70}); // long tube 1
     chassis.waitUntil(28);
     doinker.set_value(false);
     hood.set_value(false);
@@ -342,7 +197,7 @@ void newSAWP() {
     pros::delay(320);
     left_motors.move(0);
     right_motors.move(0);
-    pros::delay(220);
+    pros::delay(320);
     scoreHigh();
     chassis.setPose(0, 0, 0); // reset
 
@@ -351,34 +206,34 @@ void newSAWP() {
     suck();
     pros::delay(200);
     scoreHigh();
-    chassis.moveToPoint(23.5,0, 2000, {.maxSpeed = 90}); // long tube 1
-    chassis.turnToHeading(90, 400);
-    chassis.moveToPoint(66,-2, 2500, {.maxSpeed = 90}); // second pair of 3 balls
-    chassis.waitUntil(40);
+    chassis.moveToPoint(18,-0.2, 2000, {.maxSpeed = 90, .minSpeed = 50}); // long tube 1
+    chassis.moveToPoint(62,-4.5, 2500, {.maxSpeed = 90, .minSpeed = 30}); // second pair of 3 balls
+    chassis.waitUntil(41);
     doinker.set_value(true);
-    chassis.moveToPoint(90.5,14, 2000, {.maxSpeed = 100}); // second pair of 3 balls
-    chassis.turnToHeading(0, 400);
-    chassis.moveToPoint(92.1,-4.5, 1200, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
-    chassis.waitUntil(12);
+    chassis.turnToHeading(35, 400);
+    chassis.moveToPoint(92,9, 2000, {.maxSpeed = 100}); // second pair of 3 balls
+    chassis.turnToHeading(0, 300);
+    chassis.moveToPoint(88,-8, 650, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
+    chassis.waitUntil(8);
     hood.set_value(false);
     chassis.waitUntil(1);
+    chassis.turnToHeading(0, 200);
     pros::delay(200);
-    left_motors.move(-80);
-    right_motors.move(-80);
+    left_motors.move(-100);
+    right_motors.move(-100);
     pros::delay(320);
     left_motors.move(0);
     right_motors.move(0);
     pros::delay(100);
     hood.set_value(true);
-
-
     chassis.setPose(0, 0, 0);
-    chassis.moveToPoint(-1.5, 30.3, 2000, {.maxSpeed = 70, .minSpeed = 20}); // second pair of 3 balls
-    pros::delay(1000);
-    chassis.moveToPoint(-35.8, -18, 2000, {.forwards = false, .maxSpeed = 127, .minSpeed = 80}); // second pair of 3 balls
+    chassis.moveToPose(-1.6, 37.2, 0, 2000, {.maxSpeed = 90, .minSpeed = 20}); // second pair of 3 balls
+    pros::delay(1550);
+    chassis.moveToPoint(-37, -11.4, 2000, {.forwards = false, .maxSpeed = 127, .minSpeed = 80}); // second pair of 3 balls
     chassis.waitUntil(61);
     scoreMiddleHigh();
     chassis.turnToHeading(45, 500);
+    moveDistance(-2, 1000, 40);
 
 
 
