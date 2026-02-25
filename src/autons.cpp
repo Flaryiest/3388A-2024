@@ -127,7 +127,7 @@ void skillsAutonomous() {
     doinker.set_value(true);
     chassis.moveToPoint(0, 34.8, 3000, {.maxSpeed = 80});
     pros::delay(100);
-    chassis.turnToHeading(74, 1000);
+    chassis.turnToHeading(360 - 74, 1000);
     scoreHigh();
     chassis.moveToPoint(-5.5, 38.35, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
     pros::delay(1500);
