@@ -136,8 +136,8 @@ void opcontrol() {
                     intakeTwoBursting = false;
                     // Normal intakeTwo
                     leftIntakeBottom.move(-127); //bottom
-                    leftIntakeTop.move(-60); //middle
-                    rightIntakeBottom.move(-60); //top
+                    leftIntakeTop.move(-80); //middle
+                    rightIntakeBottom.move(-30); //top
                 }
 
             } else if (intakeThree) {
