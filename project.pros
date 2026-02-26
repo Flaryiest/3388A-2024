@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "SAWP before provs",
+    "project_name": "right sides",
     "target": "v5",
     "templates": {
       "LemLib": {

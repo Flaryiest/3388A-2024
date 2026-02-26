@@ -34,10 +34,10 @@ void autonomous() {
     chassis.setPose(0, 0, 0); 
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    //right_auton();
+    right_auton();
     //skillsAutonomous();
     //left_auton();
-    newSAWP();
+    //newSAWP();
     //left_split();
     //giveAWP();
     //lateralTestingAuton();
@@ -45,6 +45,8 @@ void autonomous() {
 
 
 void opcontrol() {
+    // skillsAutonomous();
+    // pros::delay(10000);
     hood.set_value(false);
     odomLift.set_value(true);
     // Persistent state for doinker toggle
