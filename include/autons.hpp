@@ -11,7 +11,7 @@ void reverseMotorsButTop();
 void moveDistance(float distance, int timeout, float maxSpeed = 60);
 
 // Autonomous routines
-void skillsDriveToPark();
+void skillsDrivePastPark();
 void left_auton();
 void right_auton();
 void testing_auton();

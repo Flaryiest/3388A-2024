@@ -71,6 +71,8 @@ void moveDistance(float distance, int timeout, float maxSpeed) {
     });
 }
 
+
+
 void skillsDrivePastPark() {
     // Drive straight until the color sensor crosses the park zone line twice,
     // then drive 3 more inches and stop.
@@ -116,7 +118,7 @@ void skillsDrivePastPark() {
     // Stop driving
     left_motors.move(0);
     right_motors.move(0);
-    // Drive 5 more inches forward
+    // Drive 2 more inches forward
     moveDistance(2, 2000, 60);
 }
 

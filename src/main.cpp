@@ -68,9 +68,6 @@ void opcontrol() {
     static bool intakeThreeDelaying = false;  // true during initial 100ms delay
     static uint32_t intakeThreeDelayStart = 0; // when delay started
     static bool prevIntakeThree = false;      // previous loop state of R1
-    // Persistent state for park macro
-    static bool parkMacroRunning = false;     // true when park macro is active
-    
     while (true) {
         bool intakeOne = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
         bool intakeTwo = controller.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
@@ -82,85 +79,56 @@ void opcontrol() {
 
         bool middleDescoreButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_UP);
         bool odomLiftButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN);
-        bool parkMacroButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+        bool suckButton = controller.get_digital(pros::E_CONTROLLER_DIGITAL_X);
         int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
         int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         
-        // Park macro: when X is pressed, run intake in reverse at half speed until ball detected
-        if (parkMacroButton) {
-            int distance = park_distance.get();
-            
-            // Check if ball is detected (distance dropped from ~200 to ~70-100)
-            if (distance < 120 && distance > 0) {
-                // Ball detected, stop the macro
-                pros::delay(22);
-                leftIntakeBottom.move(0);
-                leftIntakeTop.move(0);
-                rightIntakeBottom.move(0);
-                
-                expansion.set_value(true);
-                parkMacroRunning = false;
-                controller.rumble("-");  // Short rumble to indicate ball detected
-            } else {
-                // Run intake motors in reverse at half speed (opposite of intakeOne)
-                // intakeOne runs: leftIntakeBottom(-127), leftIntakeTop(-127), rightIntakeBottom(127)
-                // So opposite at half speed: leftIntakeBottom(63), leftIntakeTop(63), rightIntakeBottom(-63)
-                leftIntakeBottom.move(80);
-                leftIntakeTop.move(83);
-                rightIntakeBottom.move(-127);
-                parkMacroRunning = true;
+        // ===== INTAKE CONTROL =====
+        if (intakeOne || intakePistonButton) {
+            leftIntakeBottom.move(-127); //bottom
+            leftIntakeTop.move(-127); //middle
+            rightIntakeBottom.move(127); //top normal scoring
+        } else if (intakeTwo) {
+            // On first press, run reverse burst for 100ms
+            if (!prevIntakeTwo) {
+                intakeTwoBursting = true;
+                intakeTwoBurstStart = pros::millis();
             }
-        } else if (parkMacroRunning) {
-            // Button released while macro was running - stop motors
+            if (intakeTwoBursting && (pros::millis() - intakeTwoBurstStart < 100)) {
+                // Reverse burst (same as intakeThree)
+                leftIntakeBottom.move(127);
+                leftIntakeTop.move(127);
+                rightIntakeBottom.move(-127);
+            } else {
+                intakeTwoBursting = false;
+                // Normal intakeTwo
+                leftIntakeBottom.move(-127); //bottom
+                leftIntakeTop.move(-80); //middle
+                rightIntakeBottom.move(-30); //top
+            }
+        } else if (intakeThree) {
+            // On first press, delay rightIntakeBottom for 100ms
+            if (!prevIntakeThree) {
+                intakeThreeDelaying = true;
+                intakeThreeDelayStart = pros::millis();
+            }
+            leftIntakeBottom.move(80);
+            leftIntakeTop.move(127);
+            if (intakeThreeDelaying && (pros::millis() - intakeThreeDelayStart < 100)) {
+                rightIntakeBottom.move(0); // don't spin top for first 100ms
+            } else {
+                intakeThreeDelaying = false;
+                rightIntakeBottom.move(-127);
+            }
+        } else if (suckButton) {
+            // Suck: all intake motors pull inward at full speed
+            leftIntakeBottom.move(127);
+            leftIntakeTop.move(127);
+            rightIntakeBottom.move(127);
+        } else {
             leftIntakeBottom.move(0);
             leftIntakeTop.move(0);
             rightIntakeBottom.move(0);
-            parkMacroRunning = false;
-        } else {
-            // ===== NORMAL INTAKE CONTROL =====
-            if (intakeOne || intakePistonButton) {
-                leftIntakeBottom.move(-127); //bottom
-                leftIntakeTop.move(-127); //middle
-                rightIntakeBottom.move(127); //top normal scoring
-
-            } else if (intakeTwo) {
-                // On first press, run reverse burst for 100ms
-                if (!prevIntakeTwo) {
-                    intakeTwoBursting = true;
-                    intakeTwoBurstStart = pros::millis();
-                }
-                if (intakeTwoBursting && (pros::millis() - intakeTwoBurstStart < 100)) {
-                    // Reverse burst (same as intakeThree)
-                    leftIntakeBottom.move(127);
-                    leftIntakeTop.move(127);
-                    rightIntakeBottom.move(-127);
-                } else {
-                    intakeTwoBursting = false;
-                    // Normal intakeTwo
-                    leftIntakeBottom.move(-127); //bottom
-                    leftIntakeTop.move(-80); //middle
-                    rightIntakeBottom.move(-30); //top
-                }
-
-            } else if (intakeThree) {
-                // On first press, delay rightIntakeBottom for 100ms
-                if (!prevIntakeThree) {
-                    intakeThreeDelaying = true;
-                    intakeThreeDelayStart = pros::millis();
-                }
-                leftIntakeBottom.move(80);
-                leftIntakeTop.move(127);
-                if (intakeThreeDelaying && (pros::millis() - intakeThreeDelayStart < 100)) {
-                    rightIntakeBottom.move(0); // don't spin top for first 100ms
-                } else {
-                    intakeThreeDelaying = false;
-                    rightIntakeBottom.move(-127);
-                }
-            } else {
-                leftIntakeBottom.move(0);
-                leftIntakeTop.move(0);
-                rightIntakeBottom.move(0);
-            }
         }
 
         hood.set_value(!intakePistonButton);

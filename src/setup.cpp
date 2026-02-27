@@ -9,7 +9,7 @@ pros::Motor leftIntakeTop(7, pros::MotorGearset::green);
 pros::Motor rightIntakeBottom(9, pros::MotorGearset::green);
 pros::Optical color_sensor(11);
 
-pros::Distance park_distance(8); //base distance is around 200 mm. With ball is around 50-120
+pros::Distance left_distance(8); // distance sensor mounted on left side, used for autonomous resets
 
 pros::adi::DigitalOut hood('A', false); //,maybe true for size
 pros::adi::DigitalOut doinker('F', false); 

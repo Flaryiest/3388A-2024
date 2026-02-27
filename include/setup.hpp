@@ -25,7 +25,7 @@ extern pros::Motor rightIntakeBottom;
 
 // Sensors
 extern pros::Optical color_sensor;
-extern pros::Distance park_distance;
+extern pros::Distance left_distance;
 extern pros::Imu imu;
 extern pros::Rotation vertical_encoder;
 extern pros::Rotation horizontal_encoder;
