@@ -56,6 +56,17 @@ void reverseMotorsButTop() {
     rightIntakeBottom.move(-90); //top
 }
 
+void longGoalReset() {
+    chassis.turnToHeading(90, 400);
+    chassis.waitUntilDone();
+    left_motors.move(-60);
+    right_motors.move(-60);
+    pros::delay(420);
+    left_motors.move(0);
+    right_motors.move(0);
+    pros::delay(120);
+}
+
 // Move forward/backward a certain distance in the current heading direction
 void moveDistance(float distance, int timeout, float maxSpeed) {
     lemlib::Pose currentPose = chassis.getPose();
@@ -75,12 +86,14 @@ void moveDistance(float distance, int timeout, float maxSpeed) {
 
 void skillsDrivePastPark() {
     // Drive straight until the color sensor crosses the park zone line twice,
-    // then drive 3 more inches and stop.
+    // then drive 2 more inches and stop.
     // Park zone lines are colored (red or blue) on the gray field tiles.
     
     int crossingCount = 0;
     bool onLine = false;
     float targetHeading = chassis.getPose().theta; // maintain current heading
+    lemlib::Pose startPose = chassis.getPose(); // remember where we started
+    float lastCrossingDist = 0; // distance traveled at last crossing
     
     color_sensor.set_led_pwm(100); // ensure LED is on for detection
     
@@ -94,6 +107,10 @@ void skillsDrivePastPark() {
         left_motors.move(70 + correction);
         right_motors.move(70 - correction);
         
+        // Calculate distance traveled so far
+        lemlib::Pose currentPose = chassis.getPose();
+        float distTraveled = currentPose.distance(startPose);
+        
         // Check color sensor for park zone line
         double hue = color_sensor.get_hue();
         int proximity = color_sensor.get_proximity();
@@ -102,13 +119,20 @@ void skillsDrivePastPark() {
         bool isColored = (proximity > 60) && 
                          ((hue < 30 || hue > 330) || (hue > 80 && hue < 250));
         
+        // Only allow a new crossing if we've traveled at least 6 inches since the last one
+        // This prevents double-counting from noise/gradients on the same line
+        bool canCount = (distTraveled - lastCrossingDist) > 6.0;
+        
         if (isColored && !onLine) {
             onLine = true; // entered the colored line
         } else if (!isColored && onLine) {
             onLine = false; // exited the colored line
-            crossingCount++;
-            if (crossingCount == 1) {
-                doinker.set_value(true); // put down doinker after first crossing
+            if (canCount) {
+                crossingCount++;
+                lastCrossingDist = distTraveled;
+                if (crossingCount == 1) {
+                    doinker.set_value(true); // put down doinker after first crossing
+                }
             }
         }
         
@@ -127,20 +151,49 @@ void skillsAutonomous() {
     hood.set_value(true);
     wings.set_value(false);
     doinker.set_value(true);
-    chassis.moveToPoint(0, 33.75, 3000, {.maxSpeed = 80});
+    odomLift.set_value(true);
+    scoreHigh();
+    chassis.moveToPoint(0, 33.85, 3000, {.maxSpeed = 80});
     pros::delay(100);
     chassis.turnToHeading(360 - 74, 1000);
     scoreHigh();
-    chassis.moveToPoint(-5.5, 37, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
-    pros::delay(1600);
+    chassis.moveToPoint(-5.75, 37, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
+    pros::delay(2300);
     chassis.moveToPoint(-0, 37, 1000, {.maxSpeed = 90, .minSpeed = 30}); //going into matchload
-    chassis.moveToPose(14, 41, -90, 3000, {.forwards = false, .maxSpeed = 90, .minSpeed = 50});
+    chassis.moveToPose(10, 39, -90, 3000, {.forwards = false, .maxSpeed = 90, .minSpeed = 50});
+    chassis.moveToPoint(96, 37.6, 5000, {.forwards = false, .maxSpeed = 90});
     doinker.set_value(false);
-    chassis.moveToPoint(84, 40, 4000, {.forwards = false, .maxSpeed = 110, .minSpeed = 20});
+    pros::delay(1000);
     chassis.turnToHeading(0, 1000);
-    chassis.moveToPoint(85, 33, 4000, {.forwards = false, .maxSpeed = 110, .minSpeed = 20});
+    chassis.moveToPoint(96, 26, 4000, {.forwards = false, .maxSpeed = 80});
     chassis.turnToHeading(90, 1000);
-    chassis.moveToPoint(76, 33, 4000, {.forwards = false, .maxSpeed = 110, .minSpeed = 20});
+    chassis.moveToPoint(79, 23.7, 1200, {.forwards = false, .maxSpeed = 80, .minSpeed = 20});
+    pros::delay(1200);
+    hood.set_value(false);
+    longGoalReset();
+    doinker.set_value(true);
+    pros::delay(1300);
+    hood.set_value(true);
+    chassis.setPose(0, 0, 0); // reset odometry
+    chassis.moveToPose(0.3, 36.15, 0, 3000, {.maxSpeed = 80, .minSpeed = 35});
+    pros::delay(3000);
+    chassis.moveToPoint(0, -1, 1600, {.forwards = false, .maxSpeed = 80, .minSpeed = 20});
+    chassis.waitUntil(35.7);
+    hood.set_value(false);
+    chassis.turnToHeading(0, 400);
+    chassis.waitUntilDone();
+    left_motors.move(-60);
+    right_motors.move(-60);
+    pros::delay(420);
+    left_motors.move(0);
+    right_motors.move(0);
+    pros::delay(120);
+    pros::delay(2000);
+    doinker.set_value(false);
+    chassis.setPose(0, 0, 0); // reset odometry again for parking
+    chassis.moveToPoint(14, 40, 2000, {.maxSpeed = 80, .minSpeed = 20});
+
+    //    skillsDrivePastPark();
 }
 
 
@@ -221,9 +274,9 @@ void newSAWP() {
     pros::delay(100);
     chassis.turnToHeading(74, 1000);
     scoreHigh();
-    chassis.moveToPoint(5.3, 38.35, 1000, {.maxSpeed = 90, .minSpeed = 40}); //going into matchload
+    chassis.moveToPoint(5.45, 38.75, 1000, {.maxSpeed = 90, .minSpeed = 40}); //going into matchload
     pros::delay(725);
-    chassis.moveToPoint(-22.2,33, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 70}); // long tube 1
+    chassis.moveToPoint(-22.2,31, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 70}); // long tube 1
     chassis.waitUntil(28);
     doinker.set_value(false);
     hood.set_value(false);
@@ -242,14 +295,14 @@ void newSAWP() {
     suck();
     pros::delay(200);
     scoreHigh();
-    chassis.moveToPoint(13, 2.4, 1000, {.maxSpeed = 90, .minSpeed = 45}); // long tube 1
-    chassis.moveToPoint(61,1, 2500, {.maxSpeed = 90, .minSpeed = 30}); // second pair of 3 balls
+    chassis.moveToPoint(13, -0.5, 1000, {.maxSpeed = 90, .minSpeed = 45}); // long tube 1
+    chassis.moveToPoint(61,-3.35, 2500, {.maxSpeed = 90, .minSpeed = 30}); // second pair of 3 balls
     chassis.waitUntil(41);
     doinker.set_value(true);
     chassis.turnToHeading(35, 400);
-    chassis.moveToPoint(90.3,13, 2000, {.maxSpeed = 100}); // second pair of 3 balls
+    chassis.moveToPoint(96.4,11, 2000, {.maxSpeed = 100}); // second pair of 3 balls
     chassis.turnToHeading(0, 300);
-    chassis.moveToPoint(87.6,-8, 400, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
+    chassis.moveToPoint(92.1,-8, 500, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
     chassis.waitUntil(8);
     hood.set_value(false);
     chassis.waitUntil(1);
@@ -265,7 +318,7 @@ void newSAWP() {
     chassis.setPose(0, 0, 0);
     chassis.moveToPose(-0.2, 38.3, 0, 1550, {.maxSpeed = 120, .minSpeed = 30}); // second pair of 3 balls
     pros::delay(1550);
-    chassis.moveToPoint(-37, -9.7, 1500, {.forwards = false, .maxSpeed = 127, .minSpeed = 80}); // second pair of 3 balls
+    chassis.moveToPoint(-37, -11.2, 1500, {.forwards = false, .maxSpeed = 127, .minSpeed = 80}); // second pair of 3 balls
     chassis.waitUntil(61);
     scoreMiddleHigh();
     chassis.turnToHeading(45, 500);
