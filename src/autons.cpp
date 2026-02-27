@@ -237,7 +237,7 @@ void newSAWP() {
     pros::delay(120);
     scoreHigh();
     chassis.setPose(0, 0, 0); // reset
-    chassis.turnToHeading(80, 800, {.maxSpeed = 120, .minSpeed = 50});
+    chassis.turnToHeading(80, 800, {.maxSpeed = 120, .minSpeed = 60});
     hood.set_value(true);
     suck();
     pros::delay(200);
