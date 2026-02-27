@@ -47,6 +47,8 @@ void autonomous() {
 void opcontrol() {
     // skillsAutonomous();
     // pros::delay(10000);
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+
     hood.set_value(false);
     odomLift.set_value(true);
     // Persistent state for doinker toggle
