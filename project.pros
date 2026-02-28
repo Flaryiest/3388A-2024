@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "SAWP",
+    "project_name": "SAWP electric",
     "target": "v5",
     "templates": {
       "LemLib": {
