@@ -256,7 +256,7 @@ void right_auton() {
     scoreHigh();
     chassis.moveToPoint(5.3, 38.45, 1000, {.maxSpeed = 90, .minSpeed = 40}); //going into matchload
     pros::delay(725);
-    chassis.moveToPoint(-22.2,32.2, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 65}); // long tube 1
+    chassis.moveToPoint(-22.2,32.7, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 65}); // long tube 1
     chassis.waitUntil(28);
     doinker.set_value(false);
     hood.set_value(false);
@@ -267,7 +267,7 @@ void right_auton() {
     pros::delay(420);
     left_motors.move(0);
     right_motors.move(0);
-    pros::delay(320);
+    pros::delay(120);
     scoreHigh();
     chassis.setPose(0, 0, 0); // reset
     chassis.moveToPoint(-9, 10, 2000, {.maxSpeed = 127, .minSpeed = 70});
@@ -288,7 +288,7 @@ void newSAWP() {
     scoreHigh();
     chassis.moveToPoint(5.3, 38.45, 1000, {.maxSpeed = 90, .minSpeed = 40}); //going into matchload
     pros::delay(725);
-    chassis.moveToPoint(-22.2,32.2, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 65}); // long tube 1
+    chassis.moveToPoint(-22.2,32.7, 1800, {.forwards = false, .maxSpeed = 127, .minSpeed = 65}); // long tube 1
     chassis.waitUntil(28);
     doinker.set_value(false);
     hood.set_value(false);
@@ -311,8 +311,8 @@ void newSAWP() {
     chassis.moveToPoint(61,2.4, 2500, {.maxSpeed = 90, .minSpeed = 30}); // second pair of 3 balls
     chassis.waitUntil(41);
     doinker.set_value(true);
-    chassis.turnToHeading(35, 400);
-    chassis.moveToPoint(89.8,21.5, 2000, {.maxSpeed = 100}); // second pair of 3 balls
+    chassis.turnToHeading(30, 400);
+    chassis.moveToPoint(90,22.2, 2000, {.maxSpeed = 100}); // second pair of 3 balls
     chassis.turnToHeading(0, 300);
     chassis.moveToPoint(87.9,-9, 500, {.forwards = false, .maxSpeed = 127}); // second pair of 3 balls
     chassis.waitUntil(8);
@@ -328,8 +328,8 @@ void newSAWP() {
     pros::delay(350);
     hood.set_value(true);
     chassis.setPose(0, 0, 0);
-    chassis.moveToPose(-0.1, 38.4, 0, 1100, {.maxSpeed = 120, .minSpeed = 36}); // second pair of 3 balls
-    pros::delay(1100);
+    chassis.moveToPose(-0.1, 38.6, 0, 1100, {.maxSpeed = 120, .minSpeed = 44}); // second pair of 3 balls
+    pros::delay(1400);
     chassis.moveToPoint(-37, -8.5, 1500, {.forwards = false, .maxSpeed = 127, .minSpeed = 80}); // second pair of 3 balls
     chassis.waitUntil(61);
     scoreMiddleHigh();
