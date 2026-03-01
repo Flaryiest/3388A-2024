@@ -235,25 +235,30 @@ void left_auton() {
     wings.set_value(false);
     scoreHigh();
     pros::delay(100);
-    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120, .minSpeed = 40});
-    chassis.moveToPoint(-6, 28, 3000, {.maxSpeed = 65, .minSpeed = 20});
+    chassis.moveToPoint(0, 10, 3000, {.maxSpeed = 120, .minSpeed = 60});
+    chassis.moveToPoint(-6, 27, 3000, {.maxSpeed = 65, .minSpeed = 30});
     pros::delay(700);
     doinker.set_value(true);
     pros::delay(100);
-    chassis.moveToPoint(-6, 18, 3000, {.forwards = false, .maxSpeed = 120});
-    chassis.turnToHeading(250, 1000);
-    chassis.moveToPoint(-35.2, 11, 3000, {.maxSpeed = 102});
+    chassis.turnToHeading(230, 1000, {.minSpeed = 30});
+    chassis.moveToPoint(-41.5, 15, 3000, {.maxSpeed = 102});
     chassis.turnToHeading(180, 1000);
-    chassis.moveToPoint(-35.8, -1.6, 1600, {.maxSpeed = 80});
-    pros::delay(600);
-    chassis.moveToPoint(-37, 38, 2000, {.forwards = false, .maxSpeed = 65});
+    chassis.moveToPoint(-43.5, 8.1, 1000, {.maxSpeed = 70});
     pros::delay(1000);
+    chassis.moveToPoint(-42.1, 39, 2000, {.forwards = false, .maxSpeed = 105});
+    pros::delay(800);
+    reverseMotors();
+    pros::delay(150);
     hood.set_value(false);
     scoreHigh();
     pros::delay(2000);
-    reverseMotors();
     pros::delay(150);
     scoreHigh();
+    chassis.setPose(0, 0, 0); // reset
+    chassis.moveToPoint(0, 3.5, 3000, {.maxSpeed = 120, .minSpeed = 20});
+    pros::delay(200);
+    hood.set_value(true);
+    chassis.moveToPoint(0, -1, 3000, {.forwards = false, .maxSpeed = 120, .minSpeed = 20});
 
 
 
