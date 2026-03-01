@@ -34,9 +34,10 @@ void autonomous() {
     chassis.setPose(0, 0, 0); 
     // Run the autonomous routine selected on the brain screen
     // Selection is saved to SD card and persists across reboots
-    right_auton();
+    //right_auton();
     //skillsAutonomous();
-    //left_auton();
+    left_auton();
+
     //newSAWP();
     //left_split();
     //giveAWP();
@@ -96,17 +97,17 @@ void opcontrol() {
                 intakeTwoBursting = true;
                 intakeTwoBurstStart = pros::millis();
             }
-            if (intakeTwoBursting && (pros::millis() - intakeTwoBurstStart < 100)) {
+            if (intakeTwoBursting && (pros::millis() - intakeTwoBurstStart < 150)) {
                 // Reverse burst (same as intakeThree)
                 leftIntakeBottom.move(127);
                 leftIntakeTop.move(127);
-                rightIntakeBottom.move(-127);
+                rightIntakeBottom.move(-67);
             } else {
                 intakeTwoBursting = false;
                 // Normal intakeTwo
                 leftIntakeBottom.move(-127); //bottom
-                leftIntakeTop.move(-80); //middle
-                rightIntakeBottom.move(-30); //top
+                leftIntakeTop.move(-95); //middle
+                rightIntakeBottom.move(-60); //top
             }
         } else if (intakeThree) {
             // On first press, delay rightIntakeBottom for 100ms
